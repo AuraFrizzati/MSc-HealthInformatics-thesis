@@ -4,3 +4,6 @@
 .Ruserdata
 input_data/Welsh_data/Amplitude_HipsPrimary190404_forAuraFrizzatiMSc_anonRP210414.csv
 input_data/Welsh_data/Amplitude_HipsRevision170803_forAuraFrizzatiMSc_anonRP210414.csv
+code/01_cleaning_AmplitudeHIPS_OLD.R
+code/01_cleaning_AmplitudeHIPS_OLD.RData
+code/ProjectFUN_OLD.R
