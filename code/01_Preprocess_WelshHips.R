@@ -310,5 +310,39 @@ AMP_HIPS_PRIM.cleaned5<-AMP_HIPS_PRIM.cleaned4[!is.na(AMP_HIPS_PRIM.cleaned4$EQV
 rm(AMP_HIPS_PRIM.cleaned4)
 #.........................................................................................
 
+# Revision: patients 2+ primary surgeries on the same side--------
+### check for the presence of patients with multiple revision surgeries on the same side  (although these might be plausible)
+AMP_HIPS_REV %>% 
+  group_by(pID,Pathway.Side) %>% 
+  summarise (N_Revision_sameSide = n()) %>%
+  arrange(-N_Revision_sameSide)
+
+AMP_HIPS_REV %>% 
+  group_by(pID,Pathway.Side) %>% 
+  summarise (N_Revision_sameSide = n()) %>%
+  group_by(N_Revision_sameSide) %>%
+  summarise (Tot = n())
+
+# N_Revision_sameSide   Tot
+# 1                     277
+# 2                       7 --> 14 records, I remove them since their dates are very close and some have different scores
+
+## Extract list of subjects with N_Revision_sameSide > 1
+remove<-as.data.frame(AMP_HIPS_REV %>% 
+                        group_by(pID,Pathway.Side) %>% 
+                        summarise (N_Revision_sameSide = n()) %>% 
+                        filter(N_Revision_sameSide > 1)%>% 
+                        unite(excl_filter, c("pID", "Pathway.Side"), sep = ""))
+
+
+#************
+### remove subjects with N_Revision_sameSide > 1 
+AMP_HIPS_REV$combID<-paste0(AMP_HIPS_REV$pID, AMP_HIPS_REV$Pathway.Side)
+
+AMP_HIPS_REV.cleaned<-AMP_HIPS_REV[!(AMP_HIPS_REV$combID %in% remove$excl_filter),]
+rm(remove)
+#.........................................................................................
+
+
 
 
