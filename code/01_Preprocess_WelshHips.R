@@ -237,6 +237,38 @@ rm(drop_columns,new_col_names,colnames_orig_and_new, AMP_HIPS_PRIM.cleaned)
 #.........................................................................................
 
 
+# Primary: missing values baseline OHS and EQ-VAS ----------------------------------
+## check N of missing values for the baseline OHS and EQ-VAS scores
+
+AMP_HIPS_PRIM.cleaned2$BASELINE_SCORE_TYPE<-NA
+AMP_HIPS_PRIM.cleaned2[!is.na(AMP_HIPS_PRIM.cleaned2$OHS_PREOP_TOTSCORE)&
+                         is.na(AMP_HIPS_PRIM.cleaned2$EQ5D_PREOP_VAS),]$BASELINE_SCORE_TYPE<-"OHSPREOP_ONLY"
+AMP_HIPS_PRIM.cleaned2[!is.na(AMP_HIPS_PRIM.cleaned2$OHS_PREOP_TOTSCORE)&
+                         !is.na(AMP_HIPS_PRIM.cleaned2$EQ5D_PREOP_VAS),]$BASELINE_SCORE_TYPE<-"OHSPREOP&VASPREOP"
+AMP_HIPS_PRIM.cleaned2[is.na(AMP_HIPS_PRIM.cleaned2$OHS_PREOP_TOTSCORE)&
+                         !is.na(AMP_HIPS_PRIM.cleaned2$EQ5D_PREOP_VAS),]$BASELINE_SCORE_TYPE<-"VASPREOP_ONLY"
+
+
+AMP_HIPS_PRIM.cleaned2 %>% group_by(BASELINE_SCORE_TYPE) %>% summarise (tot = n())
+
+## remove subjects without both OHS and VAS pre-op:
+AMP_HIPS_PRIM.cleaned3<-AMP_HIPS_PRIM.cleaned2[AMP_HIPS_PRIM.cleaned2$BASELINE_SCORE_TYPE=="OHSPREOP&VASPREOP"&
+                                                 !is.na(AMP_HIPS_PRIM.cleaned2$BASELINE_SCORE_TYPE),]
+
+##checking N of missing values/column
+sapply(AMP_HIPS_PRIM.cleaned3, function(x){sum(is.na(x))})
+
+## remove 1 subject without all pre-op OHS dimensions:
+AMP_HIPS_PRIM.cleaned3<-AMP_HIPS_PRIM.cleaned3[!is.na(AMP_HIPS_PRIM.cleaned3$OHS_PREOP_SHOPPING),]
+
+##checking N of missing values/column
+sapply(AMP_HIPS_PRIM.cleaned3, function(x){sum(is.na(x))})
+
+## After these cleaning steps, only these predictors have missing values:
+## OHS_POSTOP6M_TOTSCORE, OHS_POSTOP12M_TOTSCORE, EQ5D_POSTOP6M_VAS,  EQ5D_POSTOP12M_VAS
+
+rm(AMP_HIPS_PRIM.cleaned2)
+#.........................................................................................
 
 
 
