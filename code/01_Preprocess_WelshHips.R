@@ -271,5 +271,44 @@ rm(AMP_HIPS_PRIM.cleaned2)
 #.........................................................................................
 
 
+# Primary: remove cases without tot OHS 6 or 12 months --------------------
+## check combinations of OHS TOT SCORE 6-months and 12-months
+
+AMP_HIPS_PRIM.cleaned3$OHS_POSTOP_TOTSCORE_TYPE<-NA
+AMP_HIPS_PRIM.cleaned3[!is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP6M_TOTSCORE)&
+                         is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP12M_TOTSCORE),]$OHS_POSTOP_TOTSCORE_TYPE<-"6MONTHS_ONLY"
+AMP_HIPS_PRIM.cleaned3[!is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP6M_TOTSCORE)&
+                         !is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP12M_TOTSCORE),]$OHS_POSTOP_TOTSCORE_TYPE<-"6MONTHS&12MONTHS"
+AMP_HIPS_PRIM.cleaned3[is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP6M_TOTSCORE)&
+                         !is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP12M_TOTSCORE),]$OHS_POSTOP_TOTSCORE_TYPE<-"12MONTHS_ONLY"
+
+
+AMP_HIPS_PRIM.cleaned3 %>% group_by(OHS_POSTOP_TOTSCORE_TYPE) %>% summarise (tot = n())
+
+#************
+### remove rows without OHS 6-month post-op & without OHS 12-month post-op
+AMP_HIPS_PRIM.cleaned4<-AMP_HIPS_PRIM.cleaned3[!is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP_TOTSCORE_TYPE),]
+
+rm(AMP_HIPS_PRIM.cleaned3)
+#.........................................................................................
+
+# Primary: remove cases without EQVAS 6 or 12 months --------------------
+
+## check combinations of EQ-VAS 6-months and 12-months
+AMP_HIPS_PRIM.cleaned4$EQVAS_POSTOP_TYPE<-NA
+AMP_HIPS_PRIM.cleaned4[!is.na(AMP_HIPS_PRIM.cleaned4$EQ5D_POSTOP6M_VAS)&
+                         is.na(AMP_HIPS_PRIM.cleaned4$EQ5D_POSTOP12M_VAS),]$EQVAS_POSTOP_TYPE<-"6MONTHS_ONLY"
+AMP_HIPS_PRIM.cleaned4[!is.na(AMP_HIPS_PRIM.cleaned4$EQ5D_POSTOP6M_VAS)&
+                         !is.na(AMP_HIPS_PRIM.cleaned4$EQ5D_POSTOP12M_VAS),]$EQVAS_POSTOP_TYPE<-"6MONTHS&12MONTHS"
+AMP_HIPS_PRIM.cleaned4[is.na(AMP_HIPS_PRIM.cleaned4$EQ5D_POSTOP6M_VAS)&
+                         !is.na(AMP_HIPS_PRIM.cleaned4$EQ5D_POSTOP12M_VAS),]$EQVAS_POSTOP_TYPE<-"12MONTHS_ONLY"
+AMP_HIPS_PRIM.cleaned4 %>% group_by(EQVAS_POSTOP_TYPE) %>% summarise (tot = n())
+
+### remove rows without EQ-VAS 6-month post-op & without EQ-VAS 12-month post-op
+AMP_HIPS_PRIM.cleaned5<-AMP_HIPS_PRIM.cleaned4[!is.na(AMP_HIPS_PRIM.cleaned4$EQVAS_POSTOP_TYPE),]
+
+rm(AMP_HIPS_PRIM.cleaned4)
+#.........................................................................................
+
 
 
