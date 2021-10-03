@@ -6,6 +6,8 @@ library(tidyr)
 library(ggplot2)
 source("code/00_ProjectFunctions.R") # library of custom-made functions
 #.........................................................................................
+#.........................................................................................
+
 
 ### Import input data -------------------------------------------------------
 AMP_HIPS_PRIM<-read.csv("input_data/Welsh_data/Amplitude_HipsPrimary190404_forAuraFrizzatiMSc_anonRP210414.csv", 
@@ -15,6 +17,7 @@ AMP_HIPS_PRIM<-read.csv("input_data/Welsh_data/Amplitude_HipsPrimary190404_forAu
 AMP_HIPS_REV<-read.csv("input_data/Welsh_data/Amplitude_HipsRevision170803_forAuraFrizzatiMSc_anonRP210414.csv", 
                        header = T,
                        na.strings=c("", "I", "DUE", "OVERDUE", "NA"))
+#.........................................................................................
 #.........................................................................................
 
 
@@ -36,6 +39,7 @@ values_by_column(input_dataset="AMP_HIPS_REV",
                  output_dir="output/extra_files/", 
                  output_name="AMP_HIPS_REV")
 # VALUES FOR REVISIONS SEEM ALL OK (I already have age and I do not need to convert dates)
+#.........................................................................................
 #.........................................................................................
 
 
@@ -117,6 +121,7 @@ DATE_DIFF_ALL %>% group_by(diff_type) %>% summarise (Mean = mean(DATE_DIFF),
 ## (much less spread around baseline date)
 rm(AMP_HIPS_PRIM_DATES,DATE_DIFF_ALL)
 #.........................................................................................
+#.........................................................................................
 
 
 # Primary: patients 2+ primary surgeries on the same side--------
@@ -144,6 +149,7 @@ AMP_HIPS_PRIM$combID<-paste0(AMP_HIPS_PRIM$pID, AMP_HIPS_PRIM$Pathway.Side)
 AMP_HIPS_PRIM.cleaned<-AMP_HIPS_PRIM[!(AMP_HIPS_PRIM$combID %in% remove$excl_filter),]
 rm(remove)
 #.........................................................................................
+#.........................................................................................
 
 
 # Primary: create Age variable --------------------------------------------
@@ -160,6 +166,7 @@ AMP_HIPS_PRIM.cleaned$Age<-AMP_HIPS_PRIM.cleaned$Activity.Year-
 ggplot(AMP_HIPS_PRIM.cleaned, aes(x=Age)) + geom_histogram()
 # there is a patient aged 1, might have to double-check this 
 # again after I have removed all NAs
+#.........................................................................................
 #.........................................................................................
 
 
@@ -235,6 +242,7 @@ names(AMP_HIPS_PRIM.cleaned2)[match(colnames_orig_and_new[,1],
 
 rm(drop_columns,new_col_names,colnames_orig_and_new, AMP_HIPS_PRIM.cleaned)
 #.........................................................................................
+#.........................................................................................
 
 
 # Primary: missing values baseline OHS and EQ-VAS ----------------------------------
@@ -256,18 +264,19 @@ AMP_HIPS_PRIM.cleaned3<-AMP_HIPS_PRIM.cleaned2[AMP_HIPS_PRIM.cleaned2$BASELINE_S
                                                  !is.na(AMP_HIPS_PRIM.cleaned2$BASELINE_SCORE_TYPE),]
 
 ##checking N of missing values/column
-sapply(AMP_HIPS_PRIM.cleaned3, function(x){sum(is.na(x))})
+#sapply(AMP_HIPS_PRIM.cleaned3, function(x){sum(is.na(x))})
 
 ## remove 1 subject without all pre-op OHS dimensions:
 AMP_HIPS_PRIM.cleaned3<-AMP_HIPS_PRIM.cleaned3[!is.na(AMP_HIPS_PRIM.cleaned3$OHS_PREOP_SHOPPING),]
 
 ##checking N of missing values/column
-sapply(AMP_HIPS_PRIM.cleaned3, function(x){sum(is.na(x))})
+#sapply(AMP_HIPS_PRIM.cleaned3, function(x){sum(is.na(x))})
 
 ## After these cleaning steps, only these predictors have missing values:
 ## OHS_POSTOP6M_TOTSCORE, OHS_POSTOP12M_TOTSCORE, EQ5D_POSTOP6M_VAS,  EQ5D_POSTOP12M_VAS
 
 rm(AMP_HIPS_PRIM.cleaned2)
+#.........................................................................................
 #.........................................................................................
 
 
@@ -291,6 +300,9 @@ AMP_HIPS_PRIM.cleaned4<-AMP_HIPS_PRIM.cleaned3[!is.na(AMP_HIPS_PRIM.cleaned3$OHS
 
 rm(AMP_HIPS_PRIM.cleaned3)
 #.........................................................................................
+#.........................................................................................
+
+
 
 # Primary: remove cases without EQVAS 6 or 12 months --------------------
 
@@ -309,6 +321,9 @@ AMP_HIPS_PRIM.cleaned5<-AMP_HIPS_PRIM.cleaned4[!is.na(AMP_HIPS_PRIM.cleaned4$EQV
 
 rm(AMP_HIPS_PRIM.cleaned4)
 #.........................................................................................
+#.........................................................................................
+
+
 
 # Revision: patients 2+ primary surgeries on the same side--------
 ### check for the presence of patients with multiple revision surgeries on the same side  (although these might be plausible)
@@ -342,7 +357,225 @@ AMP_HIPS_REV$combID<-paste0(AMP_HIPS_REV$pID, AMP_HIPS_REV$Pathway.Side)
 AMP_HIPS_REV.cleaned<-AMP_HIPS_REV[!(AMP_HIPS_REV$combID %in% remove$excl_filter),]
 rm(remove)
 #.........................................................................................
+#.........................................................................................
 
 
+
+
+# Revision: re-organise columns ------------------------------------------------------
+### drop  unnecessary columns
+drop_columns<-c("Pathway.Side",
+                "Activity.Date",
+                "Start.Date1",
+                "Completed.Date...Oxford.Hip.Score...Score...Baseline",
+                "Completed.Date...Oxford.Hip.Score...Score...6.Months",
+                "Completed.Date...Oxford.Hip.Score...Score...12.Months",
+                "Completed.Date...EQ.5D.5L...Health.VAS...Baseline",
+                "Completed.Date...EQ.5D.5L...Health.VAS...6.Months",
+                "Completed.Date...EQ.5D.5L...Health.VAS...12.Months",
+                "Completed.Date...EQ.5D.5L...Index...Baseline",
+                "Completed.Date...EQ.5D.5L...Index...6.Months",
+                "EQ.5D.5L...Index...6.Months",
+                "Completed.Date...EQ.5D.5L...Health.VAS...12.Months.1",
+                "EQ.5D.5L...Index...12.Months",
+                "EQ.5D.5L.Baseline...b.ANXIETY.DEPRESSION..b.",
+                "EQ.5D.5L.Baseline...b.MOBILITY..b..",
+                "EQ.5D.5L.Baseline...b.PAIN.DISCOMFORT..b.",
+                "EQ.5D.5L.Baseline...b.SELF.CARE..b.",
+                "EQ.5D.5L.Baseline...b.USUAL.ACTIVITIES..b...eg..work..study..housework..family.or.leisure.activities.",
+                "combID")
+
+AMP_HIPS_REV.cleaned2<-
+  AMP_HIPS_REV.cleaned[ , 
+                        !(names(AMP_HIPS_REV.cleaned) %in% drop_columns)]
+
+# from 43 to 23 variables
+#names(AMP_HIPS_REV.cleaned2)
+
+## re-name columns 
+new_col_names<-c("pID",
+                 "REVISION",
+                 "SEX",
+                 "AGE",
+                 "OHS_PREOP_TOTSCORE",
+                 "OHS_POSTOP6M_TOTSCORE",
+                 "OHS_POSTOP12M_TOTSCORE",
+                 "EQ5D_PREOP_VAS",
+                 "EQ5D_POSTOP6M_VAS",
+                 "EQ5D_POSTOP12M_VAS",
+                 "EQ5D_PREOP_INDEX",
+                 "OHS_PREOP_SHOPPING",
+                 "OHS_PREOP_STANDING",
+                 "OHS_PREOP_WALKING",
+                 "OHS_PREOP_STAIRS",
+                 "OHS_PREOP_DRESSING",
+                 "OHS_PREOP_LIMPING",
+                 "OHS_PREOP_NIGHTPAIN",
+                 "OHS_PREOP_SUDDENPAIN",
+                 "OHS_PREOP_TRANSPORT",
+                 "OHS_PREOP_WASHING",
+                 "OHS_PREOP_WORK",
+                 "OHS_PREOP_PAIN")
+
+
+# extract df columns' original names and add new columns' names 
+colnames_orig_and_new <- cbind(as.data.frame(colnames(AMP_HIPS_REV.cleaned2)), new_col_names)
+
+# rename the columns of the original df with the new names:
+names(AMP_HIPS_REV.cleaned2)[match(colnames_orig_and_new[,1], 
+                                   names(AMP_HIPS_REV.cleaned2))] = colnames_orig_and_new[,2]
+
+rm(drop_columns,new_col_names,colnames_orig_and_new, AMP_HIPS_REV.cleaned)
+#.........................................................................................
+#.........................................................................................
+
+
+
+# Revision: missing values baseline OHS and EQ-VAS ----------------------------------
+## check N of missing values for the baseline OHS and EQ-VAS scores
+
+AMP_HIPS_REV.cleaned2$BASELINE_SCORE_TYPE<-NA
+AMP_HIPS_REV.cleaned2[!is.na(AMP_HIPS_REV.cleaned2$OHS_PREOP_TOTSCORE)&
+                        is.na(AMP_HIPS_REV.cleaned2$EQ5D_PREOP_VAS),]$BASELINE_SCORE_TYPE<-"OHSPREOP_ONLY"
+AMP_HIPS_REV.cleaned2[!is.na(AMP_HIPS_REV.cleaned2$OHS_PREOP_TOTSCORE)&
+                        !is.na(AMP_HIPS_REV.cleaned2$EQ5D_PREOP_VAS),]$BASELINE_SCORE_TYPE<-"OHSPREOP&VASPREOP"
+AMP_HIPS_REV.cleaned2[is.na(AMP_HIPS_REV.cleaned2$OHS_PREOP_TOTSCORE)&
+                        !is.na(AMP_HIPS_REV.cleaned2$EQ5D_PREOP_VAS),]$BASELINE_SCORE_TYPE<-"VASPREOP_ONLY"
+
+
+AMP_HIPS_REV.cleaned2 %>% group_by(BASELINE_SCORE_TYPE) %>% summarise (tot = n())
+
+## remove subjects without both OHS and VAS pre-op:
+AMP_HIPS_REV.cleaned3<-AMP_HIPS_REV.cleaned2[AMP_HIPS_REV.cleaned2$BASELINE_SCORE_TYPE=="OHSPREOP&VASPREOP"&
+                                               !is.na(AMP_HIPS_REV.cleaned2$BASELINE_SCORE_TYPE),]
+
+##checking N of missing values/column
+#sapply(AMP_HIPS_REV.cleaned3, function(x){sum(is.na(x))})
+
+rm(AMP_HIPS_REV.cleaned2)
+#.........................................................................................
+#.........................................................................................
+
+
+
+## After these cleaning steps, only these predictors have missing values:
+## OHS_POSTOP6M_TOTSCORE, OHS_POSTOP12M_TOTSCORE, EQ5D_POSTOP6M_VAS,  EQ5D_POSTOP12M_VAS
+
+
+# Revision: remove cases without tot OHS 6 or 12 months --------------------
+## check combinations of OHS TOT SCORE 6-months and 12-months
+
+AMP_HIPS_REV.cleaned3$OHS_POSTOP_TOTSCORE_TYPE<-NA
+AMP_HIPS_REV.cleaned3[!is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP6M_TOTSCORE)&
+                        is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP12M_TOTSCORE),]$OHS_POSTOP_TOTSCORE_TYPE<-"6MONTHS_ONLY"
+AMP_HIPS_REV.cleaned3[!is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP6M_TOTSCORE)&
+                        !is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP12M_TOTSCORE),]$OHS_POSTOP_TOTSCORE_TYPE<-"6MONTHS&12MONTHS"
+AMP_HIPS_REV.cleaned3[is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP6M_TOTSCORE)&
+                        !is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP12M_TOTSCORE),]$OHS_POSTOP_TOTSCORE_TYPE<-"12MONTHS_ONLY"
+
+
+AMP_HIPS_REV.cleaned3 %>% group_by(OHS_POSTOP_TOTSCORE_TYPE) %>% summarise (tot = n())
+
+#************
+### remove rows without OHS 6-month post-op & without OHS 12-month post-op
+AMP_HIPS_REV.cleaned4<-AMP_HIPS_REV.cleaned3[!is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP_TOTSCORE_TYPE),]
+
+rm(AMP_HIPS_REV.cleaned3)
+#.........................................................................................
+#.........................................................................................
+
+
+# Revision: remove cases without EQVAS 6 or 12 months --------------------
+
+## check combinations of EQ-VAS 6-months and 12-months
+AMP_HIPS_REV.cleaned4$EQVAS_POSTOP_TYPE<-NA
+AMP_HIPS_REV.cleaned4[!is.na(AMP_HIPS_REV.cleaned4$EQ5D_POSTOP6M_VAS)&
+                        is.na(AMP_HIPS_REV.cleaned4$EQ5D_POSTOP12M_VAS),]$EQVAS_POSTOP_TYPE<-"6MONTHS_ONLY"
+AMP_HIPS_REV.cleaned4[!is.na(AMP_HIPS_REV.cleaned4$EQ5D_POSTOP6M_VAS)&
+                        !is.na(AMP_HIPS_REV.cleaned4$EQ5D_POSTOP12M_VAS),]$EQVAS_POSTOP_TYPE<-"6MONTHS&12MONTHS"
+AMP_HIPS_REV.cleaned4[is.na(AMP_HIPS_REV.cleaned4$EQ5D_POSTOP6M_VAS)&
+                        !is.na(AMP_HIPS_REV.cleaned4$EQ5D_POSTOP12M_VAS),]$EQVAS_POSTOP_TYPE<-"12MONTHS_ONLY"
+
+AMP_HIPS_REV.cleaned4 %>% group_by(EQVAS_POSTOP_TYPE) %>% summarise (tot = n())
+
+#************
+### remove rows without EQ-VAS 6-month post-op & without EQ-VAS 12-month post-op
+AMP_HIPS_REV.cleaned5<-AMP_HIPS_REV.cleaned4[!is.na(AMP_HIPS_REV.cleaned4$EQVAS_POSTOP_TYPE),]
+
+rm(AMP_HIPS_REV.cleaned4)
+#.........................................................................................
+#.........................................................................................
+
+
+
+# Merge Primary & Revision ------------------------------------------------
+
+## check the two datasets' columns
+names(AMP_HIPS_PRIM.cleaned5)
+names(AMP_HIPS_REV.cleaned5)
+# same columns in both datasets, although in different order (AGE)
+
+##vertically merge two datasets' columns
+AMP_HIPS_CLEANED<-rbind(AMP_HIPS_PRIM.cleaned5,AMP_HIPS_REV.cleaned5)
+
+rm(AMP_HIPS_PRIM.cleaned5,AMP_HIPS_REV.cleaned5)
+#.........................................................................................
+#.........................................................................................
+
+
+# Compare tot postop OHS 6 vs 12 months -----------------------------------
+
+### Compare distributions of post-op OHS at 6 and 12 months
+
+#extract 6 months
+OHS_POSTOP6M_TOTSCORE.p<-as.data.frame(AMP_HIPS_CLEANED$OHS_POSTOP6M_TOTSCORE)
+OHS_POSTOP6M_TOTSCORE.p$postTime<-'6M'
+names(OHS_POSTOP6M_TOTSCORE.p)<-c('OHS','postTime')
+OHS_POSTOP6M_TOTSCORE.p<-OHS_POSTOP6M_TOTSCORE.p[!is.na(OHS_POSTOP6M_TOTSCORE.p$OHS),] ##442
+
+#extract 12 months
+OHS_POSTOP12M_TOTSCORE.p<-as.data.frame(AMP_HIPS_CLEANED$OHS_POSTOP12M_TOTSCORE)
+OHS_POSTOP12M_TOTSCORE.p$postTime<-'12M'
+names(OHS_POSTOP12M_TOTSCORE.p)<-c('OHS','postTime')
+OHS_POSTOP12M_TOTSCORE.p<-OHS_POSTOP12M_TOTSCORE.p[!is.na(OHS_POSTOP12M_TOTSCORE.p$OHS),] ##711
+
+#bind
+OHS_POSTOP_TOTSCORE.p<-rbind(OHS_POSTOP6M_TOTSCORE.p,OHS_POSTOP12M_TOTSCORE.p)
+
+OHS_POSTOP_TOTSCORE.p$postTime<-factor(OHS_POSTOP_TOTSCORE.p$postTime,
+                                       levels = c("6M", "12M"))
+
+## visually checking OHS distributions (post op 6 vs 12 months):
+ggplot() + 
+  geom_histogram(aes(x=OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=='6M',]$OHS, 
+                     fill = OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=='6M',]$postTime), 
+                 alpha = 0.5) +
+  geom_histogram(aes(x=OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=='12M',]$OHS, 
+                     fill = OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=='12M',]$postTime),
+                 alpha = 0.5)+
+  xlab("post-op OHS tot score") + ylab("Number of subjects") +
+  ggtitle("Amplitude Hips - Primary+Revision dataset")+
+  scale_fill_manual(name="post-op OHS variables", 
+                    values=c("red","green"),
+                    labels=c("6 months", "12 months"))+ 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        legend.position = c(0.9, 0.9))
+
+ggplot(OHS_POSTOP_TOTSCORE.p, aes(x=postTime, y=OHS)) + 
+  geom_boxplot(aes(fill=factor(postTime))) +  
+  #stat_summary(geom = "errorbar", fun.min = mean, fun = mean, fun.max = mean, 
+  #             width = .75, color = "red")+ ## add mean to box plots
+  geom_point(size=0.5) +
+  xlab("Collection time of post-operative OHS questionnaire") + 
+  ylab("Post-operative OHS total score") +
+  ggtitle("Welsh Hip Dataset - OHS")+ ##primary + revision
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5))+
+  scale_x_discrete(labels=c("6 months post-surgery","12 months post-surgery")) +
+  scale_fill_manual(values=c("darkgrey","white"))+ 
+  theme(legend.position = "none")+ ylim(0,55)+
+  scale_y_continuous(breaks = seq(0,50, by = 5))
 
 
