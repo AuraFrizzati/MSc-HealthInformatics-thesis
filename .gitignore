@@ -7,5 +7,5 @@ input_data/Welsh_data/Amplitude_HipsRevision170803_forAuraFrizzatiMSc_anonRP2104
 code/01_cleaning_AmplitudeHIPS_OLD.R
 code/01_cleaning_AmplitudeHIPS_OLD.RData
 code/ProjectFUN_OLD.R
-output/extra_files/
+output/
 code/01_Preprocess_WelshHips.RData
