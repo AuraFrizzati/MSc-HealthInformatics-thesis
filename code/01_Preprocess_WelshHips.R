@@ -541,6 +541,7 @@ OHS_POSTOP12M_TOTSCORE.p<-OHS_POSTOP12M_TOTSCORE.p[!is.na(OHS_POSTOP12M_TOTSCORE
 
 #bind
 OHS_POSTOP_TOTSCORE.p<-rbind(OHS_POSTOP6M_TOTSCORE.p,OHS_POSTOP12M_TOTSCORE.p)
+rm(OHS_POSTOP6M_TOTSCORE.p,OHS_POSTOP12M_TOTSCORE.p)
 
 OHS_POSTOP_TOTSCORE.p$postTime<-factor(OHS_POSTOP_TOTSCORE.p$postTime,
                                        levels = c("6M", "12M"))
@@ -562,7 +563,7 @@ ggplot() +
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
         legend.position = c(0.9, 0.9))
 
-ggplot(OHS_POSTOP_TOTSCORE.p, aes(x=postTime, y=OHS)) + 
+boxplot_prim_vs_rev_OHS <- ggplot(OHS_POSTOP_TOTSCORE.p, aes(x=postTime, y=OHS)) + 
   geom_boxplot(aes(fill=factor(postTime))) +  
   #stat_summary(geom = "errorbar", fun.min = mean, fun = mean, fun.max = mean, 
   #             width = .75, color = "red")+ ## add mean to box plots
@@ -577,5 +578,558 @@ ggplot(OHS_POSTOP_TOTSCORE.p, aes(x=postTime, y=OHS)) +
   scale_fill_manual(values=c("darkgrey","white"))+ 
   theme(legend.position = "none")+ ylim(0,55)+
   scale_y_continuous(breaks = seq(0,50, by = 5))
+
+## print image
+png(filename="output/thesis_files/boxplot_prim_vs_rev_OHS.png",  width = 473, height = 363)
+boxplot_prim_vs_rev_OHS
+dev.off()
+
+OHS_POSTOP_TOTSCORE.p %>% group_by(postTime) %>% summarise (Mean = mean(OHS),
+                                                            StdDev = sd(OHS),
+                                                            Min = min(OHS),
+                                                            Max = max(OHS),
+                                                            Median = median(OHS),
+                                                            FirstQuartile = quantile(OHS, probs = 0.25),
+                                                            ThirdQuartile = quantile(OHS, probs = 0.75))
+
+# postTime  Mean StdDev   Min   Max Median FirstQuartile ThirdQuartile
+# 6M        36.7   11.1     3    48     40          32.2            45
+# 12M       38.0   10.5     2    48     41          33              47
+
+g1<-ggplot(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="6M",], 
+           aes(sample=OHS))+
+  stat_qq(shape=1) + 
+  stat_qq_line(fullrange = FALSE) +
+  ggtitle("QQ-plot 6-month post-operative\nOHS tot scores (Welsh Hip Dataset)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14)) +
+  ylab("Sample quantiles") +
+  xlab("Theoretical quantiles")
+
+g2<-ggplot(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="12M",], 
+           aes(sample=OHS))+
+  stat_qq(shape=1) + 
+  stat_qq_line(fullrange = FALSE) +
+  ggtitle("QQ-plot 12-month post-operative\nOHS tot scores (Welsh Hip Dataset)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14)) +
+  ylab("Sample quantiles") +
+  xlab("Theoretical quantiles")
+
+g3<-ggplot(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="6M",], 
+           aes(x = OHS)) + 
+  geom_histogram(binwidth=1, fill = "grey", colour="black")+
+  ggtitle("6-month post-operative OHS tot scores\n(Welsh Hip Dataset)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("6-month post-operative OHS total score")+
+  scale_x_continuous(limits=c(0,48),breaks = seq(0,48,4))+
+  geom_vline(xintercept=mean(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="6M",]$OHS), colour="red", linetype = "longdash", size = 1)+
+  geom_vline(xintercept=median(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="6M",]$OHS), colour="black", size = 1)
+
+g4<-ggplot(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="12M",], 
+           aes(x = OHS)) + 
+  geom_histogram(binwidth=1, fill = "grey", colour="black")+
+  ggtitle("12-month post-operative OHS tot scores\n(Welsh Hip Dataset)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("12-month post-operative OHS total score")+
+  scale_x_continuous(limits=c(0,48),breaks = seq(0,48,4))+
+  geom_vline(xintercept=mean(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="12M",]$OHS), colour="red", linetype = "longdash", size = 1)+
+  geom_vline(xintercept=median(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="12M",]$OHS), colour="black", size = 1)
+
+ggpubr::ggarrange(g1,g3,g2,g4)
+
+with(OHS_POSTOP_TOTSCORE.p, shapiro.test(OHS[postTime == "6M"]))
+# W = 0.85799, p-value < 2.2e-16 --> NOT NORMALLY DISTRIBUTED, however sample size > 30
+
+with(OHS_POSTOP_TOTSCORE.p, shapiro.test(OHS[postTime == "12M"]))
+# W = 0.85421, p-value < 2.2e-16 --> NOT NORMALLY DISTRIBUTED,
+
+## non parametric test: Wilcoxon rank sum (or Mann-Whitney) test:
+wilcox.test(OHS ~ postTime, data = OHS_POSTOP_TOTSCORE.p, exact = FALSE)
+# Wilcoxon rank sum test with continuity correction
+# data:  OHS by postTime
+# W = 144736, p-value = 0.02384
+# alternative hypothesis: true location shift is not equal to 0
+
+AMP_HIPS_CLEANED %>% group_by(OHS_POSTOP_TOTSCORE_TYPE) %>% summarise (tot = n())
+# OHS_POSTOP_TOTSCORE_TYPE   tot
+# * <chr>                    <int>
+# 12MONTHS_ONLY              384 --> remove
+# 6MONTHS&12MONTHS           327
+# 6MONTHS_ONLY               115
+### I will need to remove subjects with post-op OHS 12MONTHS_ONLY
+
+rm(g1,g3,g2,g4,OHS_POSTOP_TOTSCORE.p)
+#.........................................................................................
+#.........................................................................................
+
+
+# Compare postop EQVAS 6 vs 12 months -----------------------------------
+
+#### Compare distributions of post-op EQ-VAS at 6 and 12 months
+
+#extract 6 months
+EQVAS_POSTOP6M.p<-as.data.frame(AMP_HIPS_CLEANED$EQ5D_POSTOP6M_VAS)
+EQVAS_POSTOP6M.p$postTime<-'6M'
+names(EQVAS_POSTOP6M.p)<-c('EQVAS','postTime')
+EQVAS_POSTOP6M.p<-EQVAS_POSTOP6M.p[!is.na(EQVAS_POSTOP6M.p$EQVAS),] ##454
+
+#extract 12 months
+EQVAS_POSTOP12M.p<-as.data.frame(AMP_HIPS_CLEANED$EQ5D_POSTOP12M_VAS)
+EQVAS_POSTOP12M.p$postTime<-'12M'
+names(EQVAS_POSTOP12M.p)<-c('EQVAS','postTime')
+EQVAS_POSTOP12M.p<-EQVAS_POSTOP12M.p[!is.na(EQVAS_POSTOP12M.p$EQVAS),] ##712
+
+#bind
+EQVAS_POSTOP.p<-rbind(EQVAS_POSTOP6M.p,EQVAS_POSTOP12M.p)
+
+EQVAS_POSTOP.p$postTime<-factor(EQVAS_POSTOP.p$postTime,
+                                levels = c("6M", "12M"))
+## visually checking OHS distributions (post op 6 vs 12 months):
+ggplot() + 
+  geom_histogram(aes(x=EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=='6M',]$EQVAS, 
+                     fill = EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=='6M',]$postTime), 
+                 alpha = 0.5) +
+  geom_histogram(aes(x=EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=='12M',]$EQVAS, 
+                     fill = EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=='12M',]$postTime),
+                 alpha = 0.5)+
+  xlab("post-op EQ-VAS tot score") + ylab("Number of subjects") +
+  ggtitle("Amplitude Hips - Primary+Revision dataset")+
+  scale_fill_manual(name="post-op EQ-VAS variables", 
+                    values=c("red","green"),
+                    labels=c("6 months", "12 months"))+ 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        legend.position = c(0.9, 0.9))
+
+boxplot_prim_vs_rev_EQVAS<-ggplot(EQVAS_POSTOP.p, aes(x=postTime, y=EQVAS)) + 
+  geom_boxplot(aes(fill=factor(postTime))) + 
+  geom_point(size=0.5) +  
+  #stat_summary(geom = "errorbar", fun.min = mean, fun = mean, fun.max = mean, 
+  #             width = .75, color = "red")+ ## add mean to box plots
+  xlab("Collection time of post-operative EQ-VAS") + 
+  ylab("Post-operative EQ-VAS score") +
+  ggtitle("Welsh Hip Dataset - EQ-VAS")+ ##primary + revision
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5))+
+  scale_x_discrete(labels=c("6 months","12 months")) +
+  scale_fill_manual(values=c("darkgrey","white"))+ 
+  theme(legend.position = "none")+ ylim(0,55)+
+  scale_y_continuous(breaks = seq(0,110, by = 10))
+
+## print image
+png(filename="output/thesis_files/boxplot_prim_vs_rev_EQVAS.png",  width = 473, height = 363)
+boxplot_prim_vs_rev_EQVAS
+dev.off()
+
+
+EQVAS_POSTOP.p %>% group_by(postTime) %>% summarise (Mean = mean(EQVAS),
+                                                     StdDev = sd(EQVAS),
+                                                     Min = min(EQVAS),
+                                                     Max = max(EQVAS),
+                                                     Median = median(EQVAS),
+                                                     FirstQuartile = quantile(EQVAS, probs = 0.25),
+                                                     ThirdQuartile = quantile(EQVAS, probs = 0.75))
+
+
+# postTime   Mean StdDev   Min   Max Median FirstQuartile ThirdQuartile
+# 6M         72.1   21.7     0   100     79            60            90
+# 12M        71.6   22.9     0   100     80            60            90
+
+g5<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="6M",], 
+           aes(sample=EQVAS))+
+  stat_qq(shape=1) + 
+  stat_qq_line(fullrange = FALSE) +
+  ggtitle("QQ-plot 6-month post-operative\nEQ-VAS tot scores (Welsh Hip Dataset)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14)) +
+  ylab("Sample quantiles") +
+  xlab("Theoretical quantiles")
+
+g6<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="12M",], 
+           aes(sample=EQVAS))+
+  stat_qq(shape=1) + 
+  stat_qq_line(fullrange = FALSE) +
+  ggtitle("QQ-plot 12-month post-operative\nEQ-VAS tot scores (Welsh Hip Dataset)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14)) +
+  ylab("Sample quantiles") +
+  xlab("Theoretical quantiles")
+
+g7<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="6M",], 
+           aes(x = EQVAS)) + 
+  geom_histogram(binwidth=1, fill = "grey", colour="black")+
+  ggtitle("6-month post-operative EQ-VAS tot scores\n(Welsh Hip Dataset)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("6-month post-operative EQ-VAS total score")+
+  scale_x_continuous(limits=c(0,100),breaks = seq(0,100,4))+
+  geom_vline(xintercept=mean(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="6M",]$EQVAS), colour="red", linetype = "longdash", size = 1)+
+  geom_vline(xintercept=median(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="6M",]$EQVAS), colour="black", size = 1)
+
+g8<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="12M",], 
+           aes(x = EQVAS)) + 
+  geom_histogram(binwidth=1, fill = "grey", colour="black")+
+  ggtitle("12-month post-operative EQ-VAS tot scores\n(Welsh Hip Dataset)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("12-month post-operative EQ-VAS total score")+
+  scale_x_continuous(limits=c(0,100),breaks = seq(0,100,4))+
+  geom_vline(xintercept=mean(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="12M",]$EQVAS), colour="red", linetype = "longdash", size = 1)+
+  geom_vline(xintercept=median(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="12M",]$EQVAS), colour="black", size = 1)
+
+ggpubr::ggarrange(g5,g6,g7,g8)
+
+with(EQVAS_POSTOP.p, shapiro.test(EQVAS[postTime == "6M"]))
+# W = 0.89717, p-value < 2.2e-16 --> NOT NORMALLY DISTRIBUTED
+
+with(EQVAS_POSTOP.p, shapiro.test(EQVAS[postTime == "12M"]))
+# W = 0.88808, p-value < 2.2e-16 --> NOT NORMALLY DISTRIBUTED
+
+## non parametric test: Wilcoxon rank sum (or Mann-Whitney) test:
+wilcox.test(EQVAS ~ postTime, data = EQVAS_POSTOP.p, exact = FALSE)
+# Wilcoxon rank sum test with continuity correction
+# data:  EQVAS by postTime
+# W = 162088, p-value = 0.9341
+# alternative hypothesis: true location shift is not equal to 0
+
+AMP_HIPS_CLEANED %>% group_by(EQVAS_POSTOP_TYPE) %>% summarise (tot = n())
+# EQVAS_POSTOP_TYPE   tot
+# 12MONTHS_ONLY       372
+# 6MONTHS&12MONTHS    340
+# 6MONTHS_ONLY        114
+
+rm(g5,g6,g7,g8,EQVAS_POSTOP.p, EQVAS_POSTOP12M.p, EQVAS_POSTOP6M.p)
+#.........................................................................................
+#.........................................................................................
+
+
+# Remove post-op OHS 12-months ---------------------------------------------
+AMP_HIPS_CLEANED_2<-AMP_HIPS_CLEANED[AMP_HIPS_CLEANED$OHS_POSTOP_TOTSCORE_TYPE != "12MONTHS_ONLY", ]
+#nrow(AMP_HIPS_CLEANED_2) ## 442
+#.........................................................................................
+#.........................................................................................
+
+
+
+# Create OHS_POSTOP_TOTSCORE var ------------------------------------------
+### Create OHS_POSTOP_TOTSCORE variable (use post-op 6months)
+AMP_HIPS_CLEANED_2$OHS_POSTOP_TOTSCORE<-AMP_HIPS_CLEANED_2$OHS_POSTOP6M_TOTSCORE 
+#.........................................................................................
+#.........................................................................................
+
+
+# Create EQ5D_POSTOP_VAS var ------------------------------------------
+#************
+### Create EQ5D_POSTOP_VAS variable (use post-op 6months, if not present use post-op  12months)
+AMP_HIPS_CLEANED_2$EQ5D_POSTOP_VAS<-ifelse(AMP_HIPS_CLEANED_2$EQVAS_POSTOP_TYPE ==
+                                           "12MONTHS_ONLY", #condition
+                                           AMP_HIPS_CLEANED_2$EQ5D_POSTOP12M_VAS, #then
+                                           AMP_HIPS_CLEANED_2$EQ5D_POSTOP6M_VAS #else
+) 
+#.........................................................................................
+#.........................................................................................
+
+
+
+# Create AGEBAND var ------------------------------------------------------
+###convert ages into age bands
+AMP_HIPS_CLEANED_2$AGEBAND<-NA
+AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE <= 19,]$AGEBAND<-"0 to 19"
+AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE > 19 & AMP_HIPS_CLEANED_2$AGE <= 29,]$AGEBAND<-"20 to 29"
+AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE > 29 & AMP_HIPS_CLEANED_2$AGE <= 39,]$AGEBAND<-"30 to 39"
+AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE > 39 & AMP_HIPS_CLEANED_2$AGE <= 49,]$AGEBAND<-"40 to 49"
+AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE > 49 & AMP_HIPS_CLEANED_2$AGE <= 59,]$AGEBAND<-"50 to 59"
+AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE > 59 & AMP_HIPS_CLEANED_2$AGE <= 69,]$AGEBAND<-"60 to 69"
+AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE > 69 & AMP_HIPS_CLEANED_2$AGE <= 79,]$AGEBAND<-"70 to 79"
+AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE > 79 & AMP_HIPS_CLEANED_2$AGE <= 89,]$AGEBAND<-"80 to 89"
+AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE > 89,]$AGEBAND<-"90 to 120"
+
+AMP_HIPS_CLEANED_2 %>% group_by(AGEBAND) %>% summarise(Min = min(AGE),
+                                                     Max = max(AGE))
+
+# Remove two cases with AGEBAND = "0 to 19" (this age-band is not included in English data)
+AMP_HIPS_CLEANED_2<-AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGEBAND != "0 to 19", ]
+#nrow(AMP_HIPS_CLEANED_2) ## 440
+#.........................................................................................
+#.........................................................................................
+
+
+# Convert OHS dimensions into numbers -------------------------------------
+AMP_HIPS_CLEANED_3<-AMP_HIPS_CLEANED_2
+
+##*01
+## OHS_PREOP_PAIN
+# 0 = Severe
+# 1 = Moderate
+# 2 = Mild
+# 3 = Very mild
+# 4 = None
+
+#AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_PAIN) %>% summarise(N = n())
+
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN=="Severe",]$OHS_PREOP_PAIN<-0
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN=="Moderate",]$OHS_PREOP_PAIN<-1
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN=="Mild",]$OHS_PREOP_PAIN<-2
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN=="Very mild",]$OHS_PREOP_PAIN<-3
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN=="None",]$OHS_PREOP_PAIN<-4
+AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN)
+#AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_PAIN) %>% summarise(N = n())
+
+##*02
+## OHS_PREOP_SUDDENPAIN
+# 0 = Every day
+# 1 = Most days
+# 2 = Some days
+# 3 = Only 1 or 2 days
+# 4 = No days
+
+#AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_SUDDENPAIN) %>% summarise(N = n())
+
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN=="Every day",]$OHS_PREOP_SUDDENPAIN<-0
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN=="Most days",]$OHS_PREOP_SUDDENPAIN<-1
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN=="Some days",]$OHS_PREOP_SUDDENPAIN<-2
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN=="Only 1 or 2 days",]$OHS_PREOP_SUDDENPAIN<-3
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN=="No days",]$OHS_PREOP_SUDDENPAIN<-4
+AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN)
+#AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_SUDDENPAIN) %>% summarise(N = n())
+
+##*03
+## OHS_PREOP_NIGHTPAIN
+# 0 = Every night
+# 1 = Most nights
+# 2 = Some nights
+# 3 = Only 1 or 2 nights
+# 4 = No nights
+
+#AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_NIGHTPAIN) %>% summarise(N = n())
+
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN=="Every night",]$OHS_PREOP_NIGHTPAIN<-0
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN=="Most nights",]$OHS_PREOP_NIGHTPAIN<-1
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN=="Some nights",]$OHS_PREOP_NIGHTPAIN<-2
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN=="Only 1 or 2 nights",]$OHS_PREOP_NIGHTPAIN<-3
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN=="No Nights",]$OHS_PREOP_NIGHTPAIN<-4
+AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN)
+#AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_NIGHTPAIN) %>% summarise(N = n())
+
+##*04
+## OHS_PREOP_WASHING
+# 0 = Impossible to do
+# 1 = Extreme difficulty
+# 2 = Moderate trouble
+# 3 = Very little trouble
+# 4 = No trouble at all
+
+#AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_WASHING) %>% summarise(N = n())
+
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING=="Impossible to do",]$OHS_PREOP_WASHING<-0
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING=="Extreme difficulty ",]$OHS_PREOP_WASHING<-1
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING=="Moderate trouble",]$OHS_PREOP_WASHING<-2
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING=="Very little trouble",]$OHS_PREOP_WASHING<-3
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING=="No trouble at all",]$OHS_PREOP_WASHING<-4
+AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING)
+#AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_WASHING) %>% summarise(N = n())
+
+##*05
+## OHS_PREOP_TRANSPORT
+# 0 = Impossible to do
+# 1 = Extreme difficulty
+# 2 = Moderate trouble
+# 3 = Very little trouble
+# 4 = No trouble at all
+
+#AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_TRANSPORT) %>% summarise(N = n())
+
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT=="Impossible to do",]$OHS_PREOP_TRANSPORT<-0
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT=="Extreme difficulty ",]$OHS_PREOP_TRANSPORT<-1
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT=="Moderate trouble",]$OHS_PREOP_TRANSPORT<-2
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT=="Very little trouble",]$OHS_PREOP_TRANSPORT<-3
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT=="No trouble at all",]$OHS_PREOP_TRANSPORT<-4
+AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT)
+#AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_TRANSPORT) %>% summarise(N = n())
+
+##*06
+## OHS_PREOP_DRESSING
+# 0 = No, impossible
+# 1 = With extreme difficulty
+# 2 = With moderate difficulty
+# 3 = With little difficulty
+# 4 = Yes, easily
+
+#AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_DRESSING) %>% summarise(N = n())
+
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING=="No, impossible",]$OHS_PREOP_DRESSING<-0
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING=="With extreme difficulty",]$OHS_PREOP_DRESSING<-1
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING=="With moderate difficulty",]$OHS_PREOP_DRESSING<-2
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING=="With little difficulty",]$OHS_PREOP_DRESSING<-3
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING=="Yes, easily",]$OHS_PREOP_DRESSING<-4
+AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING)
+#AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_DRESSING) %>% summarise(N = n())
+
+##*07
+## OHS_PREOP_SHOPPING
+# 0 = No, impossible
+# 1 = With extreme difficulty
+# 2 = With moderate difficulty
+# 3 = With little difficulty
+# 4 = Yes, easily
+
+#AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_SHOPPING) %>% summarise(N = n())
+
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING=="No, impossible",]$OHS_PREOP_SHOPPING<-0
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING=="With extreme difficulty",]$OHS_PREOP_SHOPPING<-1
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING=="With moderate difficulty",]$OHS_PREOP_SHOPPING<-2
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING=="With little difficulty",]$OHS_PREOP_SHOPPING<-3
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING=="Yes, easily",]$OHS_PREOP_SHOPPING<-4
+AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING)
+#AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_SHOPPING) %>% summarise(N = n())
+
+##*08
+## OHS_PREOP_WALKING
+# 0 = Not at all pain severe on walking
+# 1 = Around the house only
+# 2 = 5 15 minutes
+# 3 = 16 30 minutes
+# 4 = No pain/more than 30 minutes
+
+#AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_WALKING) %>% summarise(N = n())
+
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING=="Not at all/pain severe when walking",]$OHS_PREOP_WALKING<-0
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING=="Around the house only",]$OHS_PREOP_WALKING<-1
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING=="5 to 15 minutes",]$OHS_PREOP_WALKING<-2
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING=="16 to 30 minutes",]$OHS_PREOP_WALKING<-3
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING=="No pain/More than 30 minutes",]$OHS_PREOP_WALKING<-4
+AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING)
+#AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_WALKING) %>% summarise(N = n())
+
+##*09
+## OHS_PREOP_LIMPING
+# 0 = All of the time
+# 1 = Most of the time
+# 2 = Often, not just at first
+# 3 = Sometimes or just at first
+# 4 = Rarely/Never
+
+#AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_LIMPING) %>% summarise(N = n())
+
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING=="All the time",]$OHS_PREOP_LIMPING<-0
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING=="Most of the time",]$OHS_PREOP_LIMPING<-1
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING=="Often, not just at first",]$OHS_PREOP_LIMPING<-2
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING=="Sometimes, or just at first ",]$OHS_PREOP_LIMPING<-3
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING=="Rarely / never",]$OHS_PREOP_LIMPING<-4
+AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING)
+#AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_LIMPING) %>% summarise(N = n())
+
+
+##*10
+## OHS_PREOP_STAIRS
+# 0 = No, impossible
+# 1 = With extreme difficulty
+# 2 = With moderate difficulty
+# 3 = With little difficulty
+# 4 = Yes, easily
+
+#AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_STAIRS) %>% summarise(N = n())
+
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS=="No, impossible",]$OHS_PREOP_STAIRS<-0
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS=="With extreme difficulty",]$OHS_PREOP_STAIRS<-1
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS=="With moderate difficulty",]$OHS_PREOP_STAIRS<-2
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS=="With little difficulty",]$OHS_PREOP_STAIRS<-3
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS=="Yes, easily",]$OHS_PREOP_STAIRS<-4
+AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS)
+#AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_STAIRS) %>% summarise(N = n())
+
+##*11
+## OHS_PREOP_STANDING
+# 0 = Unbearable
+# 1 = Very painful
+# 2 = Moderately painful
+# 3 = Slightly painful
+# 4 = not at all painful
+
+#AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_STANDING) %>% summarise(N = n())
+
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING=="Unbearable",]$OHS_PREOP_STANDING<-0
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING=="Very painful",]$OHS_PREOP_STANDING<-1
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING=="Moderately painful",]$OHS_PREOP_STANDING<-2
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING=="Slightly painful",]$OHS_PREOP_STANDING<-3
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING=="Not at all painful",]$OHS_PREOP_STANDING<-4
+AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING)
+#AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_STANDING) %>% summarise(N = n())
+
+
+##*12
+## OHS_PREOP_WORK
+# 0 = Totally
+# 1 = Greatly
+# 2 = Moderately
+# 3 = A little bit
+# 4 = Not at all
+
+#AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_WORK) %>% summarise(N = n())
+
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WORK=="Totally",]$OHS_PREOP_WORK<-0
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WORK=="Greatly",]$OHS_PREOP_WORK<-1
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WORK=="Moderately",]$OHS_PREOP_WORK<-2
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WORK=="A little bit",]$OHS_PREOP_WORK<-3
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WORK=="Not at all",]$OHS_PREOP_WORK<-4
+AMP_HIPS_CLEANED_3$OHS_PREOP_WORK<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_WORK)
+#AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_WORK) %>% summarise(N = n())
+
 
 
