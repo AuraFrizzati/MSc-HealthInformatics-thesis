@@ -920,9 +920,7 @@ AMP_HIPS_CLEANED_3<-AMP_HIPS_CLEANED_2
 # 2 = Mild
 # 3 = Very mild
 # 4 = None
-
 #AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_PAIN) %>% summarise(N = n())
-
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN=="Severe",]$OHS_PREOP_PAIN<-0
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN=="Moderate",]$OHS_PREOP_PAIN<-1
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN=="Mild",]$OHS_PREOP_PAIN<-2
@@ -938,9 +936,7 @@ AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN)
 # 2 = Some days
 # 3 = Only 1 or 2 days
 # 4 = No days
-
 #AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_SUDDENPAIN) %>% summarise(N = n())
-
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN=="Every day",]$OHS_PREOP_SUDDENPAIN<-0
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN=="Most days",]$OHS_PREOP_SUDDENPAIN<-1
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN=="Some days",]$OHS_PREOP_SUDDENPAIN<-2
@@ -956,9 +952,7 @@ AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP
 # 2 = Some nights
 # 3 = Only 1 or 2 nights
 # 4 = No nights
-
 #AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_NIGHTPAIN) %>% summarise(N = n())
-
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN=="Every night",]$OHS_PREOP_NIGHTPAIN<-0
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN=="Most nights",]$OHS_PREOP_NIGHTPAIN<-1
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN=="Some nights",]$OHS_PREOP_NIGHTPAIN<-2
@@ -974,9 +968,7 @@ AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_
 # 2 = Moderate trouble
 # 3 = Very little trouble
 # 4 = No trouble at all
-
 #AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_WASHING) %>% summarise(N = n())
-
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING=="Impossible to do",]$OHS_PREOP_WASHING<-0
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING=="Extreme difficulty ",]$OHS_PREOP_WASHING<-1
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING=="Moderate trouble",]$OHS_PREOP_WASHING<-2
@@ -992,9 +984,7 @@ AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_WA
 # 2 = Moderate trouble
 # 3 = Very little trouble
 # 4 = No trouble at all
-
 #AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_TRANSPORT) %>% summarise(N = n())
-
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT=="Impossible to do",]$OHS_PREOP_TRANSPORT<-0
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT=="Extreme difficulty ",]$OHS_PREOP_TRANSPORT<-1
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT=="Moderate trouble",]$OHS_PREOP_TRANSPORT<-2
@@ -1010,9 +1000,7 @@ AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_
 # 2 = With moderate difficulty
 # 3 = With little difficulty
 # 4 = Yes, easily
-
 #AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_DRESSING) %>% summarise(N = n())
-
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING=="No, impossible",]$OHS_PREOP_DRESSING<-0
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING=="With extreme difficulty",]$OHS_PREOP_DRESSING<-1
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING=="With moderate difficulty",]$OHS_PREOP_DRESSING<-2
@@ -1028,9 +1016,7 @@ AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_D
 # 2 = With moderate difficulty
 # 3 = With little difficulty
 # 4 = Yes, easily
-
 #AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_SHOPPING) %>% summarise(N = n())
-
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING=="No, impossible",]$OHS_PREOP_SHOPPING<-0
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING=="With extreme difficulty",]$OHS_PREOP_SHOPPING<-1
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING=="With moderate difficulty",]$OHS_PREOP_SHOPPING<-2
@@ -1046,9 +1032,7 @@ AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_S
 # 2 = 5 15 minutes
 # 3 = 16 30 minutes
 # 4 = No pain/more than 30 minutes
-
 #AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_WALKING) %>% summarise(N = n())
-
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING=="Not at all/pain severe when walking",]$OHS_PREOP_WALKING<-0
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING=="Around the house only",]$OHS_PREOP_WALKING<-1
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING=="5 to 15 minutes",]$OHS_PREOP_WALKING<-2
@@ -1064,9 +1048,7 @@ AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_WA
 # 2 = Often, not just at first
 # 3 = Sometimes or just at first
 # 4 = Rarely/Never
-
 #AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_LIMPING) %>% summarise(N = n())
-
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING=="All the time",]$OHS_PREOP_LIMPING<-0
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING=="Most of the time",]$OHS_PREOP_LIMPING<-1
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING=="Often, not just at first",]$OHS_PREOP_LIMPING<-2
@@ -1083,9 +1065,7 @@ AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_LI
 # 2 = With moderate difficulty
 # 3 = With little difficulty
 # 4 = Yes, easily
-
 #AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_STAIRS) %>% summarise(N = n())
-
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS=="No, impossible",]$OHS_PREOP_STAIRS<-0
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS=="With extreme difficulty",]$OHS_PREOP_STAIRS<-1
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS=="With moderate difficulty",]$OHS_PREOP_STAIRS<-2
@@ -1101,9 +1081,7 @@ AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_STA
 # 2 = Moderately painful
 # 3 = Slightly painful
 # 4 = not at all painful
-
 #AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_STANDING) %>% summarise(N = n())
-
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING=="Unbearable",]$OHS_PREOP_STANDING<-0
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING=="Very painful",]$OHS_PREOP_STANDING<-1
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING=="Moderately painful",]$OHS_PREOP_STANDING<-2
@@ -1120,9 +1098,7 @@ AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_S
 # 2 = Moderately
 # 3 = A little bit
 # 4 = Not at all
-
 #AMP_HIPS_CLEANED_2 %>% group_by(OHS_PREOP_WORK) %>% summarise(N = n())
-
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WORK=="Totally",]$OHS_PREOP_WORK<-0
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WORK=="Greatly",]$OHS_PREOP_WORK<-1
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WORK=="Moderately",]$OHS_PREOP_WORK<-2
@@ -1130,6 +1106,140 @@ AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WORK=="A little bit",]$OHS_PREOP
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WORK=="Not at all",]$OHS_PREOP_WORK<-4
 AMP_HIPS_CLEANED_3$OHS_PREOP_WORK<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_WORK)
 #AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_WORK) %>% summarise(N = n())
+#.........................................................................................
+#.........................................................................................
 
+
+# Harmonise vars to English data ------------------------------------------
+##REVISION FIELD
+#table(AMP_HIPS_CLEANED_3$REVISION)
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$REVISION == 'primary',]$REVISION<-0
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$REVISION == 'revision',]$REVISION<-1
+#table(AMP_HIPS_CLEANED_3$REVISION)
+
+##SEX FIELD
+#table(AMP_HIPS_CLEANED_3$SEX)
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$SEX == 'M',]$SEX<-1
+AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$SEX == 'F',]$SEX<-2
+#table(AMP_HIPS_CLEANED_3$SEX)
+#.........................................................................................
+#.........................................................................................
+
+
+# Creating outcome variables MCID -----------------------------------------
+##Create OHS & EQ-VAS MCID
+
+
+AMP_HIPS_CLEANED_3 <- as.data.frame(
+  AMP_HIPS_CLEANED_3 %>% 
+    mutate(OHS_TOTSCORE.diff = OHS_POSTOP_TOTSCORE - OHS_PREOP_TOTSCORE) %>%
+    mutate(VAS_TOTSCORE.diff = EQ5D_POSTOP_VAS - EQ5D_PREOP_VAS) %>%
+    # threshold value from literature 
+    # (postOHS - preOHS >= 8 points of increase)
+    mutate(OHS_MCID = ifelse(OHS_TOTSCORE.diff>=8, 1,0))%>%
+    # threshold value from pre-op EQ-VAS distributions
+    # (postvas - preVAS >= 11 points of increase ---> 11 is 0.5*std_dev(preVAS))
+    # std_dev(preVAS) --> this value has been calculated for English Training set
+    mutate(VAS_MCID = ifelse(VAS_TOTSCORE.diff>=11, 1,0)))
+#.........................................................................................
+#.........................................................................................
+
+
+# Vars factor transformation ----------------------------------------------
+#### Transforming relevant variables into factors  (cannot do this directly with outcomes!) 
+factorVars<-
+
+AMP_HIPS_CLEANED_3[,c("REVISION","AGEBAND","SEX")] <-
+  lapply(AMP_HIPS_CLEANED_3[,c("REVISION","AGEBAND","SEX")], as.factor) 
+#.........................................................................................
+#.........................................................................................
+
+
+# Extract demographics ----------------------------------------------------
+DescriptiveCatBasic(input_dataset = AMP_HIPS_CLEANED_3, 
+                    output_table = Descr_Categ.AMP_HIPS_CLEANED_3)
+DescriptiveCont2(input_dataset = AMP_HIPS_CLEANED_3, 
+                 output_table = Descr_Continuous.AMP_HIPS_CLEANED_3)
+
+write.csv(Descr_Categ.AMP_HIPS_CLEANED_3,"output/thesis_files/Descr_Categ.AMP_HIPS_CLEANED_3.csv", row.names = FALSE)
+write.csv(Descr_Continuous.AMP_HIPS_CLEANED_3,"output/thesis_files/Descr_Continuous.AMP_HIPS_CLEANED_3.csv", row.names = FALSE)
+#.........................................................................................
+#.........................................................................................
+
+
+
+# Plots -------------------------------------------------------------------
+#### Plotting distributions for differences (PostOp - PreOp) in OHS and EQ-VAS
+#### including MCID thresholding for Welsh dataset
+
+## Histogram of difference [OHS PostOp - PreOp]
+Hist_OHS_test.AMPLITUDE<-ggplot(AMP_HIPS_CLEANED_3, aes(x = OHS_TOTSCORE.diff)) + 
+  geom_histogram(binwidth=1, fill = "grey", colour="black")+
+  ggtitle("PostOperative OHS change\n(Welsh Test Set)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("Difference OHS PostOp - PreOp")+
+  scale_x_continuous(limits=c(-48,48),breaks = seq(-48,48,4)) +
+  geom_vline(xintercept=8, colour="red", linetype = "longdash", size = 1)  +
+  annotate(x=0,y=+Inf,label="MCID\nthreshold",vjust=2,geom="text", colour="red", size = 4)
+
+## Histogram of difference [EQ-VAS PostOp - PreOp]
+Hist_VAS_test.AMPLITUDE<-ggplot(AMP_HIPS_CLEANED_3, aes(x = VAS_TOTSCORE.diff)) + 
+  geom_histogram(binwidth=1, fill = "grey", colour="black")+
+  ggtitle("PostOperative EQ-VAS change\n(Welsh Test Set)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5,face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("Difference EQ-VAS PostOp - PreOp")+
+  scale_x_continuous(limits=c(-100,100),breaks=seq(-100,100,10)) +
+  geom_vline(xintercept=11, colour="red", linetype = "longdash", size = 1)  + #check the threshold line is plotted at std dev*0.5
+  annotate(x=30,y=+Inf,label="MCID\nthreshold",vjust=2,geom="text", colour="red", size = 4)
+
+## Histogram of preOp OHS
+Hist_preopOHS_AMP_HIPS_CLEANED3<-ggplot(AMP_HIPS_CLEANED_3, aes(x = OHS_PREOP_TOTSCORE)) + 
+  geom_histogram(binwidth=1,
+                 fill = "grey", colour="black")+
+  ggtitle("PreOperative OHS tot score\n(Welsh Test Set)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("PreOperative OHS total score ")+
+  scale_x_continuous(limits=c(0,48),breaks = seq(0,48,4))
+
+## Histogram of preOp EQ-VAS
+Hist_preopVAS_AMP_HIPS_CLEANED3<-ggplot(AMP_HIPS_CLEANED_3, aes(x = EQ5D_PREOP_VAS)) + 
+  geom_histogram(binwidth=1,
+                 fill = "grey", colour="black")+
+  ggtitle("PreOperative EQ-VAS score\n(Welsh Test Set)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("PreOperative EQ-VAS score")+
+  scale_x_continuous(limits=c(0,100),breaks = seq(0,100,10))
 
 
