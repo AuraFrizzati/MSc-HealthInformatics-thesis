@@ -859,17 +859,10 @@ rm(g5,g6,g7,g8,EQVAS_POSTOP.p, EQVAS_POSTOP12M.p, EQVAS_POSTOP6M.p)
 #.........................................................................................
 
 
-# Remove post-op OHS 12-months ---------------------------------------------
-AMP_HIPS_CLEANED_2<-AMP_HIPS_CLEANED[AMP_HIPS_CLEANED$OHS_POSTOP_TOTSCORE_TYPE != "12MONTHS_ONLY", ]
-#nrow(AMP_HIPS_CLEANED_2) ## 442
-#.........................................................................................
-#.........................................................................................
-
-
-
 # Create OHS_POSTOP_TOTSCORE var ------------------------------------------
 ### Create OHS_POSTOP_TOTSCORE variable (use post-op 6months)
-AMP_HIPS_CLEANED_2$OHS_POSTOP_TOTSCORE<-AMP_HIPS_CLEANED_2$OHS_POSTOP6M_TOTSCORE 
+AMP_HIPS_CLEANED_2<-AMP_HIPS_CLEANED
+AMP_HIPS_CLEANED_2$OHS_POSTOP_TOTSCORE<-AMP_HIPS_CLEANED$OHS_POSTOP6M_TOTSCORE 
 #.........................................................................................
 #.........................................................................................
 
@@ -902,10 +895,11 @@ AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE > 89,]$AGEBAND<-"90 to 120"
 
 AMP_HIPS_CLEANED_2 %>% group_by(AGEBAND) %>% summarise(Min = min(AGE),
                                                      Max = max(AGE))
+#table(AMP_HIPS_CLEANED_2$AGEBAND)
 
 # Remove two cases with AGEBAND = "0 to 19" (this age-band is not included in English data)
 AMP_HIPS_CLEANED_2<-AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGEBAND != "0 to 19", ]
-#nrow(AMP_HIPS_CLEANED_2) ## 440
+#nrow(AMP_HIPS_CLEANED_2) ## 823
 #.........................................................................................
 #.........................................................................................
 
@@ -1147,13 +1141,16 @@ AMP_HIPS_CLEANED_3 <- as.data.frame(
 
 # Vars factor transformation ----------------------------------------------
 #### Transforming relevant variables into factors  (cannot do this directly with outcomes!) 
-factorVars<-
-
 AMP_HIPS_CLEANED_3[,c("REVISION","AGEBAND","SEX")] <-
   lapply(AMP_HIPS_CLEANED_3[,c("REVISION","AGEBAND","SEX")], as.factor) 
 #.........................................................................................
 #.........................................................................................
 
+# Reduce sample size for OHS ----------------------------------------------
+AMP_HIPS_CLEANED_3.small<-AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_POSTOP_TOTSCORE_TYPE!="12MONTHS_ONLY" ,]
+#nrow(AMP_HIPS_CLEANED_3.small) #440
+#.........................................................................................
+#.........................................................................................
 
 # Extract demographics ----------------------------------------------------
 DescriptiveCatBasic(input_dataset = AMP_HIPS_CLEANED_3, 
@@ -1173,7 +1170,7 @@ write.csv(Descr_Continuous.AMP_HIPS_CLEANED_3,"output/thesis_files/Descr_Continu
 #### including MCID thresholding for Welsh dataset
 
 ## Histogram of difference [OHS PostOp - PreOp]
-Hist_OHS_test.AMPLITUDE<-ggplot(AMP_HIPS_CLEANED_3, aes(x = OHS_TOTSCORE.diff)) + 
+Hist_OHS_test.AMPLITUDE<-ggplot(AMP_HIPS_CLEANED_3.small, aes(x = OHS_TOTSCORE.diff)) + 
   geom_histogram(binwidth=1, fill = "grey", colour="black")+
   ggtitle("PostOperative OHS change\n(Welsh Test Set)")+
   theme(panel.grid.major = element_blank(), 
@@ -1209,7 +1206,7 @@ Hist_VAS_test.AMPLITUDE<-ggplot(AMP_HIPS_CLEANED_3, aes(x = VAS_TOTSCORE.diff)) 
   annotate(x=30,y=+Inf,label="MCID\nthreshold",vjust=2,geom="text", colour="red", size = 4)
 
 ## Histogram of preOp OHS
-Hist_preopOHS_AMP_HIPS_CLEANED3<-ggplot(AMP_HIPS_CLEANED_3, aes(x = OHS_PREOP_TOTSCORE)) + 
+Hist_preopOHS_AMP_HIPS_CLEANED3<-ggplot(AMP_HIPS_CLEANED_3.small, aes(x = OHS_PREOP_TOTSCORE)) + 
   geom_histogram(binwidth=1,
                  fill = "grey", colour="black")+
   ggtitle("PreOperative OHS tot score\n(Welsh Test Set)")+

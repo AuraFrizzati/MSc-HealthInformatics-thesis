@@ -14,7 +14,7 @@ English.test.1819 <- English.test.1819 ##import English dataset testing
 
 attach("code/01_Preprocess_WelshHips.RData")
 ls(2)
-AMP_HIPS_CLEANED_3<-AMP_HIPS_CLEANED_3
+AMP_HIPS_CLEANED_3.small<-AMP_HIPS_CLEANED_3.small
 #.........................................................................................
 #.........................................................................................
 
@@ -85,7 +85,7 @@ English.test.1819$OHS_MCID <- factor(English.test.1819$OHS_MCID, levels = c("YES
 English.test.1819.OHS.simple<-English.test.1819[predictors.simple] ##18 predictors
 
 ##### Welsh Test set
-AMP_HIPS_CLEANED3.test<-AMP_HIPS_CLEANED_3[predictors.simple]
+AMP_HIPS_CLEANED3.test<-AMP_HIPS_CLEANED_3.small[predictors.simple]
 ### Setting the factor order for outcome variable OHS_MCID for dataset AMP_HIPS_CLEANED3.test
 AMP_HIPS_CLEANED3.test[AMP_HIPS_CLEANED3.test$OHS_MCID==1,]$OHS_MCID<-"YES"
 AMP_HIPS_CLEANED3.test[AMP_HIPS_CLEANED3.test$OHS_MCID==0,]$OHS_MCID<-"NO"
@@ -95,7 +95,7 @@ AMP_HIPS_CLEANED3.test$OHS_MCID <- factor(AMP_HIPS_CLEANED3.test$OHS_MCID, level
 #prop.table(table(AMP_HIPS_CLEANED3.test$OHS_MCID))
 #nrow(AMP_HIPS_CLEANED3.test) ## 440
 
-rm(English.test.1819,English.training.1618,AMP_HIPS_CLEANED_3, predictors.simple)
+rm(English.test.1819,English.training.1618,AMP_HIPS_CLEANED_3.small, predictors.simple)
 #.........................................................................................
 #.........................................................................................
 
