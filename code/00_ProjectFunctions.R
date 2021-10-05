@@ -437,3 +437,114 @@ DescriptiveCont2<-function(input_dataset, output_table){
   # assign the output_df name given as a function argument (GlobalEnv so it is accessible outside of the function) 
   assign(deparse(substitute(output_table)), DescriptiveContTable, envir=.GlobalEnv)
 }
+#.........................................................................................
+#.........................................................................................
+
+# ExtractMetrics fun ----------------------------------------------------
+###### Function to extract model (training + testing) discrimination metrics
+#### Parameters:
+
+### (I) thresholder.output --> object obtained using caret function 
+###     thresholder(trained_model,threshold = seq(0,1,0.05),final = TRUE,statistics = "all")
+
+### (II) trained.model --> model trained with caret
+
+### (III) test_set.model_probabilities --> predicted probabilities on test model
+### calculated using the trained model. The probabilities are calculated using caret function:
+### predict(trained_model, newdata = test_set, type = "prob")
+
+### (IV) test_set --> the dataset on which the trained model is tested
+
+### (V) OutputVar --> the output variable of interest (either "OHS_MCID" or "VAS_MCID")
+
+### (VI) test_set.confusion_matrix --> the confusion matrix object built predicting the
+### test set using the trained model. The confusion matrix is calculated using caret function:
+### confusionMatrix(data = test_set_predicted_outcome_classes,
+### reference = test_set_outcome_reference_column, positive = "YES")
+
+ExtractMetrics <- function(
+  thresholder.output,
+  trained.model,
+  test_set.model_probabilities,
+  test_set,
+  OutputVar,
+  test_set.confusion_matrix,
+  algorithm
+){
+  ##[0] Load relevant libraries
+  library(caret); library(ROCR); library(tidyr); library(dplyr)
+  
+  ## [1] Create the training metric table
+  values_ths<-c("prob_threshold", "Sensitivity", "Specificity", "J","Balanced Accuracy", 
+                "Pos Pred Value", "Neg Pred Value", "Precision", "Recall", "F1", 
+                "Prevalence", "Detection Rate", "Detection Prevalence", "Accuracy", 
+                "Kappa", "Dist")
+  metrics.training<-head(thresholder.output[order(thresholder.output$J, decreasing = TRUE), 
+                                            values_ths],1)
+  metrics.training<-metrics.training[,c("prob_threshold","Sensitivity", "Specificity",
+                                        "Pos Pred Value", "Neg Pred Value", "J", "Balanced Accuracy", 
+                                        "F1")]
+  metrics.training$AUROC<-head(trained.model$results[order(trained.model$results$ROC, 
+                                                           decreasing = TRUE),],1)$ROC
+  row.names(metrics.training)<-NULL
+  names(metrics.training)<-c("prob_threshold", "Sensitivity", "Specificity",
+                             "PPV", "NPV", "J", "BalancedAcc", "F1", "AUROC")
+  
+  metrics.training$PHASE<-"TRAINING"
+  #print(metrics.training)
+  
+  ## [2] Create the test metric table
+  ROCR_prediction <- prediction(predictions = test_set.model_probabilities$YES, 
+                                labels = test_set[,OutputVar])
+  #print(ROCR_prediction)
+  metrics.test<-as.data.frame(as.numeric((performance(ROCR_prediction, measure = "auc")@y.values)))
+  metrics.test$Sensitivity<-as.data.frame(test_set.confusion_matrix$byClass)["Sensitivity",]
+  metrics.test$Specificity<-as.data.frame(test_set.confusion_matrix$byClass)["Specificity",]
+  metrics.test$PPV<-as.data.frame(test_set.confusion_matrix$byClass)["Pos Pred Value",]
+  metrics.test$NPV<-as.data.frame(test_set.confusion_matrix$byClass)["Neg Pred Value",]
+  metrics.test$F1<-as.data.frame(test_set.confusion_matrix$byClass)["F1",]
+  metrics.test$BalancedAcc<-as.data.frame(test_set.confusion_matrix$byClass)["Balanced Accuracy",]
+  
+  metrics.test$F1<-test_set.confusion_matrix$table[1,1]/
+    (test_set.confusion_matrix$table[1,1] +
+       0.5*(test_set.confusion_matrix$table[1,2]+
+              test_set.confusion_matrix$table[2,1]))
+  
+  metrics.test$J<-(test_set.confusion_matrix$table[1,1]/
+                     (test_set.confusion_matrix$table[1,1]+
+                        test_set.confusion_matrix$table[2,1]))+
+    (test_set.confusion_matrix$table[2,2]/
+       (test_set.confusion_matrix$table[2,2]+
+          test_set.confusion_matrix$table[1,2]))-1
+  
+  metrics.test$prob_threshold<-NA
+  
+  names(metrics.test)<-c("AUROC", "Sensitivity", "Specificity",
+                         "PPV", "NPV", "F1","BalancedAcc", "J", "prob_threshold")
+  
+  
+  metrics.test<-metrics.test[,c("prob_threshold", "Sensitivity", "Specificity",
+                                "PPV", "NPV", "J", "BalancedAcc", "F1", "AUROC")]
+  
+  metrics.test$PHASE<-"TEST"
+  
+  ## [3] Union of training + test metric table
+  metrics.final<-rbind(metrics.training,metrics.test)
+  
+  metrics.final<-metrics.final[,c("PHASE","prob_threshold", "Sensitivity", "Specificity",
+                                  "PPV", "NPV", "J", "BalancedAcc", "F1", "AUROC")]
+  
+  metrics.final<-metrics.final %>% 
+    gather(Metric, !!algorithm, c("prob_threshold", "Sensitivity", 
+                                  "Specificity","PPV", "NPV", "AUROC", "J", "BalancedAcc", 
+                                  "F1")) %>%
+    arrange(desc(PHASE))%>% 
+    mutate(!!algorithm := sprintf("%0.2f", get(!!algorithm)))%>% # round to two decimal points
+    slice(-10) # remove prob_threshold row for test (NULL)
+  
+  ## [4] Rename final table
+  
+  return(metrics.final)
+  
+}
+
