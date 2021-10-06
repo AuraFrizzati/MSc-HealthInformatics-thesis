@@ -11,11 +11,9 @@ require(dplyr)
 ## input_dataset -> input R dataframe
 ## output_dir -> output folder where to store the text file with values by table col
 ## output_name -> name to give to the output txt file
-
 values_by_column<-function(input_dataset, output_dir, output_name){
   # create a txt file with distinct values by column
   sink(paste0(output_dir,output_name,".txt"), append = F)
-  
   #short file intro
   print(paste("Time file creation:", Sys.time(),sep=" "))
   print(paste("Distinct values by column for dataset:",input_dataset, sep=" "))
@@ -547,7 +545,8 @@ ExtractMetrics <- function(
   return(metrics.final)
   
 }
-
+#.........................................................................................
+#.........................................................................................
 
 # DescriptiveCatBasic.OKS fun ----------------------------------------------------
 #### DESCRIPTIVE: CATEGORICAL - BASIC PREDICTORS (KNEE DATASET)
@@ -710,7 +709,8 @@ DescriptiveCatBasic.OKS<-function(input_dataset, output_table){
   # assign the output_df name given as a function argument (GlobalEnv so it is accessible outside of the function) 
   assign(deparse(substitute(output_table)), DescriptiveCatBasicTable, envir=.GlobalEnv)
 }
-
+#.........................................................................................
+#.........................................................................................
 
 # DescriptiveCont2.OKS fun ----------------------------------------------------
 #### DESCRIPTIVE FOR KNEES: CONTINUOUS
@@ -931,4 +931,6 @@ DescriptiveCont2.OKS<-function(input_dataset, output_table){
   # assign the output_df name given as a function argument (GlobalEnv so it is accessible outside of the function) 
   assign(deparse(substitute(output_table)), DescriptiveContTable, envir=.GlobalEnv)
 }
+#.........................................................................................
+#.........................................................................................
 
