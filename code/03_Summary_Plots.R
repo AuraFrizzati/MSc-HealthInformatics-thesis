@@ -2,31 +2,32 @@
 ## OHS MCID Simple model
 attach("code/models/OHS_simple/HIPS_ML_training_1618_XGBTREE_simple_EngTest.RData")
 Mod_XGBTREE.1618.OHS.simple<-Mod_XGBTREE.1618.OHS.simple
-VarImp.Mod_XGBTREE.OHS.simple<-plot(varImp(Mod_XGBTREE.1618.OHS.simple), top = 10,
+VarImp.Mod_XGBTREE.OHS.simple<-plot(caret::varImp(Mod_XGBTREE.1618.OHS.simple), top = 10,
                                     xlab="Variable Importance",
                                     main="Prediction of OHS MCID - Hip dataset") 
 rm(Mod_XGBTREE.1618.OHS.simple)
 ## OHS-VAS MCID Simple model
 attach("code/models/EQVAS_hips_simple/HIPS_ML_training_1618_XGBTREE_VAS_simple_EngTest.RData")
 Mod_XGBTREE.1618.VAS.simple.hips<-Mod_XGBTREE.1618.VAS.simple
-VarImp.Mod_XGBTREE.VAS.simple.hips<-plot(varImp(Mod_XGBTREE.1618.VAS.simple.hips), top = 10,
+VarImp.Mod_XGBTREE.VAS.simple.hips<-plot(caret::varImp(Mod_XGBTREE.1618.VAS.simple.hips), top = 10,
                                          xlab="Variable Importance",
                                          main="Prediction of EQ-VAS MCID - Hip Dataset") 
 rm(Mod_XGBTREE.1618.VAS.simple.hips)
 ## OKS MCID Simple model
 attach("code/models/OKS_simple/KNEES_ML_training_1618_XGBTREE_simple_EngTest.RData")
 Mod_XGBTREE.OKS.simple<-Mod_XGBTREE.OKS.simple
-VarImp.Mod_XGBTREE.OKS.simple<-plot(varImp(Mod_XGBTREE.OKS.simple), top = 10, 
+VarImp.Mod_XGBTREE.OKS.simple<-plot(caret::varImp(Mod_XGBTREE.OKS.simple), top = 10, 
                                     xlab="Variable Importance",
                                     main="Prediction of OKS MCID - Knee dataset") 
 rm(Mod_XGBTREE.OKS.simple)
 ## OKS-VAS MCID Simple model
 attach("code/models/EQVAS_knees_simple/KNEES_ML_training_1618_XGBTREE_VAS_simple_EngTest.RData")
 Mod_XGBTREE.1618.VAS.simple.knee<-Mod_XGBTREE.1618.VAS.simple
-VarImp.Mod_XGBTREE.VAS.simple.knees<-plot(varImp(Mod_XGBTREE.1618.VAS.simple.knee), top = 10, 
+VarImp.Mod_XGBTREE.VAS.simple.knees<-plot(caret::varImp(Mod_XGBTREE.1618.VAS.simple.knee), top = 10, 
                                           xlab="Variable Importance", 
                                           main="Prediction of EQ-VAS MCID - Knee dataset") 
 rm(Mod_XGBTREE.1618.VAS.simple.knee)
+## plot
 ggpubr::ggarrange(VarImp.Mod_XGBTREE.OHS.simple,
           VarImp.Mod_XGBTREE.VAS.simple.hips,
           VarImp.Mod_XGBTREE.OKS.simple,
@@ -34,35 +35,82 @@ ggpubr::ggarrange(VarImp.Mod_XGBTREE.OHS.simple,
           ncol = 2, 
           nrow = 2)
 ## width = 1000, height = 700   
-rm(VarImp.Mod_XGBTREE.OHS.simple,VarImp.Mod_XGBTREE.OKS.simple,VarImp.Mod_XGBTREE.VAS.simple.hips,VarImp.Mod_XGBTREE.VAS.simple.knees)
 #.........................................................................................
 #.........................................................................................
-
 
 # Main model: ROC curves -----------------------------------------------------
 ### ROC curves: input data
 ##### compare AUROC curves for best models (XGBTREE)
-## ROC object for simple model - English test
+## OHS MCID: ROC object for main model (18 predictors) - English test
 attach("code/models/OHS_simple/HIPS_ML_training_1618_XGBTREE_simple_EngTest.RData")
 English.test.1819.OHS.simple<-English.test.1819.OHS.simple
 probsTest.Mod_XGBTREE.1618.OHS.simple.Eng<-probsTest.Mod_XGBTREE.1618.OHS.simple
 ROCR.Mod.1618.XGBTREE.simple.Eng <- ROCR::prediction(
   predictions = probsTest.Mod_XGBTREE.1618.OHS.simple.Eng$YES,
   labels = English.test.1819.OHS.simple$OHS_MCID)
-## ROC object for simple model - Welsh test
+rm(English.test.1819.OHS.simple,probsTest.Mod_XGBTREE.1618.OHS.simple.Eng)
+## OHS MCID: ROC object for main model (18 predictors) - Welsh test
 attach("code/models/OHS_simple/HIPS_ML_training_1618_XGBTREE_simple_WelshTest.RData")
 AMP_HIPS_CLEANED3.test<-AMP_HIPS_CLEANED3.test
 probsTest.Mod_XGBTREE.1618.OHS.simple.Welsh<-probsTest.Mod_XGBTREE.1618.OHS.simple
 ROCR.Mod.1618.XGBTREE.simple.Welsh <- ROCR::prediction(
   predictions = probsTest.Mod_XGBTREE.1618.OHS.simple.Welsh$YES,
   labels = AMP_HIPS_CLEANED3.test$OHS_MCID)
+rm(AMP_HIPS_CLEANED3.test,probsTest.Mod_XGBTREE.1618.OHS.simple.Welsh)
+## HIPS EQVAS MCID: ROC object for simple model - English test
+attach("code/models/EQVAS_hips_simple/HIPS_ML_training_1618_XGBTREE_VAS_simple_EngTest.RData")
+English.test.1819.VAS.hips.simple<-English.test.1819.VAS.simple
+probsTest.Mod_XGBTREE.1618.VAS.hips.simple.Eng<-probsTest.Mod_XGBTREE.1618.VAS.simple
+ROCR.Mod.1618.XGBTREE.VAS.hips.simple.Eng <- ROCR::prediction(
+  predictions = probsTest.Mod_XGBTREE.1618.VAS.hips.simple.Eng$YES,
+  labels = English.test.1819.VAS.hips.simple$VAS_MCID)
+rm(English.test.1819.VAS.hips.simple,probsTest.Mod_XGBTREE.1618.VAS.hips.simple.Eng)
+## HIPS EQVAS MCID: ROC object for simple model - Welsh test
+attach("code/models/EQVAS_hips_simple/HIPS_ML_training_1618_XGBTREE_VAS_simple_WelshTest.RData")
+AMP_HIPS_CLEANED3.test<-AMP_HIPS_CLEANED3.test
+probsTest.Mod_XGBTREE.1618.VAS.hips.simple.Welsh<-probsTest.Mod_XGBTREE.1618.VAS.simple
+ROCR.Mod.1618.XGBTREE.VAS.hips.simple.Welsh <- ROCR::prediction(
+  predictions = probsTest.Mod_XGBTREE.1618.VAS.hips.simple.Welsh$YES,
+  labels = AMP_HIPS_CLEANED3.test$VAS_MCID)
+rm(AMP_HIPS_CLEANED3.test,probsTest.Mod_XGBTREE.1618.VAS.hips.simple.Welsh)
+## OKS MCID: ROC object for simple model - English test
+attach("code/models/OKS_simple/KNEES_ML_training_1618_XGBTREE_simple_EngTest.RData")
+English.test.1819.OKS.simple<-English.test.1819.OKS.simple
+probsTest.Mod_XGBTREE.1618.OKS.simple.Eng<-probsTest.Mod_XGBTREE.1618.OKS.simple
+ROCR.Mod_XGBTREE.1618.OKS.simple.Eng <- ROCR::prediction(
+  predictions = probsTest.Mod_XGBTREE.1618.OKS.simple.Eng$YES,
+  labels = English.test.1819.OKS.simple$OKS_MCID)
+rm(English.test.1819.OKS.simple,probsTest.Mod_XGBTREE.1618.OKS.simple.Eng)
+## OKS MCID: ROC object for simple model - Welsh test
+attach("code/models/OKS_simple/KNEES_ML_training_1618_XGBTREE_simple_WelshTest.RData")
+AMP_KNEES_CLEANED3.test<-AMP_KNEES_CLEANED3.test
+probsTest.Mod_XGBTREE.1618.OKS.simple.Welsh<-probsTest.Mod_XGBTREE.1618.OKS.simple
+ROCR.Mod_XGBTREE.1618.OKS.simple.Welsh <- ROCR::prediction(
+  predictions = probsTest.Mod_XGBTREE.1618.OKS.simple.Welsh$YES,
+  labels = AMP_KNEES_CLEANED3.test$OKS_MCID)
+rm(AMP_KNEES_CLEANED3.test,probsTest.Mod_XGBTREE.1618.OKS.simple.Welsh)
+## KNEES EQVAS MCID: ROC object for simple model - English test
+attach("code/models/EQVAS_knees_simple/KNEES_ML_training_1618_XGBTREE_VAS_simple_EngTest.RData")
+English.test.1819.VAS.knees.simple.Eng<-English.test.1819
+probsTest.Mod_XGBTREE.1618.VAS.knees.simple.Eng<-probsTest.Mod_XGBTREE.1618.VAS.simple
+ROCR.Mod.1618.XGBTREE.VAS.knees.simple.Eng <- ROCR::prediction(
+  predictions = probsTest.Mod_XGBTREE.1618.VAS.knees.simple.Eng$YES,
+  labels = English.test.1819.VAS.knees.simple.Eng$VAS_MCID)
+rm(English.test.1819.VAS.knees.simple.Eng,probsTest.Mod_XGBTREE.1618.VAS.knees.simple.Eng)
+## ROC object for simple model - Welsh test
+attach("code/models/EQVAS_knees_simple/KNEES_ML_training_1618_XGBTREE_VAS_simple_WelshTest.RData")
+AMP_KNEES_CLEANED3.test<-AMP_KNEES_CLEANED3.test
+probsTest.Mod_XGBTREE.1618.VAS.knees.simple.Welsh<-probsTest.Mod_XGBTREE.1618.VAS.simple
+ROCR.Mod_LR.1618.XGBTREE.VAS.knees.simple.Welsh <- ROCR::prediction(
+  predictions = probsTest.Mod_XGBTREE.1618.VAS.knees.simple.Welsh$YES,
+  labels = AMP_KNEES_CLEANED3.test$VAS_MCID)
+rm(AMP_KNEES_CLEANED3.test,probsTest.Mod_XGBTREE.1618.VAS.knees.simple.Welsh)
 #### ROC curves: English vs Welsh test sets (main model with 18 predictors)
 par(mfrow=c(2,2))
 ## OHS MCID ROCs (Hips)
 plot(
   ROCR::performance(ROCR.Mod.1618.XGBTREE.simple.Eng, measure = "sens", x.measure = "fpr"),
   col = "#ED0000FF", lwd = 2)
-
 plot(
   ROCR::performance(ROCR.Mod.1618.XGBTREE.simple.Welsh, measure = "sens", x.measure = "fpr"),
   add = TRUE,
@@ -70,48 +118,37 @@ plot(
 )
 segments(0,0,1,1,col="black", lty=3) ## add the diagonal
 title("Prediction of OHS MCID\n(Hip dataset)")
-
 ## EQ-VAS MCID ROCs (Hips)
 plot(
-  performance(ROCR.Mod_LR.1618.XGBTREE.simple.Eng_VAS, measure = "sens", x.measure = "fpr"),
+  ROCR::performance(ROCR.Mod.1618.XGBTREE.VAS.hips.simple.Eng, measure = "sens", x.measure = "fpr"),
   col = "#ED0000FF", lwd = 2)
-
 plot(
-  performance(ROCR.Mod_LR.1618.XGBTREE.simple.Welsh_VAS, measure = "sens", x.measure = "fpr"),
+  ROCR::performance(ROCR.Mod.1618.XGBTREE.VAS.hips.simple.Welsh, measure = "sens", x.measure = "fpr"),
   add = TRUE,
   col = "#42B540FF", lwd = 2
 )
-
-
 segments(0,0,1,1,col="black", lty=3) ## add the diagonal
 title("Prediction of EQ-VAS MCID\n(Hip dataset)")
-
 ## OKS MCID ROCs (Knees)
-
 plot(
-  performance(ROCR.Mod_XGBTREE.1618.OKS.simple.Eng, measure = "sens", x.measure = "fpr"),
+  ROCR::performance(ROCR.Mod_XGBTREE.1618.OKS.simple.Eng, measure = "sens", x.measure = "fpr"),
   col = "#ED0000FF", lwd = 2)
-
 plot(
-  performance(ROCR.Mod_XGBTREE.1618.OKS.simple.Welsh, measure = "sens", x.measure = "fpr"),
+  ROCR::performance(ROCR.Mod_XGBTREE.1618.OKS.simple.Welsh, measure = "sens", x.measure = "fpr"),
   add = TRUE,
   col = "#42B540FF", lwd = 2
 )
-
-
 segments(0,0,1,1,col="black", lty=3) ## add the diagonal
 title("Prediction of OKS MCID\n(Knee dataset)")
-
+## EQ-VAS MCID ROCs (Knees)
 plot(
-  performance(ROCR.Mod_XGBTREE.1618.OKSVAS.simple.Eng, measure = "sens", x.measure = "fpr"),
+  ROCR::performance(ROCR.Mod.1618.XGBTREE.VAS.knees.simple.Eng, measure = "sens", x.measure = "fpr"),
   col = "#ED0000FF", lwd = 2)
-
 plot(
-  performance(ROCR.Mod_XGBTREE.1618.OKSVAS.simple.Welsh, measure = "sens", x.measure = "fpr"),
+  ROCR::performance(ROCR.Mod_LR.1618.XGBTREE.VAS.knees.simple.Welsh, measure = "sens", x.measure = "fpr"),
   add = TRUE,
   col = "#42B540FF", lwd = 2
 )
-
 segments(0,0,1,1,col="black", lty=3) ## add the diagonal
 title("Prediction of EQ-VAS MCID\n(Knee dataset)")
 par(mar=c(0.1, 0.1, 0.1, 0.1))
@@ -124,11 +161,13 @@ legend(x=0.5,y=0.7,
        cex=0.7,
        xpd = TRUE
 )
+## width = 800, height = 800 (ROC_curves_main_models.png)  
+#.........................................................................................
+#.........................................................................................
 
-## width = 800, height = 800
-
+# Secondary model: ROC curves -----------------------------------------------------
 ###################
-#### ROC curves: English 18 vs 39 predictors
+#### ROC curves: English 18 vs 39 predictors *****to restructure
 
 par(mfrow=c(2,2))
 
@@ -205,7 +244,7 @@ legend(x=0.5,y=0.7,
 
 
 # Calibration curves -----------------------------------------------------
-### Calibration curves: input data
+### Calibration curves: input data *****to restructure
 library(ggplot2)
 library(ggsci)
 ## OHS MCID CALIBRATION CURVES (Hips)
@@ -363,7 +402,7 @@ ggarrange(plot.calibration.df.OHS,
 
 
 #############
-### Calibration curves: English 18 vs 39 predictors
+### Calibration curves: English 18 vs 39 predictors *****to restructure
 scale_colour2<- c("#00468BFF","#ED0000FF")
 
 plot.calibration.df.OHS<-ggplot(calibration.df.OHS[calibration.df.OHS$Model !="Welsh Test (18 predictors)",], 
