@@ -592,4 +592,379 @@ wilcox.test(EQVAS ~ postTime, data = EQVAS_POSTOP.p, exact = FALSE)
 # data:  OKS by postTime
 # W = 26682, p-value = 0.02038
 # alternative hypothesis: true location shift is not equal to 0
+## create filter to use for EQ-VAS analysis
+AMP_KNEES_CLEANED$EQVAS_FILTER<-if_else(AMP_KNEES_CLEANED$EQVAS_POSTOP_TYPE == "12MONTHS_ONLY",
+                                        "NO",
+                                        "YES")
+AMP_KNEES_CLEANED %>% group_by(EQVAS_FILTER) %>% summarise(N = n())
+# EQVAS_FILTER     N
+# NO              61 --> remove
+# YES            293 --> keep
+rm(g5,g6,g7,g8,EQVAS_POSTOP.p, EQVAS_POSTOP12M.p, EQVAS_POSTOP6M.p)
+#.........................................................................................
+#.........................................................................................
+
+# Create OKS_POSTOP_TOTSCORE var ------------------------------------------
+### Create OKS_POSTOP_TOTSCORE variable (use post-op 6months, if not present use post-op  12months)
+AMP_KNEES_CLEANED$OKS_POSTOP_TOTSCORE<-ifelse(AMP_KNEES_CLEANED$OKS_POSTOP_TOTSCORE_TYPE ==
+                                                "12MONTHS_ONLY", #condition
+                                              AMP_KNEES_CLEANED$OKS_POSTOP12M_TOTSCORE, #then
+                                              AMP_KNEES_CLEANED$OKS_POSTOP6M_TOTSCORE #else
+) 
+#.........................................................................................
+#.........................................................................................
+
+# Create EQ5D_POSTOP_VAS var ------------------------------------------
+### Create EQ5D_POSTOP_VAS variable (use post-op 6months only)
+AMP_KNEES_CLEANED$EQ5D_POSTOP_VAS<-ifelse(AMP_KNEES_CLEANED$EQVAS_POSTOP_TYPE ==
+                                            "12MONTHS_ONLY", #condition
+                                          NA, #then
+                                          AMP_KNEES_CLEANED$EQ5D_POSTOP6M_VAS #else
+)  
+#sapply(AMP_KNEES_CLEANED, function(x){sum(is.na(x))})
+#.........................................................................................
+#.........................................................................................
+
+# Create AGEBAND var ------------------------------------------------------
+###convert ages into age bands
+AMP_KNEES_CLEANED$AGEBAND<-NA
+AMP_KNEES_CLEANED[AMP_KNEES_CLEANED$AGE <= 19,]$AGEBAND<-"0 to 19"
+AMP_KNEES_CLEANED[AMP_KNEES_CLEANED$AGE > 19 & AMP_KNEES_CLEANED$AGE <= 29,]$AGEBAND<-"20 to 29"
+AMP_KNEES_CLEANED[AMP_KNEES_CLEANED$AGE > 29 & AMP_KNEES_CLEANED$AGE <= 39,]$AGEBAND<-"30 to 39"
+AMP_KNEES_CLEANED[AMP_KNEES_CLEANED$AGE > 39 & AMP_KNEES_CLEANED$AGE <= 49,]$AGEBAND<-"40 to 49"
+AMP_KNEES_CLEANED[AMP_KNEES_CLEANED$AGE > 49 & AMP_KNEES_CLEANED$AGE <= 59,]$AGEBAND<-"50 to 59"
+AMP_KNEES_CLEANED[AMP_KNEES_CLEANED$AGE > 59 & AMP_KNEES_CLEANED$AGE <= 69,]$AGEBAND<-"60 to 69"
+AMP_KNEES_CLEANED[AMP_KNEES_CLEANED$AGE > 69 & AMP_KNEES_CLEANED$AGE <= 79,]$AGEBAND<-"70 to 79"
+AMP_KNEES_CLEANED[AMP_KNEES_CLEANED$AGE > 79 & AMP_KNEES_CLEANED$AGE <= 89,]$AGEBAND<-"80 to 89"
+AMP_KNEES_CLEANED[AMP_KNEES_CLEANED$AGE > 89,]$AGEBAND<-"90 to 120"
+#AMP_KNEES_CLEANED %>% group_by(AGEBAND) %>% summarise(Min = min(AGE),Max = max(AGE))
+#table(AMP_KNEES_CLEANED$AGEBAND)
+# Remove two cases with AGEBAND = "30 to 39" (this age-band is not included in English data)
+AMP_KNEES_CLEANED2<-AMP_KNEES_CLEANED[AMP_KNEES_CLEANED$AGEBAND != "30 to 39", ]
+#nrow(AMP_KNEES_CLEANED2) ## 353
+#.........................................................................................
+#.........................................................................................
+
+# Convert OKS dimensions into numbers -------------------------------------
+AMP_KNEES_CLEANED3<-AMP_KNEES_CLEANED2
+##*01
+## OKS_PREOP_PAIN
+# 0 = Severe
+# 1 = Moderate
+# 2 = Mild
+# 3 = Very mild
+# 4 = None
+#AMP_KNEES_CLEANED2 %>% group_by(OKS_PREOP_PAIN) %>% summarise(N = n())
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_PAIN=="Severe",]$OKS_PREOP_PAIN<-0
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_PAIN=="Moderate",]$OKS_PREOP_PAIN<-1
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_PAIN=="Mild",]$OKS_PREOP_PAIN<-2
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_PAIN=="Very mild",]$OKS_PREOP_PAIN<-3
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_PAIN=="None",]$OKS_PREOP_PAIN<-4
+AMP_KNEES_CLEANED3$OKS_PREOP_PAIN<-as.integer(AMP_KNEES_CLEANED3$OKS_PREOP_PAIN)
+#AMP_KNEES_CLEANED3 %>% group_by(OKS_PREOP_PAIN) %>% summarise(N = n())
+##*02
+## OKS_PREOP_NIGHT_PAIN
+# 0 = "Every night"
+# 1 = "Most nights"
+# 2 = "Some nights"
+# 3 = "Only 1 or 2 nights"
+# 4 = "No nights"   
+#AMP_KNEES_CLEANED2 %>% group_by(OKS_PREOP_NIGHT_PAIN) %>% summarise(N = n())
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_NIGHT_PAIN=="Every night",]$OKS_PREOP_NIGHT_PAIN<-0
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_NIGHT_PAIN=="Most nights",]$OKS_PREOP_NIGHT_PAIN<-1
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_NIGHT_PAIN=="Some nights",]$OKS_PREOP_NIGHT_PAIN<-2
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_NIGHT_PAIN=="Only 1 or 2 nights",]$OKS_PREOP_NIGHT_PAIN<-3
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_NIGHT_PAIN=="No nights",]$OKS_PREOP_NIGHT_PAIN<-4
+AMP_KNEES_CLEANED3$OKS_PREOP_NIGHT_PAIN<-as.integer(AMP_KNEES_CLEANED3$OKS_PREOP_NIGHT_PAIN)
+#AMP_KNEES_CLEANED3 %>% group_by(OKS_PREOP_NIGHT_PAIN) %>% summarise(N = n())
+##*03
+## OKS_PREOP_WASHING
+# 0 = "Impossible to do"
+# 1 = "Extreme difficulty"
+# 2 = "Moderate trouble"  
+# 3 = "Very little trouble" 
+# 4 = "No trouble at all"  
+#AMP_KNEES_CLEANED2 %>% group_by(OKS_PREOP_WASHING) %>% summarise(N = n())
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WASHING=="Impossible to do",]$OKS_PREOP_WASHING<-0
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WASHING=="Extreme difficulty",]$OKS_PREOP_WASHING<-1
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WASHING=="Moderate trouble",]$OKS_PREOP_WASHING<-2
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WASHING=="Very little trouble",]$OKS_PREOP_WASHING<-3
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WASHING=="No trouble at all",]$OKS_PREOP_WASHING<-4
+AMP_KNEES_CLEANED3$OKS_PREOP_WASHING<-as.integer(AMP_KNEES_CLEANED3$OKS_PREOP_WASHING)
+#AMP_KNEES_CLEANED3 %>% group_by(OKS_PREOP_WASHING) %>% summarise(N = n())
+##*04
+## OKS_PREOP_TRANSPORT
+# 0 = Impossible to do
+# 1 = Extreme difficulty
+# 2 = Moderate trouble
+# 3 = Very little trouble
+# 4 = No trouble at all
+#AMP_KNEES_CLEANED2 %>% group_by(OKS_PREOP_TRANSPORT) %>% summarise(N = n())
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_TRANSPORT=="Impossible to do",]$OKS_PREOP_TRANSPORT<-0
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_TRANSPORT=="Extreme difficulty ",]$OKS_PREOP_TRANSPORT<-1
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_TRANSPORT=="Moderate trouble",]$OKS_PREOP_TRANSPORT<-2
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_TRANSPORT=="Very little trouble",]$OKS_PREOP_TRANSPORT<-3
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_TRANSPORT=="No trouble at all",]$OKS_PREOP_TRANSPORT<-4
+AMP_KNEES_CLEANED3$OKS_PREOP_TRANSPORT<-as.integer(AMP_KNEES_CLEANED3$OKS_PREOP_TRANSPORT)
+#AMP_KNEES_CLEANED3 %>% group_by(OKS_PREOP_TRANSPORT) %>% summarise(N = n())
+##*05
+## OKS_PREOP_WALKING
+# 0 = "Not at all/pain severe when walking"
+# 1 = "Around the house only"
+# 2 = "5 to 15 minutes"  
+# 3 = "16 to 30 minutes" 
+# 4 = "No pain/more than 30 minutes"  
+#AMP_KNEES_CLEANED2 %>% group_by(OKS_PREOP_WALKING) %>% summarise(N = n())
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WALKING=="Not at all/Pain severe when walking",]$OKS_PREOP_WALKING<-0
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WALKING=="Around the house only",]$OKS_PREOP_WALKING<-1
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WALKING=="5 to 15 minutes",]$OKS_PREOP_WALKING<-2
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WALKING=="16 to 30 minutes",]$OKS_PREOP_WALKING<-3
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WALKING=="No pain/More than 30 minutes",]$OKS_PREOP_WALKING<-4
+AMP_KNEES_CLEANED3$OKS_PREOP_WALKING<-as.integer(AMP_KNEES_CLEANED3$OKS_PREOP_WALKING)
+#AMP_KNEES_CLEANED3 %>% group_by(OKS_PREOP_WALKING) %>% summarise(N = n())
+##*06
+## OKS_PREOP_STANDING
+# 0 = "Unbearable"
+# 1 = "Very painful"
+# 2 = "Moderately painful"  
+# 3 = "Slightly painful" 
+# 4 = "Not at all painful"  
+#AMP_KNEES_CLEANED2 %>% group_by(OKS_PREOP_STANDING) %>% summarise(N = n())
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_STANDING=="Unbearable",]$OKS_PREOP_STANDING<-0
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_STANDING=="Very painful",]$OKS_PREOP_STANDING<-1
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_STANDING=="Moderately painful",]$OKS_PREOP_STANDING<-2
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_STANDING=="Slightly painful",]$OKS_PREOP_STANDING<-3
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_STANDING=="Not at all painful",]$OKS_PREOP_STANDING<-4
+AMP_KNEES_CLEANED3$OKS_PREOP_STANDING<-as.integer(AMP_KNEES_CLEANED3$OKS_PREOP_STANDING)
+#AMP_KNEES_CLEANED3 %>% group_by(OKS_PREOP_STANDING) %>% summarise(N = n())
+##*07
+## OKS_PREOP_LIMPING
+# 0 = All of the time
+# 1 = Most of the time
+# 2 = Often, not just at first
+# 3 = Sometimes or just at first
+# 4 = Rarely/Never
+#AMP_KNEES_CLEANED2 %>% group_by(OKS_PREOP_LIMPING) %>% summarise(N = n())
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_LIMPING=="All of the time",]$OKS_PREOP_LIMPING<-0
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_LIMPING=="Most of the time",]$OKS_PREOP_LIMPING<-1
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_LIMPING=="Often, not just at first",]$OKS_PREOP_LIMPING<-2
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_LIMPING=="Sometimes or just at first",]$OKS_PREOP_LIMPING<-3
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_LIMPING=="Rarely / never",]$OKS_PREOP_LIMPING<-4
+AMP_KNEES_CLEANED3$OKS_PREOP_LIMPING<-as.integer(AMP_KNEES_CLEANED3$OKS_PREOP_LIMPING)
+#AMP_KNEES_CLEANED3 %>% group_by(OKS_PREOP_LIMPING) %>% summarise(N = n())
+##*08
+## OKS_PREOP_KNEELING
+# 0 = "No, impossible"
+# 1 = "With extreme difficulty"
+# 2 = "With moderate difficulty"  
+# 3 = "With little difficulty" 
+# 4 = "Yes, easily"  
+#AMP_KNEES_CLEANED2 %>% group_by(OKS_PREOP_KNEELING) %>% summarise(N = n())
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_KNEELING=="No, impossible",]$OKS_PREOP_KNEELING<-0
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_KNEELING=="With extreme difficulty",]$OKS_PREOP_KNEELING<-1
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_KNEELING=="With moderate difficulty",]$OKS_PREOP_KNEELING<-2
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_KNEELING=="With little difficulty",]$OKS_PREOP_KNEELING<-3
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_KNEELING=="Yes, easily",]$OKS_PREOP_KNEELING<-4
+AMP_KNEES_CLEANED3$OKS_PREOP_KNEELING<-as.integer(AMP_KNEES_CLEANED3$OKS_PREOP_KNEELING)
+#AMP_KNEES_CLEANED3 %>% group_by(OKS_PREOP_KNEELING) %>% summarise(N = n())
+##*09
+## OKS_PREOP_WORK
+# 0 = Totally
+# 1 = Greatly
+# 2 = Moderately
+# 3 = A little bit
+# 4 = Not at all
+#AMP_KNEES_CLEANED2 %>% group_by(OKS_PREOP_WORK) %>% summarise(N = n())
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WORK=="Totally",]$OKS_PREOP_WORK<-0
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WORK=="Greatly",]$OKS_PREOP_WORK<-1
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WORK=="Moderate",]$OKS_PREOP_WORK<-2
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WORK=="A little bit",]$OKS_PREOP_WORK<-3
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_WORK=="Not at all",]$OKS_PREOP_WORK<-4
+AMP_KNEES_CLEANED3$OKS_PREOP_WORK<-as.integer(AMP_KNEES_CLEANED3$OKS_PREOP_WORK)
+#AMP_KNEES_CLEANED3 %>% group_by(OKS_PREOP_WORK) %>% summarise(N = n())
+##*10
+## OKS_PREOP_CONFIDENCE
+# 0 = "All the time"
+# 1 = "Most of the time"
+# 2 = "Often, not just at first"
+# 3 = "Sometimes, or just at first"
+# 4 = "Rarely/never"  
+#AMP_KNEES_CLEANED2 %>% group_by(OKS_PREOP_CONFIDENCE) %>% summarise(N = n())
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_CONFIDENCE=="All of the time",]$OKS_PREOP_CONFIDENCE<-0
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_CONFIDENCE=="Most of the time",]$OKS_PREOP_CONFIDENCE<-1
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_CONFIDENCE=="Often, not just at first",]$OKS_PREOP_CONFIDENCE<-2
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_CONFIDENCE=="Sometimes, or just at first ",]$OKS_PREOP_CONFIDENCE<-3
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_CONFIDENCE=="Rarely / never",]$OKS_PREOP_CONFIDENCE<-4
+AMP_KNEES_CLEANED3$OKS_PREOP_CONFIDENCE<-as.integer(AMP_KNEES_CLEANED3$OKS_PREOP_CONFIDENCE)
+#AMP_KNEES_CLEANED3 %>% group_by(OKS_PREOP_CONFIDENCE) %>% summarise(N = n())
+##*11
+## OKS_PREOP_SHOPPING
+# 0 = "No, impossible"
+# 1 = "With extreme difficulty"
+# 2 = "With moderate difficulty"
+# 3 = "With little difficulty"
+# 4 = "Yes, easily" 
+#AMP_KNEES_CLEANED2 %>% group_by(OKS_PREOP_SHOPPING) %>% summarise(N = n())
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_SHOPPING=="No, impossible",]$OKS_PREOP_SHOPPING<-0
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_SHOPPING=="With extreme difficulty",]$OKS_PREOP_SHOPPING<-1
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_SHOPPING=="With moderate difficulty",]$OKS_PREOP_SHOPPING<-2
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_SHOPPING=="With little difficulty",]$OKS_PREOP_SHOPPING<-3
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_SHOPPING=="Yes, easily",]$OKS_PREOP_SHOPPING<-4
+AMP_KNEES_CLEANED3$OKS_PREOP_SHOPPING<-as.integer(AMP_KNEES_CLEANED3$OKS_PREOP_SHOPPING)
+AMP_KNEES_CLEANED3 %>% group_by(OKS_PREOP_SHOPPING) %>% summarise(N = n())
+##*12
+## OKS_PREOP_STAIRS
+# 0 = "No, impossible"
+# 1 = "With extreme difficulty"
+# 2 = "With moderate difficulty"
+# 3 = "With little difficulty"
+# 4 = "Yes, easily" 
+#AMP_KNEES_CLEANED2 %>% group_by(OKS_PREOP_STAIRS) %>% summarise(N = n())
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_STAIRS=="No, impossible",]$OKS_PREOP_STAIRS<-0
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_STAIRS=="With extreme difficulty",]$OKS_PREOP_STAIRS<-1
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_STAIRS=="With moderate difficulty",]$OKS_PREOP_STAIRS<-2
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_STAIRS=="With little difficulty",]$OKS_PREOP_STAIRS<-3
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$OKS_PREOP_STAIRS=="Yes, easily",]$OKS_PREOP_STAIRS<-4
+AMP_KNEES_CLEANED3$OKS_PREOP_STAIRS<-as.integer(AMP_KNEES_CLEANED3$OKS_PREOP_STAIRS)
+#AMP_KNEES_CLEANED3 %>% group_by(OKS_PREOP_STAIRS) %>% summarise(N = n())
+#sapply(AMP_KNEES_CLEANED2, function(x){sum(is.na(x))}) ##correct
+#.........................................................................................
+#.........................................................................................
+
+# Harmonise vars to English data ------------------------------------------
+##REVISION FIELD
+#table(AMP_KNEES_CLEANED3$REVISION)
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$REVISION == 'primary',]$REVISION<-0
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$REVISION == 'revision',]$REVISION<-1
+#table(AMP_KNEES_CLEANED3$REVISION)
+##SEX FIELD
+#table(AMP_KNEES_CLEANED3$SEX)
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$SEX == 'M',]$SEX<-1
+AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$SEX == 'F',]$SEX<-2
+#table(AMP_KNEES_CLEANED3$SEX)
+#.........................................................................................
+#.........................................................................................
+
+# Creating outcome variables MCID -----------------------------------------
+##Create OKS & EQ-VAS MCID
+#check std dev of EQVAS
+#AMP_KNEES_CLEANED3 %>% summarise(Mean = mean(EQ5D_PREOP_VAS),stdDev = sd(EQ5D_PREOP_VAS))
+# Mean     stdDev
+# 62.67139 21.01325 
+##Create OKS & EQ-VAS MCID
+AMP_KNEES_CLEANED3 <- as.data.frame(
+  AMP_KNEES_CLEANED3 %>% 
+    mutate(OKS_TOTSCORE.diff = OKS_POSTOP_TOTSCORE - OKS_PREOP_TOTSCORE) %>%
+    mutate(VAS_TOTSCORE.diff = EQ5D_POSTOP_VAS - EQ5D_PREOP_VAS) %>%
+    # threshold value from literature 
+    # (postOKS - preOKS >= 8 points of increase)
+    mutate(OKS_MCID = ifelse(OKS_TOTSCORE.diff>=7, 1,0))%>%
+    # threshold value from pre-op EQ-VAS distributions
+    # (postvas - preVAS >= 11 points of increase ---> 10 is 0.5*std_dev(preVAS))
+    # std_dev(preVAS) --> --> this value has been calculated for English Training set
+    mutate(VAS_MCID = ifelse(VAS_TOTSCORE.diff>=10, 1,0)))
+rm(AMP_KNEES_PRIM.cleaned5,AMP_KNEES_REV.cleaned5,AMP_KNEES_CLEANED,AMP_KNEES_CLEANED2)
+#.........................................................................................
+#.........................................................................................
+
+# Vars factor transformation ----------------------------------------------
+AMP_KNEES_CLEANED3[,c("REVISION","AGEBAND","SEX")] <-
+  lapply(AMP_KNEES_CLEANED3[,c("REVISION","AGEBAND","SEX")], as.factor) 
+#.........................................................................................
+#.........................................................................................
+
+# Reduce sample size for knee EQVAS ----------------------------------------------
+AMP_KNEES_CLEANED3.small<-AMP_KNEES_CLEANED3[!is.na(AMP_KNEES_CLEANED3$VAS_MCID),]
+#nrow(AMP_KNEES_CLEANED3.small) #292
+#.........................................................................................
+#.........................................................................................
+
+# Extract demographics ----------------------------------------------------
+DescriptiveCatBasic.OKS(input_dataset = AMP_KNEES_CLEANED3, 
+                    output_table = Descr_Categ.AMP_KNEES_CLEANED3)
+DescriptiveCont2.OKS(input_dataset = AMP_KNEES_CLEANED3, 
+                 output_table = Descr_Continuous.AMP_KNEES_CLEANED3)
+write.csv(Descr_Categ.AMP_KNEES_CLEANED3,"output/thesis_files/Descr_Categ.AMP_KNEES_CLEANED3.csv", row.names = FALSE)
+write.csv(Descr_Continuous.AMP_KNEES_CLEANED3,"output/thesis_files/Descr_Continuous.AMP_KNEES_CLEANED3.csv", row.names = FALSE)
+#.........................................................................................
+#.........................................................................................
+
+# Plots -------------------------------------------------------------------
+#### Plotting distributions for differences (PostOp - PreOp) in OKS and EQ-VAS
+#### including MCID thresholding for Welsh dataset
+## Histogram of difference [OKS PostOp - PreOp]
+Hist_OKS_test.AMPLITUDE<-ggplot(AMP_KNEES_CLEANED3, aes(x = OKS_TOTSCORE.diff)) + 
+  geom_histogram(binwidth=1, fill = "grey", colour="black")+
+  ggtitle("PostOperative OKS change\n(Welsh Knee Test Set)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("Difference OKS PostOp - PreOp")+
+  scale_x_continuous(limits=c(-48,48),breaks = seq(-48,48,4)) +
+  geom_vline(xintercept=7, colour="red", linetype = "longdash", size = 1)  +
+  annotate(x=0,y=+Inf,label="MCID\nthreshold",vjust=2,geom="text", colour="red", size = 4)
+## Histogram of difference [EQ-VAS PostOp - PreOp]
+Hist_VAS_test.AMPLITUDE<-ggplot(AMP_KNEES_CLEANED3, aes(x = VAS_TOTSCORE.diff)) + 
+  geom_histogram(binwidth=1, fill = "grey", colour="black")+
+  ggtitle("PostOperative EQ-VAS change\n(Welsh Knee Test Set)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5,face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("Difference EQ-VAS PostOp - PreOp")+
+  scale_x_continuous(limits=c(-100,100),breaks=seq(-100,100,10)) +
+  geom_vline(xintercept=10, colour="red", linetype = "longdash", size = 1)  + #check the threshold line is plotted at std dev*0.5
+  annotate(x=30,y=+Inf,label="MCID\nthreshold",vjust=2,geom="text", colour="red", size = 4)
+## Histogram of preOp OKS
+Hist_preopOKS_AMP_KNEES_CLEANED3<-ggplot(AMP_KNEES_CLEANED3, aes(x = OKS_PREOP_TOTSCORE)) + 
+  geom_histogram(binwidth=1,
+                 fill = "grey", colour="black")+
+  ggtitle("PreOperative OKS tot score\n(Welsh Knee Test Set)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("PreOperative OKS total score ")+
+  scale_x_continuous(limits=c(0,48),breaks = seq(0,48,4))
+## Histogram of preOp EQ-VAS
+Hist_preopVAS_AMP_KNEES_CLEANED3<-ggplot(AMP_KNEES_CLEANED3, aes(x = EQ5D_PREOP_VAS)) + 
+  geom_histogram(binwidth=1,
+                 fill = "grey", colour="black")+
+  ggtitle("PreOperative EQ-VAS score\n(Welsh Knee Test Set)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("PreOperative EQ-VAS score")+
+  scale_x_continuous(limits=c(0,100),breaks = seq(0,100,10))
+
+
+
+
+
+
+
+
+
 

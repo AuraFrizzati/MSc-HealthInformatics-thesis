@@ -548,3 +548,387 @@ ExtractMetrics <- function(
   
 }
 
+
+# DescriptiveCatBasic.OKS fun ----------------------------------------------------
+#### DESCRIPTIVE: CATEGORICAL - BASIC PREDICTORS (KNEE DATASET)
+DescriptiveCatBasic.OKS<-function(input_dataset, output_table){
+  DescriptiveCatBasicTable<- rbind(  
+    # sample size
+    input_dataset%>%
+      count()  %>%
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      mutate(VAR = "SAMPLE SIZE") %>% 
+      mutate(VALUE_COL = "Total") %>%
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position
+    
+    ,
+    
+    # gender 
+    input_dataset%>%count(SEX) %>%
+      mutate(VAR = "GENDER") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = SEX) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "Males","Females")) %>%  # SEX = 1 ->MALE , SEX = 2 -> FEMALEs
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position 
+    ,
+    
+    # ageband 
+    input_dataset%>%count(AGEBAND) %>%
+      mutate(VAR = "Age") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = AGEBAND) %>% 
+      #mutate(VALUE_COL=ifelse(VALUE_COL==1, "Males","Females")) %>%  # SEX = 1 ->MALE , SEX = 2 -> FEMALEs
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position 
+    
+    ,
+    
+    # REVISION 
+    input_dataset%>%count(REVISION) %>%
+      mutate(VAR = "REVISION") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = REVISION) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # REVISION = 0 -> NO , REVISION = 1 -> YES
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position 
+    
+    ,
+    
+    # OKS PREOP PAIN
+    input_dataset%>%count(OKS_PREOP_PAIN) %>%
+      mutate(VAR = "OKS PREOP PAIN") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = OKS_PREOP_PAIN) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position  
+    ,
+    
+    # OKS PREOP NIGHT PAIN
+    input_dataset%>%count(OKS_PREOP_NIGHT_PAIN) %>%
+      mutate(VAR = "OKS PREOP NIGHT PAIN") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = OKS_PREOP_NIGHT_PAIN) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position  
+    ,
+    
+    # OKS PREOP WASHING
+    input_dataset%>%count(OKS_PREOP_WASHING) %>%
+      mutate(VAR = "OKS PREOP WASHING") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = OKS_PREOP_WASHING) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position    
+    ,
+    
+    # OKS PREOP TRANSPORT
+    input_dataset%>%count(OKS_PREOP_TRANSPORT) %>%
+      mutate(VAR = "OKS PREOP TRANSPORT") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = OKS_PREOP_TRANSPORT) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position    
+    ,
+    
+    # OKS PREOP WALKING
+    input_dataset%>%count(OKS_PREOP_WALKING) %>%
+      mutate(VAR = "OKS PREOP WALKING") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = OKS_PREOP_WALKING) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position     
+    ,
+    
+    # OKS PREOP STANDING
+    input_dataset%>%count(OKS_PREOP_STANDING) %>%
+      mutate(VAR = "OKS PREOP STANDING") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = OKS_PREOP_STANDING) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position    
+    ,
+    
+    # OKS PREOP LIMPING
+    input_dataset%>%count(OKS_PREOP_LIMPING) %>%
+      mutate(VAR = "OKS PREOP LIMPING") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = OKS_PREOP_LIMPING) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position   
+    ,
+    
+    # OKS PREOP KNEELING
+    input_dataset%>%count(OKS_PREOP_KNEELING) %>%
+      mutate(VAR = "OKS PREOP KNEELING") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = OKS_PREOP_KNEELING) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position   
+    ,
+    
+    # OKS PREOP WORK
+    input_dataset%>%count(OKS_PREOP_WORK) %>%
+      mutate(VAR = "OKS PREOP WORK") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = OKS_PREOP_WORK) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position    
+    ,
+    
+    # OKS PREOP CONFIDENCE
+    input_dataset%>%count(OKS_PREOP_CONFIDENCE) %>%
+      mutate(VAR = "OKS PREOP CONFIDENCE") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = OKS_PREOP_CONFIDENCE) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position   
+    ,
+    
+    # OKS PREOP SHOPPING
+    input_dataset%>%count(OKS_PREOP_SHOPPING) %>%
+      mutate(VAR = "OKS PREOP SHOPPING") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = OKS_PREOP_SHOPPING) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position     
+    ,
+    
+    # OKS PREOP STAIRS
+    input_dataset%>%count(OKS_PREOP_STAIRS) %>%
+      mutate(VAR = "OKS PREOP STAIRS") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = OKS_PREOP_STAIRS) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position     
+    ,
+    
+    # OKS MCID
+    input_dataset%>%count(OKS_MCID) %>%
+      mutate(VAR = "OKS MCID") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = OKS_MCID) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # OKS_MCID = 1 -> YES , OKS_MCID = 0 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position       
+    ,
+    
+    # EQ-VAS MCID
+    input_dataset%>%count(VAS_MCID) %>%
+      mutate(VAR = "EQ-VAS MCID") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = VAS_MCID) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # VAS_MCID = 1 -> YES , VAS_MCID = 0 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position    
+
+  )
+  
+  # assign the output_df name given as a function argument (GlobalEnv so it is accessible outside of the function) 
+  assign(deparse(substitute(output_table)), DescriptiveCatBasicTable, envir=.GlobalEnv)
+}
+
+
+# DescriptiveCont2.OKS fun ----------------------------------------------------
+#### DESCRIPTIVE FOR KNEES: CONTINUOUS
+DescriptiveCont2.OKS<-function(input_dataset, output_table){
+  DescriptiveContTable<- rbind(
+    
+    ##OKS PRE-OP
+    inner_join(
+      #OKS preop median
+      inner_join(input_dataset%>%
+                   summarise(
+                     Median = round(quantile(OKS_PREOP_TOTSCORE,0.5),2) )%>%
+                   mutate(VALUE_COL="PreOperative")%>%
+                   mutate(VARIABLE="OKS Total Score")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+                 ,
+                 
+                 #OKS preop Q1
+                 input_dataset%>%
+                   summarise(
+                     Q1 = round(quantile(OKS_PREOP_TOTSCORE,0.25),2) )%>%
+                   mutate(VALUE_COL="PreOperative")%>%
+                   mutate(VARIABLE="OKS Total Score")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything())) #to change columns' position
+      ,
+      
+      #OKS preop Q3
+      input_dataset%>%
+        summarise(
+          Q3 = round(quantile(OKS_PREOP_TOTSCORE,0.75),2) )%>%
+        mutate(VALUE_COL="PreOperative")%>%
+        mutate(VARIABLE="OKS Total Score")%>% 
+        select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+    )
+    ,
+    ##OKS POST-OP
+    inner_join(
+      #OKS postop median
+      inner_join(input_dataset%>%
+                   summarise(
+                     Median = round(quantile(OKS_POSTOP_TOTSCORE,0.5),2) )%>%
+                   mutate(VALUE_COL="PostOperative")%>%
+                   mutate(VARIABLE="OKS Total Score")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+                 ,
+                 
+                 #OKS postop Q1
+                 input_dataset%>%
+                   summarise(
+                     Q1 = round(quantile(OKS_POSTOP_TOTSCORE, 0.25),2) )%>%
+                   mutate(VALUE_COL="PostOperative")%>%
+                   mutate(VARIABLE="OKS Total Score")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything())) #to change columns' position
+      ,
+      
+      #OKS postop Q3
+      input_dataset%>%
+        summarise(
+          Q3 = round(quantile(OKS_POSTOP_TOTSCORE, 0.75),2) )%>%
+        mutate(VALUE_COL="PostOperative")%>%
+        mutate(VARIABLE="OKS Total Score")%>% 
+        select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+    )
+    ,
+    
+    ##OKS_TOTSCORE.diff
+    inner_join(
+      #OKS_TOTSCORE.diff median
+      inner_join(input_dataset%>%
+                   summarise(
+                     Median = round(quantile(OKS_TOTSCORE.diff, 0.5),2) )%>%
+                   mutate(VALUE_COL="difference (PostOp-PreOp)")%>%
+                   mutate(VARIABLE="OKS Total Score")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+                 ,
+                 
+                 #OKS_TOTSCORE.diff Q1
+                 input_dataset%>%
+                   summarise(
+                     Q1 = round(quantile(OKS_TOTSCORE.diff,0.25),2) )%>%
+                   mutate(VALUE_COL="difference (PostOp-PreOp)")%>%
+                   mutate(VARIABLE="OKS Total Score")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything())) #to change columns' position
+      ,
+      
+      #OKS_TOTSCORE.diff Q3
+      input_dataset%>%
+        summarise(
+          Q3 = round(quantile(OKS_TOTSCORE.diff,0.75),2) )%>%
+        mutate(VALUE_COL="difference (PostOp-PreOp)")%>%
+        mutate(VARIABLE="OKS Total Score")%>% 
+        select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+    )
+    
+    ,
+    
+    ##EQ-VAS PRE-OP
+    inner_join(
+      #VAS preop Median
+      inner_join(input_dataset%>%
+                   summarise(
+                     Median = round(quantile(EQ5D_PREOP_VAS, 0.5, na.rm = T),2) )%>%
+                   mutate(VALUE_COL="PreOperative")%>%
+                   mutate(VARIABLE="EQ-VAS")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+                 ,
+                 #VAS preop Q1 
+                 input_dataset%>%
+                   summarise(
+                     Q1 = round(quantile(EQ5D_PREOP_VAS, 0.25, na.rm = T),2) )%>%
+                   mutate(VALUE_COL="PreOperative")%>%
+                   mutate(VARIABLE="EQ-VAS")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything())) #to change columns' position
+      ,
+      #VAS preop Q3 
+      input_dataset%>%
+        summarise(
+          Q3 = round(quantile(EQ5D_PREOP_VAS, 0.75, na.rm = T),2) )%>%
+        mutate(VALUE_COL="PreOperative")%>%
+        mutate(VARIABLE="EQ-VAS")%>% 
+        select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+    )
+    ,
+    
+    ##EQ-VAS POST-OP
+    inner_join(
+      #VAS postop Median
+      inner_join(input_dataset%>%
+                   summarise(
+                     Median = round(quantile(EQ5D_POSTOP_VAS, 0.5, na.rm = T),2) )%>%
+                   mutate(VALUE_COL="PostOperative")%>%
+                   mutate(VARIABLE="EQ-VAS")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+                 ,
+                 #VAS postop Q1
+                 input_dataset%>%
+                   summarise(
+                     Q1 = round(quantile(EQ5D_POSTOP_VAS, 0.25, na.rm = T),2) )%>%
+                   mutate(VALUE_COL="PostOperative")%>%
+                   mutate(VARIABLE="EQ-VAS")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything())) #to change columns' position
+      ,
+      
+      #VAS postop Q3
+      input_dataset%>%
+        summarise(
+          Q3 = round(quantile(EQ5D_POSTOP_VAS, 0.75, na.rm = T),2) )%>%
+        mutate(VALUE_COL="PostOperative")%>%
+        mutate(VARIABLE="EQ-VAS")%>% 
+        select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+    )
+    ,
+    
+    
+    ##VAS_TOTSCORE.diff
+    inner_join(
+      #VAS_TOTSCORE.diff median
+      inner_join(input_dataset%>%
+                   summarise(
+                     Median = round(quantile(VAS_TOTSCORE.diff,0.5, na.rm = T),2) )%>%
+                   mutate(VALUE_COL="difference (PostOp-PreOp)")%>%
+                   mutate(VARIABLE="EQ-VAS")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+                 ,
+                 
+                 #VAS_TOTSCORE.diff Q1 
+                 input_dataset%>%
+                   summarise(
+                     Q1 = round(quantile(VAS_TOTSCORE.diff, 0.25, na.rm = T),2) )%>%
+                   mutate(VALUE_COL="difference (PostOp-PreOp)")%>%
+                   mutate(VARIABLE="EQ-VAS")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything())) #to change columns' position
+      ,
+      
+      #VAS_TOTSCORE.diff Q3 
+      input_dataset%>%
+        summarise(
+          Q3 = round(quantile(VAS_TOTSCORE.diff, 0.75, na.rm = T),2) )%>%
+        mutate(VALUE_COL="difference (PostOp-PreOp)")%>%
+        mutate(VARIABLE="EQ-VAS")%>% 
+        select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+    )
+    ,
+    
+    ##EQ5D PRE-OP INDEX 
+    inner_join(
+      #EQ5D PRE-OP INDEX Median
+      inner_join(input_dataset%>%
+                   summarise(
+                     Median = round(quantile(EQ5D_PREOP_INDEX, 0.5, na.rm = T),2) )%>%
+                   mutate(VALUE_COL="PreOperative")%>%
+                   mutate(VARIABLE="EQ5D INDEX")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+                 ,
+                 
+                 #EQ5D PRE-OP INDEX Q1 
+                 input_dataset%>%
+                   summarise(
+                     Q1 = round(quantile(EQ5D_PREOP_INDEX, 0.25, na.rm = T),2) )%>%
+                   mutate(VALUE_COL="PreOperative")%>%
+                   mutate(VARIABLE="EQ5D INDEX")%>% 
+                   select(c(VARIABLE,VALUE_COL), everything())) #to change columns' position
+      ,
+      
+      #EQ5D PRE-OP INDEX Q3 
+      input_dataset%>%
+        summarise(
+          Q3 = round(quantile(EQ5D_PREOP_INDEX, 0.75, na.rm = T),2) )%>%
+        mutate(VALUE_COL="PreOperative")%>%
+        mutate(VARIABLE="EQ5D INDEX")%>% 
+        select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
+    )
+    
+  )
+  
+  # DescriptiveContTable<-transform(DescriptiveContTable, toPrint=paste(Mean, Std.Dev, sep=" \u00B1 ")) ## add +/- symbol between mean and std dev
+  
+  # assign the output_df name given as a function argument (GlobalEnv so it is accessible outside of the function) 
+  assign(deparse(substitute(output_table)), DescriptiveContTable, envir=.GlobalEnv)
+}
+

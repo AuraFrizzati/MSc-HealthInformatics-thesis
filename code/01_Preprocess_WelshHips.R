@@ -771,9 +771,7 @@ AMP_HIPS_CLEANED_2$OHS_POSTOP_TOTSCORE<-AMP_HIPS_CLEANED$OHS_POSTOP6M_TOTSCORE
 #.........................................................................................
 #.........................................................................................
 
-
 # Create EQ5D_POSTOP_VAS var ------------------------------------------
-#************
 ### Create EQ5D_POSTOP_VAS variable (use post-op 6months, if not present use post-op  12months)
 AMP_HIPS_CLEANED_2$EQ5D_POSTOP_VAS<-ifelse(AMP_HIPS_CLEANED_2$EQVAS_POSTOP_TYPE ==
                                            "12MONTHS_ONLY", #condition
@@ -782,8 +780,6 @@ AMP_HIPS_CLEANED_2$EQ5D_POSTOP_VAS<-ifelse(AMP_HIPS_CLEANED_2$EQVAS_POSTOP_TYPE 
 ) 
 #.........................................................................................
 #.........................................................................................
-
-
 
 # Create AGEBAND var ------------------------------------------------------
 ###convert ages into age bands
@@ -797,21 +793,16 @@ AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE > 59 & AMP_HIPS_CLEANED_2$AGE <= 69,]$
 AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE > 69 & AMP_HIPS_CLEANED_2$AGE <= 79,]$AGEBAND<-"70 to 79"
 AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE > 79 & AMP_HIPS_CLEANED_2$AGE <= 89,]$AGEBAND<-"80 to 89"
 AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGE > 89,]$AGEBAND<-"90 to 120"
-
-AMP_HIPS_CLEANED_2 %>% group_by(AGEBAND) %>% summarise(Min = min(AGE),
-                                                     Max = max(AGE))
+#AMP_HIPS_CLEANED_2 %>% group_by(AGEBAND) %>% summarise(Min = min(AGE),Max = max(AGE))
 #table(AMP_HIPS_CLEANED_2$AGEBAND)
-
 # Remove two cases with AGEBAND = "0 to 19" (this age-band is not included in English data)
 AMP_HIPS_CLEANED_2<-AMP_HIPS_CLEANED_2[AMP_HIPS_CLEANED_2$AGEBAND != "0 to 19", ]
 #nrow(AMP_HIPS_CLEANED_2) ## 823
 #.........................................................................................
 #.........................................................................................
 
-
 # Convert OHS dimensions into numbers -------------------------------------
 AMP_HIPS_CLEANED_3<-AMP_HIPS_CLEANED_2
-
 ##*01
 ## OHS_PREOP_PAIN
 # 0 = Severe
@@ -827,7 +818,6 @@ AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN=="Very mild",]$OHS_PREOP_PA
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN=="None",]$OHS_PREOP_PAIN<-4
 AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_PAIN)
 #AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_PAIN) %>% summarise(N = n())
-
 ##*02
 ## OHS_PREOP_SUDDENPAIN
 # 0 = Every day
@@ -843,7 +833,6 @@ AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN=="Only 1 or 2 days",]
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN=="No days",]$OHS_PREOP_SUDDENPAIN<-4
 AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_SUDDENPAIN)
 #AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_SUDDENPAIN) %>% summarise(N = n())
-
 ##*03
 ## OHS_PREOP_NIGHTPAIN
 # 0 = Every night
@@ -859,7 +848,6 @@ AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN=="Only 1 or 2 nights",
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN=="No Nights",]$OHS_PREOP_NIGHTPAIN<-4
 AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_NIGHTPAIN)
 #AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_NIGHTPAIN) %>% summarise(N = n())
-
 ##*04
 ## OHS_PREOP_WASHING
 # 0 = Impossible to do
@@ -875,7 +863,6 @@ AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING=="Very little trouble",]
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING=="No trouble at all",]$OHS_PREOP_WASHING<-4
 AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_WASHING)
 #AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_WASHING) %>% summarise(N = n())
-
 ##*05
 ## OHS_PREOP_TRANSPORT
 # 0 = Impossible to do
@@ -891,7 +878,6 @@ AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT=="Very little trouble"
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT=="No trouble at all",]$OHS_PREOP_TRANSPORT<-4
 AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_TRANSPORT)
 #AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_TRANSPORT) %>% summarise(N = n())
-
 ##*06
 ## OHS_PREOP_DRESSING
 # 0 = No, impossible
@@ -907,7 +893,6 @@ AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING=="With little difficult
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING=="Yes, easily",]$OHS_PREOP_DRESSING<-4
 AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_DRESSING)
 #AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_DRESSING) %>% summarise(N = n())
-
 ##*07
 ## OHS_PREOP_SHOPPING
 # 0 = No, impossible
@@ -923,7 +908,6 @@ AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING=="With little difficult
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING=="Yes, easily",]$OHS_PREOP_SHOPPING<-4
 AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_SHOPPING)
 #AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_SHOPPING) %>% summarise(N = n())
-
 ##*08
 ## OHS_PREOP_WALKING
 # 0 = Not at all pain severe on walking
@@ -939,7 +923,6 @@ AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING=="16 to 30 minutes",]$OH
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING=="No pain/More than 30 minutes",]$OHS_PREOP_WALKING<-4
 AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_WALKING)
 #AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_WALKING) %>% summarise(N = n())
-
 ##*09
 ## OHS_PREOP_LIMPING
 # 0 = All of the time
@@ -955,8 +938,6 @@ AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING=="Sometimes, or just at 
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING=="Rarely / never",]$OHS_PREOP_LIMPING<-4
 AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_LIMPING)
 #AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_LIMPING) %>% summarise(N = n())
-
-
 ##*10
 ## OHS_PREOP_STAIRS
 # 0 = No, impossible
@@ -972,7 +953,6 @@ AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS=="With little difficulty"
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS=="Yes, easily",]$OHS_PREOP_STAIRS<-4
 AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_STAIRS)
 #AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_STAIRS) %>% summarise(N = n())
-
 ##*11
 ## OHS_PREOP_STANDING
 # 0 = Unbearable
@@ -988,8 +968,6 @@ AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING=="Slightly painful",]$O
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING=="Not at all painful",]$OHS_PREOP_STANDING<-4
 AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_STANDING)
 #AMP_HIPS_CLEANED_3 %>% group_by(OHS_PREOP_STANDING) %>% summarise(N = n())
-
-
 ##*12
 ## OHS_PREOP_WORK
 # 0 = Totally
@@ -1008,14 +986,12 @@ AMP_HIPS_CLEANED_3$OHS_PREOP_WORK<-as.integer(AMP_HIPS_CLEANED_3$OHS_PREOP_WORK)
 #.........................................................................................
 #.........................................................................................
 
-
 # Harmonise vars to English data ------------------------------------------
 ##REVISION FIELD
 #table(AMP_HIPS_CLEANED_3$REVISION)
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$REVISION == 'primary',]$REVISION<-0
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$REVISION == 'revision',]$REVISION<-1
 #table(AMP_HIPS_CLEANED_3$REVISION)
-
 ##SEX FIELD
 #table(AMP_HIPS_CLEANED_3$SEX)
 AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$SEX == 'M',]$SEX<-1
@@ -1024,11 +1000,8 @@ AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$SEX == 'F',]$SEX<-2
 #.........................................................................................
 #.........................................................................................
 
-
 # Creating outcome variables MCID -----------------------------------------
 ##Create OHS & EQ-VAS MCID
-
-
 AMP_HIPS_CLEANED_3 <- as.data.frame(
   AMP_HIPS_CLEANED_3 %>% 
     mutate(OHS_TOTSCORE.diff = OHS_POSTOP_TOTSCORE - OHS_PREOP_TOTSCORE) %>%
@@ -1042,7 +1015,6 @@ AMP_HIPS_CLEANED_3 <- as.data.frame(
     mutate(VAS_MCID = ifelse(VAS_TOTSCORE.diff>=11, 1,0)))
 #.........................................................................................
 #.........................................................................................
-
 
 # Vars factor transformation ----------------------------------------------
 #### Transforming relevant variables into factors  (cannot do this directly with outcomes!) 
@@ -1068,12 +1040,9 @@ write.csv(Descr_Continuous.AMP_HIPS_CLEANED_3,"output/thesis_files/Descr_Continu
 #.........................................................................................
 #.........................................................................................
 
-
-
 # Plots -------------------------------------------------------------------
 #### Plotting distributions for differences (PostOp - PreOp) in OHS and EQ-VAS
 #### including MCID thresholding for Welsh dataset
-
 ## Histogram of difference [OHS PostOp - PreOp]
 Hist_OHS_test.AMPLITUDE<-ggplot(AMP_HIPS_CLEANED_3.small, aes(x = OHS_TOTSCORE.diff)) + 
   geom_histogram(binwidth=1, fill = "grey", colour="black")+
@@ -1091,7 +1060,6 @@ Hist_OHS_test.AMPLITUDE<-ggplot(AMP_HIPS_CLEANED_3.small, aes(x = OHS_TOTSCORE.d
   scale_x_continuous(limits=c(-48,48),breaks = seq(-48,48,4)) +
   geom_vline(xintercept=8, colour="red", linetype = "longdash", size = 1)  +
   annotate(x=0,y=+Inf,label="MCID\nthreshold",vjust=2,geom="text", colour="red", size = 4)
-
 ## Histogram of difference [EQ-VAS PostOp - PreOp]
 Hist_VAS_test.AMPLITUDE<-ggplot(AMP_HIPS_CLEANED_3, aes(x = VAS_TOTSCORE.diff)) + 
   geom_histogram(binwidth=1, fill = "grey", colour="black")+
@@ -1109,7 +1077,6 @@ Hist_VAS_test.AMPLITUDE<-ggplot(AMP_HIPS_CLEANED_3, aes(x = VAS_TOTSCORE.diff)) 
   scale_x_continuous(limits=c(-100,100),breaks=seq(-100,100,10)) +
   geom_vline(xintercept=11, colour="red", linetype = "longdash", size = 1)  + #check the threshold line is plotted at std dev*0.5
   annotate(x=30,y=+Inf,label="MCID\nthreshold",vjust=2,geom="text", colour="red", size = 4)
-
 ## Histogram of preOp OHS
 Hist_preopOHS_AMP_HIPS_CLEANED3<-ggplot(AMP_HIPS_CLEANED_3.small, aes(x = OHS_PREOP_TOTSCORE)) + 
   geom_histogram(binwidth=1,
@@ -1126,7 +1093,6 @@ Hist_preopOHS_AMP_HIPS_CLEANED3<-ggplot(AMP_HIPS_CLEANED_3.small, aes(x = OHS_PR
   ylab("N of subjects") +
   xlab("PreOperative OHS total score ")+
   scale_x_continuous(limits=c(0,48),breaks = seq(0,48,4))
-
 ## Histogram of preOp EQ-VAS
 Hist_preopVAS_AMP_HIPS_CLEANED3<-ggplot(AMP_HIPS_CLEANED_3, aes(x = EQ5D_PREOP_VAS)) + 
   geom_histogram(binwidth=1,
