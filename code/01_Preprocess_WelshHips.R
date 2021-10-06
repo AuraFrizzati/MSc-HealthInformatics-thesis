@@ -123,7 +123,6 @@ rm(AMP_HIPS_PRIM_DATES,DATE_DIFF_ALL)
 #.........................................................................................
 #.........................................................................................
 
-
 # Primary: patients 2+ primary surgeries on the same side--------
 AMP_HIPS_PRIM %>% 
   group_by(pID,Pathway.Side) %>% 
@@ -279,10 +278,8 @@ rm(AMP_HIPS_PRIM.cleaned2)
 #.........................................................................................
 #.........................................................................................
 
-
 # Primary: remove cases without tot OHS 6 or 12 months --------------------
 ## check combinations of OHS TOT SCORE 6-months and 12-months
-
 AMP_HIPS_PRIM.cleaned3$OHS_POSTOP_TOTSCORE_TYPE<-NA
 AMP_HIPS_PRIM.cleaned3[!is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP6M_TOTSCORE)&
                          is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP12M_TOTSCORE),]$OHS_POSTOP_TOTSCORE_TYPE<-"6MONTHS_ONLY"
@@ -290,22 +287,14 @@ AMP_HIPS_PRIM.cleaned3[!is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP6M_TOTSCORE)&
                          !is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP12M_TOTSCORE),]$OHS_POSTOP_TOTSCORE_TYPE<-"6MONTHS&12MONTHS"
 AMP_HIPS_PRIM.cleaned3[is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP6M_TOTSCORE)&
                          !is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP12M_TOTSCORE),]$OHS_POSTOP_TOTSCORE_TYPE<-"12MONTHS_ONLY"
-
-
 AMP_HIPS_PRIM.cleaned3 %>% group_by(OHS_POSTOP_TOTSCORE_TYPE) %>% summarise (tot = n())
-
-#************
 ### remove rows without OHS 6-month post-op & without OHS 12-month post-op
 AMP_HIPS_PRIM.cleaned4<-AMP_HIPS_PRIM.cleaned3[!is.na(AMP_HIPS_PRIM.cleaned3$OHS_POSTOP_TOTSCORE_TYPE),]
-
 rm(AMP_HIPS_PRIM.cleaned3)
 #.........................................................................................
 #.........................................................................................
 
-
-
 # Primary: remove cases without EQVAS 6 or 12 months --------------------
-
 ## check combinations of EQ-VAS 6-months and 12-months
 AMP_HIPS_PRIM.cleaned4$EQVAS_POSTOP_TYPE<-NA
 AMP_HIPS_PRIM.cleaned4[!is.na(AMP_HIPS_PRIM.cleaned4$EQ5D_POSTOP6M_VAS)&
@@ -318,12 +307,9 @@ AMP_HIPS_PRIM.cleaned4 %>% group_by(EQVAS_POSTOP_TYPE) %>% summarise (tot = n())
 
 ### remove rows without EQ-VAS 6-month post-op & without EQ-VAS 12-month post-op
 AMP_HIPS_PRIM.cleaned5<-AMP_HIPS_PRIM.cleaned4[!is.na(AMP_HIPS_PRIM.cleaned4$EQVAS_POSTOP_TYPE),]
-
 rm(AMP_HIPS_PRIM.cleaned4)
 #.........................................................................................
 #.........................................................................................
-
-
 
 # Revision: patients 2+ primary surgeries on the same side--------
 ### check for the presence of patients with multiple revision surgeries on the same side  (although these might be plausible)
@@ -359,9 +345,6 @@ rm(remove)
 #.........................................................................................
 #.........................................................................................
 
-
-
-
 # Revision: re-organise columns ------------------------------------------------------
 ### drop  unnecessary columns
 drop_columns<-c("Pathway.Side",
@@ -390,8 +373,6 @@ AMP_HIPS_REV.cleaned2<-
                         !(names(AMP_HIPS_REV.cleaned) %in% drop_columns)]
 
 # from 43 to 23 variables
-#names(AMP_HIPS_REV.cleaned2)
-
 ## re-name columns 
 new_col_names<-c("pID",
                  "REVISION",
@@ -416,24 +397,17 @@ new_col_names<-c("pID",
                  "OHS_PREOP_WASHING",
                  "OHS_PREOP_WORK",
                  "OHS_PREOP_PAIN")
-
-
 # extract df columns' original names and add new columns' names 
 colnames_orig_and_new <- cbind(as.data.frame(colnames(AMP_HIPS_REV.cleaned2)), new_col_names)
-
 # rename the columns of the original df with the new names:
 names(AMP_HIPS_REV.cleaned2)[match(colnames_orig_and_new[,1], 
                                    names(AMP_HIPS_REV.cleaned2))] = colnames_orig_and_new[,2]
-
 rm(drop_columns,new_col_names,colnames_orig_and_new, AMP_HIPS_REV.cleaned)
 #.........................................................................................
 #.........................................................................................
 
-
-
 # Revision: missing values baseline OHS and EQ-VAS ----------------------------------
 ## check N of missing values for the baseline OHS and EQ-VAS scores
-
 AMP_HIPS_REV.cleaned2$BASELINE_SCORE_TYPE<-NA
 AMP_HIPS_REV.cleaned2[!is.na(AMP_HIPS_REV.cleaned2$OHS_PREOP_TOTSCORE)&
                         is.na(AMP_HIPS_REV.cleaned2$EQ5D_PREOP_VAS),]$BASELINE_SCORE_TYPE<-"OHSPREOP_ONLY"
@@ -441,30 +415,20 @@ AMP_HIPS_REV.cleaned2[!is.na(AMP_HIPS_REV.cleaned2$OHS_PREOP_TOTSCORE)&
                         !is.na(AMP_HIPS_REV.cleaned2$EQ5D_PREOP_VAS),]$BASELINE_SCORE_TYPE<-"OHSPREOP&VASPREOP"
 AMP_HIPS_REV.cleaned2[is.na(AMP_HIPS_REV.cleaned2$OHS_PREOP_TOTSCORE)&
                         !is.na(AMP_HIPS_REV.cleaned2$EQ5D_PREOP_VAS),]$BASELINE_SCORE_TYPE<-"VASPREOP_ONLY"
-
-
 AMP_HIPS_REV.cleaned2 %>% group_by(BASELINE_SCORE_TYPE) %>% summarise (tot = n())
-
 ## remove subjects without both OHS and VAS pre-op:
 AMP_HIPS_REV.cleaned3<-AMP_HIPS_REV.cleaned2[AMP_HIPS_REV.cleaned2$BASELINE_SCORE_TYPE=="OHSPREOP&VASPREOP"&
                                                !is.na(AMP_HIPS_REV.cleaned2$BASELINE_SCORE_TYPE),]
-
 ##checking N of missing values/column
 #sapply(AMP_HIPS_REV.cleaned3, function(x){sum(is.na(x))})
-
 rm(AMP_HIPS_REV.cleaned2)
-#.........................................................................................
-#.........................................................................................
-
-
-
 ## After these cleaning steps, only these predictors have missing values:
 ## OHS_POSTOP6M_TOTSCORE, OHS_POSTOP12M_TOTSCORE, EQ5D_POSTOP6M_VAS,  EQ5D_POSTOP12M_VAS
-
+#.........................................................................................
+#.........................................................................................
 
 # Revision: remove cases without tot OHS 6 or 12 months --------------------
 ## check combinations of OHS TOT SCORE 6-months and 12-months
-
 AMP_HIPS_REV.cleaned3$OHS_POSTOP_TOTSCORE_TYPE<-NA
 AMP_HIPS_REV.cleaned3[!is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP6M_TOTSCORE)&
                         is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP12M_TOTSCORE),]$OHS_POSTOP_TOTSCORE_TYPE<-"6MONTHS_ONLY"
@@ -472,21 +436,14 @@ AMP_HIPS_REV.cleaned3[!is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP6M_TOTSCORE)&
                         !is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP12M_TOTSCORE),]$OHS_POSTOP_TOTSCORE_TYPE<-"6MONTHS&12MONTHS"
 AMP_HIPS_REV.cleaned3[is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP6M_TOTSCORE)&
                         !is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP12M_TOTSCORE),]$OHS_POSTOP_TOTSCORE_TYPE<-"12MONTHS_ONLY"
-
-
 AMP_HIPS_REV.cleaned3 %>% group_by(OHS_POSTOP_TOTSCORE_TYPE) %>% summarise (tot = n())
-
-#************
 ### remove rows without OHS 6-month post-op & without OHS 12-month post-op
 AMP_HIPS_REV.cleaned4<-AMP_HIPS_REV.cleaned3[!is.na(AMP_HIPS_REV.cleaned3$OHS_POSTOP_TOTSCORE_TYPE),]
-
 rm(AMP_HIPS_REV.cleaned3)
 #.........................................................................................
 #.........................................................................................
 
-
 # Revision: remove cases without EQVAS 6 or 12 months --------------------
-
 ## check combinations of EQ-VAS 6-months and 12-months
 AMP_HIPS_REV.cleaned4$EQVAS_POSTOP_TYPE<-NA
 AMP_HIPS_REV.cleaned4[!is.na(AMP_HIPS_REV.cleaned4$EQ5D_POSTOP6M_VAS)&
@@ -495,57 +452,41 @@ AMP_HIPS_REV.cleaned4[!is.na(AMP_HIPS_REV.cleaned4$EQ5D_POSTOP6M_VAS)&
                         !is.na(AMP_HIPS_REV.cleaned4$EQ5D_POSTOP12M_VAS),]$EQVAS_POSTOP_TYPE<-"6MONTHS&12MONTHS"
 AMP_HIPS_REV.cleaned4[is.na(AMP_HIPS_REV.cleaned4$EQ5D_POSTOP6M_VAS)&
                         !is.na(AMP_HIPS_REV.cleaned4$EQ5D_POSTOP12M_VAS),]$EQVAS_POSTOP_TYPE<-"12MONTHS_ONLY"
-
 AMP_HIPS_REV.cleaned4 %>% group_by(EQVAS_POSTOP_TYPE) %>% summarise (tot = n())
-
-#************
 ### remove rows without EQ-VAS 6-month post-op & without EQ-VAS 12-month post-op
 AMP_HIPS_REV.cleaned5<-AMP_HIPS_REV.cleaned4[!is.na(AMP_HIPS_REV.cleaned4$EQVAS_POSTOP_TYPE),]
-
 rm(AMP_HIPS_REV.cleaned4)
 #.........................................................................................
 #.........................................................................................
 
-
-
 # Merge Primary & Revision ------------------------------------------------
-
 ## check the two datasets' columns
-names(AMP_HIPS_PRIM.cleaned5)
-names(AMP_HIPS_REV.cleaned5)
+#names(AMP_HIPS_PRIM.cleaned5)
+#names(AMP_HIPS_REV.cleaned5)
 # same columns in both datasets, although in different order (AGE)
-
 ##vertically merge two datasets' columns
 AMP_HIPS_CLEANED<-rbind(AMP_HIPS_PRIM.cleaned5,AMP_HIPS_REV.cleaned5)
-
 rm(AMP_HIPS_PRIM.cleaned5,AMP_HIPS_REV.cleaned5)
 #.........................................................................................
 #.........................................................................................
 
-
 # Compare tot postop OHS 6 vs 12 months -----------------------------------
-
 ### Compare distributions of post-op OHS at 6 and 12 months
-
 #extract 6 months
 OHS_POSTOP6M_TOTSCORE.p<-as.data.frame(AMP_HIPS_CLEANED$OHS_POSTOP6M_TOTSCORE)
 OHS_POSTOP6M_TOTSCORE.p$postTime<-'6M'
 names(OHS_POSTOP6M_TOTSCORE.p)<-c('OHS','postTime')
 OHS_POSTOP6M_TOTSCORE.p<-OHS_POSTOP6M_TOTSCORE.p[!is.na(OHS_POSTOP6M_TOTSCORE.p$OHS),] ##442
-
 #extract 12 months
 OHS_POSTOP12M_TOTSCORE.p<-as.data.frame(AMP_HIPS_CLEANED$OHS_POSTOP12M_TOTSCORE)
 OHS_POSTOP12M_TOTSCORE.p$postTime<-'12M'
 names(OHS_POSTOP12M_TOTSCORE.p)<-c('OHS','postTime')
 OHS_POSTOP12M_TOTSCORE.p<-OHS_POSTOP12M_TOTSCORE.p[!is.na(OHS_POSTOP12M_TOTSCORE.p$OHS),] ##711
-
 #bind
 OHS_POSTOP_TOTSCORE.p<-rbind(OHS_POSTOP6M_TOTSCORE.p,OHS_POSTOP12M_TOTSCORE.p)
 rm(OHS_POSTOP6M_TOTSCORE.p,OHS_POSTOP12M_TOTSCORE.p)
-
 OHS_POSTOP_TOTSCORE.p$postTime<-factor(OHS_POSTOP_TOTSCORE.p$postTime,
                                        levels = c("6M", "12M"))
-
 ## visually checking OHS distributions (post op 6 vs 12 months):
 ggplot() + 
   geom_histogram(aes(x=OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=='6M',]$OHS, 
@@ -562,7 +503,6 @@ ggplot() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
         legend.position = c(0.9, 0.9))
-
 boxplot_prim_vs_rev_OHS <- ggplot(OHS_POSTOP_TOTSCORE.p, aes(x=postTime, y=OHS)) + 
   geom_boxplot(aes(fill=factor(postTime))) +  
   #stat_summary(geom = "errorbar", fun.min = mean, fun = mean, fun.max = mean, 
@@ -578,12 +518,10 @@ boxplot_prim_vs_rev_OHS <- ggplot(OHS_POSTOP_TOTSCORE.p, aes(x=postTime, y=OHS))
   scale_fill_manual(values=c("darkgrey","white"))+ 
   theme(legend.position = "none")+ ylim(0,55)+
   scale_y_continuous(breaks = seq(0,50, by = 5))
-
 ## print image
 png(filename="output/thesis_files/boxplot_prim_vs_rev_OHS.png",  width = 473, height = 363)
 boxplot_prim_vs_rev_OHS
 dev.off()
-
 OHS_POSTOP_TOTSCORE.p %>% group_by(postTime) %>% summarise (Mean = mean(OHS),
                                                             StdDev = sd(OHS),
                                                             Min = min(OHS),
@@ -591,11 +529,9 @@ OHS_POSTOP_TOTSCORE.p %>% group_by(postTime) %>% summarise (Mean = mean(OHS),
                                                             Median = median(OHS),
                                                             FirstQuartile = quantile(OHS, probs = 0.25),
                                                             ThirdQuartile = quantile(OHS, probs = 0.75))
-
 # postTime  Mean StdDev   Min   Max Median FirstQuartile ThirdQuartile
 # 6M        36.7   11.1     3    48     40          32.2            45
 # 12M       38.0   10.5     2    48     41          33              47
-
 g1<-ggplot(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="6M",], 
            aes(sample=OHS))+
   stat_qq(shape=1) + 
@@ -611,7 +547,6 @@ g1<-ggplot(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="6M",],
         axis.title=element_text(size=14)) +
   ylab("Sample quantiles") +
   xlab("Theoretical quantiles")
-
 g2<-ggplot(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="12M",], 
            aes(sample=OHS))+
   stat_qq(shape=1) + 
@@ -627,7 +562,6 @@ g2<-ggplot(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="12M",],
         axis.title=element_text(size=14)) +
   ylab("Sample quantiles") +
   xlab("Theoretical quantiles")
-
 g3<-ggplot(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="6M",], 
            aes(x = OHS)) + 
   geom_histogram(binwidth=1, fill = "grey", colour="black")+
@@ -645,7 +579,6 @@ g3<-ggplot(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="6M",],
   scale_x_continuous(limits=c(0,48),breaks = seq(0,48,4))+
   geom_vline(xintercept=mean(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="6M",]$OHS), colour="red", linetype = "longdash", size = 1)+
   geom_vline(xintercept=median(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="6M",]$OHS), colour="black", size = 1)
-
 g4<-ggplot(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="12M",], 
            aes(x = OHS)) + 
   geom_histogram(binwidth=1, fill = "grey", colour="black")+
@@ -663,54 +596,42 @@ g4<-ggplot(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="12M",],
   scale_x_continuous(limits=c(0,48),breaks = seq(0,48,4))+
   geom_vline(xintercept=mean(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="12M",]$OHS), colour="red", linetype = "longdash", size = 1)+
   geom_vline(xintercept=median(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="12M",]$OHS), colour="black", size = 1)
-
 ggpubr::ggarrange(g1,g3,g2,g4)
-
+### check distributions' normality
 with(OHS_POSTOP_TOTSCORE.p, shapiro.test(OHS[postTime == "6M"]))
-# W = 0.85799, p-value < 2.2e-16 --> NOT NORMALLY DISTRIBUTED, however sample size > 30
-
+# W = 0.85799, p-value < 2.2e-16 --> NOT NORMALLY DISTRIBUTED
 with(OHS_POSTOP_TOTSCORE.p, shapiro.test(OHS[postTime == "12M"]))
 # W = 0.85421, p-value < 2.2e-16 --> NOT NORMALLY DISTRIBUTED,
-
 ## non parametric test: Wilcoxon rank sum (or Mann-Whitney) test:
 wilcox.test(OHS ~ postTime, data = OHS_POSTOP_TOTSCORE.p, exact = FALSE)
 # Wilcoxon rank sum test with continuity correction
 # data:  OHS by postTime
 # W = 144736, p-value = 0.02384
 # alternative hypothesis: true location shift is not equal to 0
-
 AMP_HIPS_CLEANED %>% group_by(OHS_POSTOP_TOTSCORE_TYPE) %>% summarise (tot = n())
 # OHS_POSTOP_TOTSCORE_TYPE   tot
-# * <chr>                    <int>
 # 12MONTHS_ONLY              384 --> remove
 # 6MONTHS&12MONTHS           327
 # 6MONTHS_ONLY               115
 ### I will need to remove subjects with post-op OHS 12MONTHS_ONLY
-
 rm(g1,g3,g2,g4,OHS_POSTOP_TOTSCORE.p)
 #.........................................................................................
 #.........................................................................................
 
-
 # Compare postop EQVAS 6 vs 12 months -----------------------------------
-
 #### Compare distributions of post-op EQ-VAS at 6 and 12 months
-
 #extract 6 months
 EQVAS_POSTOP6M.p<-as.data.frame(AMP_HIPS_CLEANED$EQ5D_POSTOP6M_VAS)
 EQVAS_POSTOP6M.p$postTime<-'6M'
 names(EQVAS_POSTOP6M.p)<-c('EQVAS','postTime')
 EQVAS_POSTOP6M.p<-EQVAS_POSTOP6M.p[!is.na(EQVAS_POSTOP6M.p$EQVAS),] ##454
-
 #extract 12 months
 EQVAS_POSTOP12M.p<-as.data.frame(AMP_HIPS_CLEANED$EQ5D_POSTOP12M_VAS)
 EQVAS_POSTOP12M.p$postTime<-'12M'
 names(EQVAS_POSTOP12M.p)<-c('EQVAS','postTime')
 EQVAS_POSTOP12M.p<-EQVAS_POSTOP12M.p[!is.na(EQVAS_POSTOP12M.p$EQVAS),] ##712
-
 #bind
 EQVAS_POSTOP.p<-rbind(EQVAS_POSTOP6M.p,EQVAS_POSTOP12M.p)
-
 EQVAS_POSTOP.p$postTime<-factor(EQVAS_POSTOP.p$postTime,
                                 levels = c("6M", "12M"))
 ## visually checking OHS distributions (post op 6 vs 12 months):
@@ -729,8 +650,7 @@ ggplot() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
         legend.position = c(0.9, 0.9))
-
-boxplot_prim_vs_rev_EQVAS<-ggplot(EQVAS_POSTOP.p, aes(x=postTime, y=EQVAS)) + 
+boxplot_prim_vs_rev_EQVAS_hips<-ggplot(EQVAS_POSTOP.p, aes(x=postTime, y=EQVAS)) + 
   geom_boxplot(aes(fill=factor(postTime))) + 
   geom_point(size=0.5) +  
   #stat_summary(geom = "errorbar", fun.min = mean, fun = mean, fun.max = mean, 
@@ -741,17 +661,14 @@ boxplot_prim_vs_rev_EQVAS<-ggplot(EQVAS_POSTOP.p, aes(x=postTime, y=EQVAS)) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
         plot.title = element_text(hjust = 0.5))+
-  scale_x_discrete(labels=c("6 months","12 months")) +
+  scale_x_discrete(labels=c("6 months post-surgery","12 months post-surgery")) +
   scale_fill_manual(values=c("darkgrey","white"))+ 
   theme(legend.position = "none")+ ylim(0,55)+
   scale_y_continuous(breaks = seq(0,110, by = 10))
-
 ## print image
-png(filename="output/thesis_files/boxplot_prim_vs_rev_EQVAS.png",  width = 473, height = 363)
-boxplot_prim_vs_rev_EQVAS
+png(filename="output/thesis_files/boxplot_prim_vs_rev_EQVAS_hips.png",  width = 473, height = 363)
+boxplot_prim_vs_rev_EQVAS_hips
 dev.off()
-
-
 EQVAS_POSTOP.p %>% group_by(postTime) %>% summarise (Mean = mean(EQVAS),
                                                      StdDev = sd(EQVAS),
                                                      Min = min(EQVAS),
@@ -759,12 +676,9 @@ EQVAS_POSTOP.p %>% group_by(postTime) %>% summarise (Mean = mean(EQVAS),
                                                      Median = median(EQVAS),
                                                      FirstQuartile = quantile(EQVAS, probs = 0.25),
                                                      ThirdQuartile = quantile(EQVAS, probs = 0.75))
-
-
 # postTime   Mean StdDev   Min   Max Median FirstQuartile ThirdQuartile
 # 6M         72.1   21.7     0   100     79            60            90
 # 12M        71.6   22.9     0   100     80            60            90
-
 g5<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="6M",], 
            aes(sample=EQVAS))+
   stat_qq(shape=1) + 
@@ -780,7 +694,6 @@ g5<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="6M",],
         axis.title=element_text(size=14)) +
   ylab("Sample quantiles") +
   xlab("Theoretical quantiles")
-
 g6<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="12M",], 
            aes(sample=EQVAS))+
   stat_qq(shape=1) + 
@@ -796,7 +709,6 @@ g6<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="12M",],
         axis.title=element_text(size=14)) +
   ylab("Sample quantiles") +
   xlab("Theoretical quantiles")
-
 g7<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="6M",], 
            aes(x = EQVAS)) + 
   geom_histogram(binwidth=1, fill = "grey", colour="black")+
@@ -814,7 +726,6 @@ g7<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="6M",],
   scale_x_continuous(limits=c(0,100),breaks = seq(0,100,4))+
   geom_vline(xintercept=mean(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="6M",]$EQVAS), colour="red", linetype = "longdash", size = 1)+
   geom_vline(xintercept=median(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="6M",]$EQVAS), colour="black", size = 1)
-
 g8<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="12M",], 
            aes(x = EQVAS)) + 
   geom_histogram(binwidth=1, fill = "grey", colour="black")+
@@ -832,32 +743,26 @@ g8<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="12M",],
   scale_x_continuous(limits=c(0,100),breaks = seq(0,100,4))+
   geom_vline(xintercept=mean(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="12M",]$EQVAS), colour="red", linetype = "longdash", size = 1)+
   geom_vline(xintercept=median(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="12M",]$EQVAS), colour="black", size = 1)
-
 ggpubr::ggarrange(g5,g6,g7,g8)
-
+## check distributions' normality
 with(EQVAS_POSTOP.p, shapiro.test(EQVAS[postTime == "6M"]))
 # W = 0.89717, p-value < 2.2e-16 --> NOT NORMALLY DISTRIBUTED
-
 with(EQVAS_POSTOP.p, shapiro.test(EQVAS[postTime == "12M"]))
 # W = 0.88808, p-value < 2.2e-16 --> NOT NORMALLY DISTRIBUTED
-
 ## non parametric test: Wilcoxon rank sum (or Mann-Whitney) test:
 wilcox.test(EQVAS ~ postTime, data = EQVAS_POSTOP.p, exact = FALSE)
 # Wilcoxon rank sum test with continuity correction
 # data:  EQVAS by postTime
 # W = 162088, p-value = 0.9341
 # alternative hypothesis: true location shift is not equal to 0
-
 AMP_HIPS_CLEANED %>% group_by(EQVAS_POSTOP_TYPE) %>% summarise (tot = n())
 # EQVAS_POSTOP_TYPE   tot
 # 12MONTHS_ONLY       372
 # 6MONTHS&12MONTHS    340
 # 6MONTHS_ONLY        114
-
 rm(g5,g6,g7,g8,EQVAS_POSTOP.p, EQVAS_POSTOP12M.p, EQVAS_POSTOP6M.p)
 #.........................................................................................
 #.........................................................................................
-
 
 # Create OHS_POSTOP_TOTSCORE var ------------------------------------------
 ### Create OHS_POSTOP_TOTSCORE variable (use post-op 6months)
