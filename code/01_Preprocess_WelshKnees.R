@@ -21,20 +21,16 @@ AMP_KNEES_REV<-read.csv("input_data/Welsh_data/Amplitude_KneesRevision170803_for
 #.........................................................................................
 #.........................................................................................
 
-
 # Variables' format &  missing values -------------------------------------
-
 ## PRIMARY UNIQUE VALUES
 values_by_column(input_dataset="AMP_KNEES_PRIM", 
                  output_dir="output/extra_files/", 
                  output_name="AMP_KNEES_PRIM")
 # VALUES FOR REVISIONS SEEM ALL OK (I already have age and I do not need to convert dates)
-
 ## TO FLAG AS MISSING VALUES for PRIMARY: 
 # - GENDER: "I"
 # - VARIOUS DATES: "DUE", "OVERDUE"
 # - "NA" as a string variable
-
 ## REVISIONS UNIQUE VALUES
 values_by_column(input_dataset="AMP_KNEES_REV", 
                  output_dir="output/extra_files/", 
@@ -66,7 +62,6 @@ AMP_KNEES_PRIM.cleaned<-AMP_KNEES_PRIM[!(AMP_KNEES_PRIM$combID %in% remove$excl_
 rm(remove)
 #.........................................................................................
 #.........................................................................................
-
 
 # Primary: re-organise columns ------------------------------------------------------
 ### drop  unnecessary columns
@@ -366,9 +361,6 @@ OKS_POSTOP_TOTSCORE.p %>% group_by(postTime) %>% summarise (Mean = mean(OKS),
                                                             Median = median(OKS),
                                                             FirstQuartile = quantile(OKS, probs = 0.25),
                                                             ThirdQuartile = quantile(OKS, probs = 0.75))
-# postTime  Mean StdDev   Min   Max Median FirstQuartile ThirdQuartile
-# 6M        33.3   10.0     1    48     35            26            42
-# 12M       32.6   11.4     5    48     36            24            42
 g1<-ggplot(OKS_POSTOP_TOTSCORE.p[OKS_POSTOP_TOTSCORE.p$postTime=="6M",], 
            aes(sample=OKS))+
   stat_qq(shape=1) + 
@@ -446,11 +438,6 @@ wilcox.test(OKS ~ postTime, data = OKS_POSTOP_TOTSCORE.p, exact = FALSE)
 # W = 25734, p-value = 0.8652
 # alternative hypothesis: true location shift is not equal to 0
 AMP_KNEES_CLEANED %>% group_by(OKS_POSTOP_TOTSCORE_TYPE) %>% summarise (tot = n())
-# OKS_POSTOP_TOTSCORE_TYPE   tot
-# * <chr>                    <int>
-# 12MONTHS_ONLY              384
-# 6MONTHS&12MONTHS           327
-# 6MONTHS_ONLY               115
 rm(g1,g3,g2,g4,OKS_POSTOP_TOTSCORE.p)
 #.........................................................................................
 #.........................................................................................
@@ -513,9 +500,6 @@ EQVAS_POSTOP.p %>% group_by(postTime) %>% summarise (Mean = mean(EQVAS),
                                                      Median = median(EQVAS),
                                                      FirstQuartile = quantile(EQVAS, probs = 0.25),
                                                      ThirdQuartile = quantile(EQVAS, probs = 0.75))
-# postTime  Mean StdDev   Min   Max Median FirstQuartile ThirdQuartile
-# 6M         70.1   22.0     0   100     75            55            89
-# 12M        64.2   24.4     0   100     70            50            83
 g5<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="6M",], 
            aes(sample=EQVAS))+
   stat_qq(shape=1) + 
@@ -597,9 +581,6 @@ AMP_KNEES_CLEANED$EQVAS_FILTER<-if_else(AMP_KNEES_CLEANED$EQVAS_POSTOP_TYPE == "
                                         "NO",
                                         "YES")
 AMP_KNEES_CLEANED %>% group_by(EQVAS_FILTER) %>% summarise(N = n())
-# EQVAS_FILTER     N
-# NO              61 --> remove
-# YES            293 --> keep
 rm(g5,g6,g7,g8,EQVAS_POSTOP.p, EQVAS_POSTOP12M.p, EQVAS_POSTOP6M.p)
 #.........................................................................................
 #.........................................................................................
@@ -849,8 +830,6 @@ AMP_KNEES_CLEANED3[AMP_KNEES_CLEANED3$SEX == 'F',]$SEX<-2
 ##Create OKS & EQ-VAS MCID
 #check std dev of EQVAS
 #AMP_KNEES_CLEANED3 %>% summarise(Mean = mean(EQ5D_PREOP_VAS),stdDev = sd(EQ5D_PREOP_VAS))
-# Mean     stdDev
-# 62.67139 21.01325 
 ##Create OKS & EQ-VAS MCID
 AMP_KNEES_CLEANED3 <- as.data.frame(
   AMP_KNEES_CLEANED3 %>% 

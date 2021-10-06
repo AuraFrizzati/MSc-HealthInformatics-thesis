@@ -8,7 +8,6 @@ source("code/00_ProjectFunctions.R") # library of custom-made functions
 #.........................................................................................
 #.........................................................................................
 
-
 ### Import input data -------------------------------------------------------
 AMP_HIPS_PRIM<-read.csv("input_data/Welsh_data/Amplitude_HipsPrimary190404_forAuraFrizzatiMSc_anonRP210414.csv", 
                         header = T,
@@ -20,10 +19,7 @@ AMP_HIPS_REV<-read.csv("input_data/Welsh_data/Amplitude_HipsRevision170803_forAu
 #.........................................................................................
 #.........................................................................................
 
-
-
 # Variables' format &  missing values -------------------------------------
-
 ## PRIMARY UNIQUE VALUES
 values_by_column(input_dataset="AMP_HIPS_PRIM", 
                  output_dir="output/extra_files/", 
@@ -33,7 +29,6 @@ values_by_column(input_dataset="AMP_HIPS_PRIM",
 # - GENDER: "I"
 # - VARIOUS DATES: "DUE", "OVERDUE"
 # - "NA" as a string variable
-
 ## REVISIONS UNIQUE VALUES
 values_by_column(input_dataset="AMP_HIPS_REV", 
                  output_dir="output/extra_files/", 
@@ -42,45 +37,35 @@ values_by_column(input_dataset="AMP_HIPS_REV",
 #.........................................................................................
 #.........................................................................................
 
-
 # Primary: choose Date field ----------------------------
 ### DEAL WITH DATES FOR PRIMARY DATASET: 
-
 # CONVERT "Activity.Date", "Start.Date" and "Completed.Date...OHS.Oxford.Hip.Score...Score...Baseline"
 AMP_HIPS_PRIM$ACT_DATE<-as.Date(AMP_HIPS_PRIM$Activity.Date, format = "%d/%m/%Y")
 subset(AMP_HIPS_PRIM, select=c(ACT_DATE,Activity.Date)) # they look fine
-
 AMP_HIPS_PRIM$START_DATE<-as.Date(AMP_HIPS_PRIM$Start.Date, format = "%d/%m/%Y")
 subset(AMP_HIPS_PRIM, select=c(START_DATE,Start.Date)) # they look fine
-
 AMP_HIPS_PRIM$OHS_BASELINE_DATE<-as.Date(AMP_HIPS_PRIM$Completed.Date...OHS.Oxford.Hip.Score...Score...Baseline, format = "%d/%m/%Y")
 subset(AMP_HIPS_PRIM, select=c(OHS_BASELINE_DATE,Completed.Date...OHS.Oxford.Hip.Score...Score...Baseline)) # they look fine
-
 # EXTRACT DATES AND REMOVE ROWS WITH MISSING VALUES
 AMP_HIPS_PRIM_DATES<-subset(AMP_HIPS_PRIM, select=c(pID,ACT_DATE,START_DATE,OHS_BASELINE_DATE))
 AMP_HIPS_PRIM_DATES<-AMP_HIPS_PRIM_DATES[complete.cases(AMP_HIPS_PRIM_DATES), ]
-
 # CALCULATE DIFFERENCES IN DAYS: START_DATE-OHS_BASELINE_DATE
 AMP_HIPS_PRIM_DATES$DATE.DIFF1<-difftime(AMP_HIPS_PRIM_DATES$START_DATE ,
                                          AMP_HIPS_PRIM_DATES$OHS_BASELINE_DATE , units = c("days"))
 DATE_DIFF1<-subset(AMP_HIPS_PRIM_DATES, select=c(pID,DATE.DIFF1))
 DATE_DIFF1$diff_type<-1
 names(DATE_DIFF1)[names(DATE_DIFF1) == "DATE.DIFF1"] <- "DATE_DIFF"
-
 # CALCULATE DIFFERENCES IN DAYS: ACT_DATE-OHS_BASELINE_DATE
 AMP_HIPS_PRIM_DATES$DATE.DIFF2<-difftime(AMP_HIPS_PRIM_DATES$ACT_DATE ,
                                          AMP_HIPS_PRIM_DATES$OHS_BASELINE_DATE , units = c("days"))
 DATE_DIFF2<-subset(AMP_HIPS_PRIM_DATES, select=c(pID,DATE.DIFF2))
 DATE_DIFF2$diff_type<-2
 names(DATE_DIFF2)[names(DATE_DIFF2) == "DATE.DIFF2"] <- "DATE_DIFF"
-
 DATE_DIFF_ALL<-rbind(DATE_DIFF1,DATE_DIFF2)
 rm(DATE_DIFF1,DATE_DIFF2)
 ## PLOT DISTRIBUTIONS OF DATE DIFFERENCES AND CHOOSE WHICH VARIABLE TO USE TO CALCULATE AGE
-
 DATE_DIFF_ALL$DATE_DIFF<-as.integer(DATE_DIFF_ALL$DATE_DIFF) 
 DATE_DIFF_ALL$diff_type<-as.factor(DATE_DIFF_ALL$diff_type)
-
 ggplot(DATE_DIFF_ALL, aes(x=diff_type, y=DATE_DIFF)) + 
   geom_boxplot(aes(fill=factor(diff_type))) + 
   geom_point(size=0.5) +
@@ -91,7 +76,6 @@ ggplot(DATE_DIFF_ALL, aes(x=diff_type, y=DATE_DIFF)) +
   scale_x_discrete(labels=c("START DATE -\n OHS baseline","ACT DATE -\n OHS baseline")) +
   scale_fill_manual(values=c("darkgrey","white"))+ 
   theme(legend.position = "none")  
-
 ggplot() + 
   geom_histogram(aes(x=DATE_DIFF_ALL[DATE_DIFF_ALL$diff_type=='1',]$DATE_DIFF, 
                      fill = DATE_DIFF_ALL[DATE_DIFF_ALL$diff_type=='1',]$diff_type), 
@@ -109,14 +93,11 @@ ggplot() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
         legend.position = c(0.9, 0.9))
-
-
 ## descriptives 
 DATE_DIFF_ALL %>% group_by(diff_type) %>% summarise (Mean = mean(DATE_DIFF),
                                                      StdDev = sd(DATE_DIFF),
                                                      Min = min(DATE_DIFF),
                                                      Max = max(DATE_DIFF))
-
 ## ACTIVITY DATE chosen as main date variable to calculate patients' age at surgery 
 ## (much less spread around baseline date)
 rm(AMP_HIPS_PRIM_DATES,DATE_DIFF_ALL)
@@ -128,20 +109,17 @@ AMP_HIPS_PRIM %>%
   group_by(pID,Pathway.Side) %>% 
   summarise (N_Primary_sameSide = n()) %>%
   arrange(-N_Primary_sameSide)
-
 AMP_HIPS_PRIM %>% 
   group_by(pID,Pathway.Side) %>% 
   summarise (N_Primary_sameSide = n()) %>%
   group_by(N_Primary_sameSide) %>%
   summarise (Tot = n())
-
 ## Extract list of subjects with N_Primary_sameSide > 1
 remove<-as.data.frame(AMP_HIPS_PRIM %>% 
                         group_by(pID,Pathway.Side) %>% 
                         summarise (N_Primary_sameSide = n()) %>% 
                         filter(N_Primary_sameSide > 1)%>% 
                         unite(excl_filter, c("pID", "Pathway.Side"), sep = ""))
-
 ### remove subjects with N_Primary_sameSide > 1 
 AMP_HIPS_PRIM$combID<-paste0(AMP_HIPS_PRIM$pID, AMP_HIPS_PRIM$Pathway.Side)
 
@@ -150,24 +128,18 @@ rm(remove)
 #.........................................................................................
 #.........................................................................................
 
-
 # Primary: create Age variable --------------------------------------------
 ### create Patient AGE variable: Activity.Date - Year.of.birth
 AMP_HIPS_PRIM.cleaned$Activity.Year<-as.integer(
   substring(AMP_HIPS_PRIM.cleaned$Activity.Date,7,10))
-
-
 AMP_HIPS_PRIM.cleaned$Age<-AMP_HIPS_PRIM.cleaned$Activity.Year-
   AMP_HIPS_PRIM.cleaned$Year.of.birth
-
 ## visually checking Age distribution:
-
 ggplot(AMP_HIPS_PRIM.cleaned, aes(x=Age)) + geom_histogram()
 # there is a patient aged 1, might have to double-check this 
 # again after I have removed all NAs
 #.........................................................................................
 #.........................................................................................
-
 
 # Primary: re-organise columns ------------------------------------------------------
 ### drop  unnecessary columns
@@ -196,12 +168,10 @@ drop_columns<-c("Pathway.Side",
                 "OHS_BASELINE_DATE",
                 "combID",
                 "Activity.Year")
-
 AMP_HIPS_PRIM.cleaned2<-
   AMP_HIPS_PRIM.cleaned[ , 
                          !(names(AMP_HIPS_PRIM.cleaned) %in% drop_columns)]
 # from 42 to 23 variables
-
 ## re-name columns 
 new_col_names<-c("pID",
                  "REVISION",
@@ -231,22 +201,17 @@ new_col_names<-c("pID",
                  # "EQ5D5L_PREOP_SELFCARE",
                  # "EQ5D5L_PREOP_ACTIVITY",
                  "AGE")
-
 # extract df columns' original names and add new columns' names 
 colnames_orig_and_new <- cbind(as.data.frame(colnames(AMP_HIPS_PRIM.cleaned2)), new_col_names)
-
 # rename the columns of the original df with the new names:
 names(AMP_HIPS_PRIM.cleaned2)[match(colnames_orig_and_new[,1], 
                                     names(AMP_HIPS_PRIM.cleaned2))] = colnames_orig_and_new[,2]
-
 rm(drop_columns,new_col_names,colnames_orig_and_new, AMP_HIPS_PRIM.cleaned)
 #.........................................................................................
 #.........................................................................................
 
-
 # Primary: missing values baseline OHS and EQ-VAS ----------------------------------
 ## check N of missing values for the baseline OHS and EQ-VAS scores
-
 AMP_HIPS_PRIM.cleaned2$BASELINE_SCORE_TYPE<-NA
 AMP_HIPS_PRIM.cleaned2[!is.na(AMP_HIPS_PRIM.cleaned2$OHS_PREOP_TOTSCORE)&
                          is.na(AMP_HIPS_PRIM.cleaned2$EQ5D_PREOP_VAS),]$BASELINE_SCORE_TYPE<-"OHSPREOP_ONLY"
@@ -254,26 +219,18 @@ AMP_HIPS_PRIM.cleaned2[!is.na(AMP_HIPS_PRIM.cleaned2$OHS_PREOP_TOTSCORE)&
                          !is.na(AMP_HIPS_PRIM.cleaned2$EQ5D_PREOP_VAS),]$BASELINE_SCORE_TYPE<-"OHSPREOP&VASPREOP"
 AMP_HIPS_PRIM.cleaned2[is.na(AMP_HIPS_PRIM.cleaned2$OHS_PREOP_TOTSCORE)&
                          !is.na(AMP_HIPS_PRIM.cleaned2$EQ5D_PREOP_VAS),]$BASELINE_SCORE_TYPE<-"VASPREOP_ONLY"
-
-
 AMP_HIPS_PRIM.cleaned2 %>% group_by(BASELINE_SCORE_TYPE) %>% summarise (tot = n())
-
 ## remove subjects without both OHS and VAS pre-op:
 AMP_HIPS_PRIM.cleaned3<-AMP_HIPS_PRIM.cleaned2[AMP_HIPS_PRIM.cleaned2$BASELINE_SCORE_TYPE=="OHSPREOP&VASPREOP"&
                                                  !is.na(AMP_HIPS_PRIM.cleaned2$BASELINE_SCORE_TYPE),]
-
 ##checking N of missing values/column
 #sapply(AMP_HIPS_PRIM.cleaned3, function(x){sum(is.na(x))})
-
 ## remove 1 subject without all pre-op OHS dimensions:
 AMP_HIPS_PRIM.cleaned3<-AMP_HIPS_PRIM.cleaned3[!is.na(AMP_HIPS_PRIM.cleaned3$OHS_PREOP_SHOPPING),]
-
 ##checking N of missing values/column
 #sapply(AMP_HIPS_PRIM.cleaned3, function(x){sum(is.na(x))})
-
 ## After these cleaning steps, only these predictors have missing values:
 ## OHS_POSTOP6M_TOTSCORE, OHS_POSTOP12M_TOTSCORE, EQ5D_POSTOP6M_VAS,  EQ5D_POSTOP12M_VAS
-
 rm(AMP_HIPS_PRIM.cleaned2)
 #.........................................................................................
 #.........................................................................................
@@ -317,29 +274,19 @@ AMP_HIPS_REV %>%
   group_by(pID,Pathway.Side) %>% 
   summarise (N_Revision_sameSide = n()) %>%
   arrange(-N_Revision_sameSide)
-
 AMP_HIPS_REV %>% 
   group_by(pID,Pathway.Side) %>% 
   summarise (N_Revision_sameSide = n()) %>%
   group_by(N_Revision_sameSide) %>%
   summarise (Tot = n())
-
-# N_Revision_sameSide   Tot
-# 1                     277
-# 2                       7 --> 14 records, I remove them since their dates are very close and some have different scores
-
 ## Extract list of subjects with N_Revision_sameSide > 1
 remove<-as.data.frame(AMP_HIPS_REV %>% 
                         group_by(pID,Pathway.Side) %>% 
                         summarise (N_Revision_sameSide = n()) %>% 
                         filter(N_Revision_sameSide > 1)%>% 
                         unite(excl_filter, c("pID", "Pathway.Side"), sep = ""))
-
-
-#************
 ### remove subjects with N_Revision_sameSide > 1 
 AMP_HIPS_REV$combID<-paste0(AMP_HIPS_REV$pID, AMP_HIPS_REV$Pathway.Side)
-
 AMP_HIPS_REV.cleaned<-AMP_HIPS_REV[!(AMP_HIPS_REV$combID %in% remove$excl_filter),]
 rm(remove)
 #.........................................................................................
@@ -367,11 +314,9 @@ drop_columns<-c("Pathway.Side",
                 "EQ.5D.5L.Baseline...b.SELF.CARE..b.",
                 "EQ.5D.5L.Baseline...b.USUAL.ACTIVITIES..b...eg..work..study..housework..family.or.leisure.activities.",
                 "combID")
-
 AMP_HIPS_REV.cleaned2<-
   AMP_HIPS_REV.cleaned[ , 
                         !(names(AMP_HIPS_REV.cleaned) %in% drop_columns)]
-
 # from 43 to 23 variables
 ## re-name columns 
 new_col_names<-c("pID",
@@ -529,9 +474,6 @@ OHS_POSTOP_TOTSCORE.p %>% group_by(postTime) %>% summarise (Mean = mean(OHS),
                                                             Median = median(OHS),
                                                             FirstQuartile = quantile(OHS, probs = 0.25),
                                                             ThirdQuartile = quantile(OHS, probs = 0.75))
-# postTime  Mean StdDev   Min   Max Median FirstQuartile ThirdQuartile
-# 6M        36.7   11.1     3    48     40          32.2            45
-# 12M       38.0   10.5     2    48     41          33              47
 g1<-ggplot(OHS_POSTOP_TOTSCORE.p[OHS_POSTOP_TOTSCORE.p$postTime=="6M",], 
            aes(sample=OHS))+
   stat_qq(shape=1) + 
@@ -609,10 +551,6 @@ wilcox.test(OHS ~ postTime, data = OHS_POSTOP_TOTSCORE.p, exact = FALSE)
 # W = 144736, p-value = 0.02384
 # alternative hypothesis: true location shift is not equal to 0
 AMP_HIPS_CLEANED %>% group_by(OHS_POSTOP_TOTSCORE_TYPE) %>% summarise (tot = n())
-# OHS_POSTOP_TOTSCORE_TYPE   tot
-# 12MONTHS_ONLY              384 --> remove
-# 6MONTHS&12MONTHS           327
-# 6MONTHS_ONLY               115
 ### I will need to remove subjects with post-op OHS 12MONTHS_ONLY
 rm(g1,g3,g2,g4,OHS_POSTOP_TOTSCORE.p)
 #.........................................................................................
@@ -676,9 +614,6 @@ EQVAS_POSTOP.p %>% group_by(postTime) %>% summarise (Mean = mean(EQVAS),
                                                      Median = median(EQVAS),
                                                      FirstQuartile = quantile(EQVAS, probs = 0.25),
                                                      ThirdQuartile = quantile(EQVAS, probs = 0.75))
-# postTime   Mean StdDev   Min   Max Median FirstQuartile ThirdQuartile
-# 6M         72.1   21.7     0   100     79            60            90
-# 12M        71.6   22.9     0   100     80            60            90
 g5<-ggplot(EQVAS_POSTOP.p[EQVAS_POSTOP.p$postTime=="6M",], 
            aes(sample=EQVAS))+
   stat_qq(shape=1) + 
@@ -756,10 +691,6 @@ wilcox.test(EQVAS ~ postTime, data = EQVAS_POSTOP.p, exact = FALSE)
 # W = 162088, p-value = 0.9341
 # alternative hypothesis: true location shift is not equal to 0
 AMP_HIPS_CLEANED %>% group_by(EQVAS_POSTOP_TYPE) %>% summarise (tot = n())
-# EQVAS_POSTOP_TYPE   tot
-# 12MONTHS_ONLY       372
-# 6MONTHS&12MONTHS    340
-# 6MONTHS_ONLY        114
 rm(g5,g6,g7,g8,EQVAS_POSTOP.p, EQVAS_POSTOP12M.p, EQVAS_POSTOP6M.p)
 #.........................................................................................
 #.........................................................................................
