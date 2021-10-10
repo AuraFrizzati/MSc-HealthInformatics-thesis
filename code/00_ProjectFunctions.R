@@ -253,6 +253,8 @@ DescriptiveCont2<-function(input_dataset, output_table){
     )
     ,
     ##OHS POST-OP
+
+    if(sum(is.na(input_dataset$OHS_POSTOP_TOTSCORE)) == 0){
     inner_join(
       #OHS postop median
       inner_join(input_dataset%>%
@@ -280,9 +282,11 @@ DescriptiveCont2<-function(input_dataset, output_table){
         mutate(VARIABLE="OHS Total Score")%>% 
         select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
     )
+    }
     ,
     
     ##OHS_TOTSCORE.diff
+    if(sum(is.na(input_dataset$OHS_TOTSCORE.diff)) == 0){
     inner_join(
       #OHS_TOTSCORE.diff median
       inner_join(input_dataset%>%
@@ -310,7 +314,7 @@ DescriptiveCont2<-function(input_dataset, output_table){
         mutate(VARIABLE="OHS Total Score")%>% 
         select(c(VARIABLE,VALUE_COL), everything()) #to change columns' position
     )
-    
+    }
     ,
     
     ##EQ-VAS PRE-OP
