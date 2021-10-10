@@ -628,7 +628,6 @@ write.csv(NEW_Descr3.English.test.1819,"NEW_Descr3.English.test.1819.csv", row.n
 #.........................................................................................
 #.........................................................................................
 
-
 # histograms for hips (pre and difference post-pre) -----------------------
 #### Plotting distributions for relevant continuous vars in OHS and EQ-VAS
 #### including MCID thresholding for English.training.1618 dataset
@@ -744,4 +743,54 @@ ggarrange(Hist_preopVAS_training.1618,
 ## 1000X700 HistogramsEQVAS_hips 
 #.........................................................................................
 #.........................................................................................
+
+# Logistic regression on Test Sets (Eng vs Welsh) -------------------------
+## Logistic regression using predictors to predict Welsh or English country in the Test sets only
+# import relevant table from Amplitude Hips
+attach("code/01_Preprocess_WelshHips.RData")
+AMP_HIPS_CLEANED_3.small<-AMP_HIPS_CLEANED_3.small
+## Create an extra col in both test sets for Country 
+AMP_HIPS_CLEANED_3.small$COUNTRY<-"WALES"
+English.test.1819$COUNTRY<-"ENGLAND"
+## Union of English and AMP_HIPS_CLEANED3 test sets, keeping only relevant columns
+col_to_keep_test_merge<-c("REVISION",
+                          "AGEBAND",
+                          "SEX",
+                          "EQ5D_PREOP_INDEX",
+                          "EQ5D_PREOP_VAS",
+                          "OHS_PREOP_PAIN",
+                          "OHS_PREOP_SUDDENPAIN",
+                          "OHS_PREOP_NIGHTPAIN",
+                          "OHS_PREOP_WASHING",
+                          "OHS_PREOP_TRANSPORT",
+                          "OHS_PREOP_DRESSING",
+                          "OHS_PREOP_SHOPPING",
+                          "OHS_PREOP_WALKING",
+                          "OHS_PREOP_LIMPING",
+                          "OHS_PREOP_STAIRS",
+                          "OHS_PREOP_STANDING",
+                          "OHS_PREOP_WORK",
+                          #"OHS_PREOP_TOTSCORE", ## this is correlated with all dimensions since it is their sum
+                          #"OHS_MCID",
+                          #"VAS_MCID",
+                          "COUNTRY"
+)
+Dataset.LogReg.byCountry<-rbind(English.test.1819[,col_to_keep_test_merge],
+                                AMP_HIPS_CLEANED_3.small[,col_to_keep_test_merge])
+Dataset.LogReg.byCountry$COUNTRY<-as.factor(Dataset.LogReg.byCountry$COUNTRY)
+#To specify: predicting COUNTRY = WALES
+Dataset.LogReg.byCountry$COUNTRY <- relevel(Dataset.LogReg.byCountry$COUNTRY, ref = "ENGLAND")
+#table(Dataset.LogReg.byCountry$COUNTRY)
+##log regression
+LogReg.byCountry <- glm(COUNTRY ~ ., data = Dataset.LogReg.byCountry, family = "binomial")
+LogReg.byCountry_summary<-summary(LogReg.byCountry)
+LogReg.byCountry_summary$coefficients
+write.csv(LogReg.byCountry_summary$coefficients,"output/thesis_files/Eng_vs_Welsh_test_betas.csv", row.names = TRUE)
+### calculate ORs from beta values
+Eng_vs_Welsh_test_ORs<-exp(cbind(coef(LogReg.byCountry), confint(LogReg.byCountry))) 
+write.csv(Eng_vs_Welsh_test_ORs,"output/thesis_files/Eng_vs_Welsh_test_ORs.csv", row.names = TRUE)
+#.........................................................................................
+#.........................................................................................
+
+
 
