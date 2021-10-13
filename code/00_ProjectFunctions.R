@@ -930,8 +930,6 @@ DescriptiveCont2.OKS<-function(input_dataset, output_table){
     
   )
   
-  # DescriptiveContTable<-transform(DescriptiveContTable, toPrint=paste(Mean, Std.Dev, sep=" \u00B1 ")) ## add +/- symbol between mean and std dev
-  
   # assign the output_df name given as a function argument (GlobalEnv so it is accessible outside of the function) 
   assign(deparse(substitute(output_table)), DescriptiveContTable, envir=.GlobalEnv)
 }
