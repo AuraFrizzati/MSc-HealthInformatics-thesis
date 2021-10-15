@@ -868,6 +868,17 @@ write.csv(Descr_Continuous.AMP_KNEES_CLEANED3,"output/thesis_files/Descr_Continu
 #.........................................................................................
 #.........................................................................................
 
+# Extract demographics for reduced dataset----------------------------------------------------
+DescriptiveCatBasic.OKS(input_dataset = AMP_KNEES_CLEANED3.small, 
+                    output_table = Descr_Categ.AMP_KNEES_CLEANED3.small)
+DescriptiveCont2.OKS(input_dataset = AMP_KNEES_CLEANED3.small, 
+                 output_table = Descr_Continuous.AMP_KNEES_CLEANED3.small)
+
+write.csv(Descr_Categ.AMP_KNEES_CLEANED3.small,"output/thesis_files/Descr_Categ.AMP_KNEES_CLEANED3.small.csv", row.names = FALSE)
+write.csv(Descr_Continuous.AMP_KNEES_CLEANED3.small,"output/thesis_files/Descr_Continuous.AMP_KNEES_CLEANED3.small.csv", row.names = FALSE)
+#.........................................................................................
+#.........................................................................................
+
 # Plots -------------------------------------------------------------------
 #### Plotting distributions for differences (PostOp - PreOp) in OKS and EQ-VAS
 #### including MCID thresholding for Welsh dataset

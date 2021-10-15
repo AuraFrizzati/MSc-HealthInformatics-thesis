@@ -961,8 +961,6 @@ AMP_HIPS_CLEANED_3.small<-AMP_HIPS_CLEANED_3[AMP_HIPS_CLEANED_3$OHS_POSTOP_TOTSC
 #.........................................................................................
 
 # Extract demographics ----------------------------------------------------
-filter.cat<-
-filter.cont<-c("OHS_PREOP_TOTSCORE","EQ5D_PREOP_VAS","EQ5D_PREOP_INDEX", "EQ5D_POSTOP_VAS","VAS_TOTSCORE.diff")
 DescriptiveCatBasic(input_dataset = AMP_HIPS_CLEANED_3, 
                     output_table = Descr_Categ.AMP_HIPS_CLEANED_3)
 DescriptiveCont2(input_dataset = AMP_HIPS_CLEANED_3, 
@@ -970,7 +968,6 @@ DescriptiveCont2(input_dataset = AMP_HIPS_CLEANED_3,
 
 write.csv(Descr_Categ.AMP_HIPS_CLEANED_3,"output/thesis_files/Descr_Categ.AMP_HIPS_CLEANED_3.csv", row.names = FALSE)
 write.csv(Descr_Continuous.AMP_HIPS_CLEANED_3,"output/thesis_files/Descr_Continuous.AMP_HIPS_CLEANED_3.csv", row.names = FALSE)
-rm(filter.cat, filter.cont)
 #.........................................................................................
 #.........................................................................................
 
@@ -985,8 +982,6 @@ write.csv(Descr_Categ.AMP_HIPS_CLEANED_3.small,"output/thesis_files/Descr_Categ.
 write.csv(Descr_Continuous.AMP_HIPS_CLEANED_3.small,"output/thesis_files/Descr_Continuous.AMP_HIPS_CLEANED_3.small.csv", row.names = FALSE)
 #.........................................................................................
 #.........................................................................................
-
-
 
 # Plots -------------------------------------------------------------------
 #### Plotting distributions for differences (PostOp - PreOp) in OHS and EQ-VAS
