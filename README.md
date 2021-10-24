@@ -20,4 +20,4 @@ This folder contains the scripts that have been used for producing the outputs o
 - `EQ-VAS.pdf`--> Most recent version of the tool
 - `OHS-Questionnaire.pdf` -->  Questions and possible answers for the questionnaire
 - `OKS-Questionnaire.pdf` --> Questions and possible answers for the questionnaire
-- `Tripod Checklist.pdf` --> checklist for assessing study's transparency
+- `Tripod Checklist.pdf` --> Checklist for assessing study's transparency
