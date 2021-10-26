@@ -989,7 +989,7 @@ write.csv(Descr_Continuous.AMP_HIPS_CLEANED_3.small,"output/thesis_files/Descr_C
 ## Histogram of difference [OHS PostOp - PreOp]
 Hist_OHS_test.AMPLITUDE<-ggplot(AMP_HIPS_CLEANED_3.small, aes(x = OHS_TOTSCORE.diff)) + 
   geom_histogram(binwidth=1, fill = "grey", colour="black")+
-  ggtitle("PostOperative OHS change\n(Welsh Test Set)")+
+  ggtitle("PostOperative OHS change\n(Welsh THA Test Set)")+
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
@@ -1006,7 +1006,7 @@ Hist_OHS_test.AMPLITUDE<-ggplot(AMP_HIPS_CLEANED_3.small, aes(x = OHS_TOTSCORE.d
 ## Histogram of difference [EQ-VAS PostOp - PreOp]
 Hist_VAS_test.AMPLITUDE<-ggplot(AMP_HIPS_CLEANED_3, aes(x = VAS_TOTSCORE.diff)) + 
   geom_histogram(binwidth=1, fill = "grey", colour="black")+
-  ggtitle("PostOperative EQ-VAS change\n(Welsh Test Set)")+
+  ggtitle("PostOperative EQ-VAS change\n(Welsh THA Test Set)")+
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
@@ -1024,7 +1024,7 @@ Hist_VAS_test.AMPLITUDE<-ggplot(AMP_HIPS_CLEANED_3, aes(x = VAS_TOTSCORE.diff)) 
 Hist_preopOHS_AMP_HIPS_CLEANED3<-ggplot(AMP_HIPS_CLEANED_3.small, aes(x = OHS_PREOP_TOTSCORE)) + 
   geom_histogram(binwidth=1,
                  fill = "grey", colour="black")+
-  ggtitle("PreOperative OHS tot score\n(Welsh Test Set)")+
+  ggtitle("PreOperative OHS tot score\n(Welsh THA Test Set)")+
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
@@ -1040,7 +1040,7 @@ Hist_preopOHS_AMP_HIPS_CLEANED3<-ggplot(AMP_HIPS_CLEANED_3.small, aes(x = OHS_PR
 Hist_preopVAS_AMP_HIPS_CLEANED3<-ggplot(AMP_HIPS_CLEANED_3, aes(x = EQ5D_PREOP_VAS)) + 
   geom_histogram(binwidth=1,
                  fill = "grey", colour="black")+
-  ggtitle("PreOperative EQ-VAS score\n(Welsh Test Set)")+
+  ggtitle("PreOperative EQ-VAS score\n(Welsh THA Test Set)")+
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
@@ -1052,5 +1052,3 @@ Hist_preopVAS_AMP_HIPS_CLEANED3<-ggplot(AMP_HIPS_CLEANED_3, aes(x = EQ5D_PREOP_V
   ylab("N of subjects") +
   xlab("PreOperative EQ-VAS score")+
   scale_x_continuous(limits=c(0,100),breaks = seq(0,100,10))
-
-
