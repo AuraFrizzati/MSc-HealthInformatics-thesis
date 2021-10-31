@@ -3,10 +3,15 @@
 .RData
 .Ruserdata
 MSc-HealthInformatics-thesis.Rproj
-input_data/Welsh_data/Amplitude_HipsPrimary190404_forAuraFrizzatiMSc_anonRP210414.csv
-input_data/Welsh_data/Amplitude_HipsRevision170803_forAuraFrizzatiMSc_anonRP210414.csv
 code/01_cleaning_AmplitudeHIPS_OLD.R
 code/01_cleaning_AmplitudeHIPS_OLD.RData
 code/ProjectFUN_OLD.R
 output/
 code/01_Preprocess_WelshHips.RData
+input_data/
+code/models/
+code/old_code/
+code/01_Preprocess_EnglishHips.RData
+code/01_Preprocess_WelshKnees.RData
+code/02_ML_main_OHS.RData
+code/03_Summary_Plots.RData
