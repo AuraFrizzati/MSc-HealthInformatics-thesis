@@ -1,6 +1,8 @@
 # MSc-HealthInformatics-thesis
  
-Online material for thesis ###insert title###:
+Online material for thesis "Exploring the feasibility of predicting post-surgical improvement in Welsh joint replacement PROMs using machine learning models developed on English patient data
+![image](https://user-images.githubusercontent.com/81711190/139691885-aac42d28-38d4-4f8c-9ec6-c4cc382dc300.png)
+":
 
 - `.gitignore` --> list of files created that have not been uploaded on Github
 
