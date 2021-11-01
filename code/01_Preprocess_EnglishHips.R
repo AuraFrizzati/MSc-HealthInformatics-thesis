@@ -218,7 +218,6 @@ English.dataset.hip %>% count(missVal_OHS_POSTOP)
 #.........................................................................................
 #.........................................................................................
 
-
 # Keep only relevant years ------------------------------------------------
 ## only from 2012/13 onwards
 English.dataset.hip_extended<-English.dataset.hip[!(English.dataset.hip$YEAR == "2011/12" |
@@ -226,7 +225,6 @@ English.dataset.hip_extended<-English.dataset.hip[!(English.dataset.hip$YEAR == 
 English.dataset.hip_extended %>% count(YEAR)
 #.........................................................................................
 #.........................................................................................
-
 
 # Data cleaning -----------------------------------------------------------
 ##Identify variables with 0 or near-0 variance

@@ -6,6 +6,25 @@ require(dplyr)
 #.........................................................................................
 #.........................................................................................
 
+# change_col_names --------------------------------------------------------
+## it reassigns column names of a dataframe by creating a new dataframe
+change_col_names<-function(input_df,output_df,new_col_names){
+  
+  input_df<-get(input_df) #get the dataframe using the string argument
+  output_df <-as.name(output_df) #remove the strings from the argument
+  
+  # extract df columns' original names and add new columns' names (function 3rd argument)
+  colnames_orig_and_new <- cbind(as.data.frame(colnames(input_df)), new_col_names)
+  
+  # rename the columns of the original df with the new names:
+  names(input_df)[match(colnames_orig_and_new[,1], names(input_df))] = colnames_orig_and_new[,2]
+  
+  # assign the output_df name given as a function argument (GlobalEnv so it is accessible outside of the function) 
+  assign(deparse(substitute(output_df)), input_df, envir=.GlobalEnv)
+  
+}
+
+
 # values_by_column fun ----------------------------------------------------
 # To extract unique values in each col of the dataset + counts by category
 ## input_dataset -> input R dataframe
@@ -56,7 +75,6 @@ values_by_column<-function(input_dataset, output_dir, output_name){
 
 # DescriptiveCatBasic fun ----------------------------------------------------
 #### Extract Descriptive stats for categorical main predictors (OHS only) 
-
 DescriptiveCatBasic<-function(input_dataset, output_table){
   DescriptiveCatBasicTable<- rbind(  
     # sample size
@@ -217,6 +235,199 @@ DescriptiveCatBasic<-function(input_dataset, output_table){
 }
 #.........................................................................................
 #.........................................................................................
+
+# DescriptiveCatExtra -----------------------------------------------------
+DescriptiveCatExtra<-function(input_dataset, output_table){
+  DescriptiveCatExtraTable<- rbind(  
+    
+    # PREOP ASSISTED 
+    input_dataset%>%count(PREOP_ASSISTED) %>%
+      mutate(VAR = "PREOP ASSISTED") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = PREOP_ASSISTED) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # PREOP_ASSISTED = 1 -> YES , PREOP_ASSISTED = 2 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position 
+    ,
+    
+    # PREOP LIVING ARRANGEMENTS 
+    input_dataset%>%count(PREOP_LIVING_ARRANGEMENTS) %>%
+      mutate(VAR = "PREOP LIVING ARRANGEMENTS") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = PREOP_LIVING_ARRANGEMENTS) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, 
+                              "with partner/spouse/family/friends",
+                              ifelse(VALUE_COL==2, "alone",
+                                     ifelse(VALUE_COL==3, "nursing home, hospital or other long term care home",
+                                            ifelse(VALUE_COL==4,  "Other", "Missing"))))) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position  
+    ,
+    
+    # PREOP DISABILITY 
+    input_dataset%>%count(PREOP_DISABILITY) %>%
+      mutate(VAR = "PREOP DISABILITY") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = PREOP_DISABILITY) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # PREOP_DISABILITY = 1 -> YES , PREOP_DISABILITY = 2 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position  
+    ,
+    
+    # HEART DISEASE 
+    input_dataset%>%count(HEART_DISEASE) %>%
+      mutate(VAR = "HEART DISEASE") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = HEART_DISEASE) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # HEART_DISEASE = 1 -> YES , HEART_DISEASE = 9 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position   
+    ,
+    
+    # HIGH BLOOD PRESSURE
+    input_dataset%>%count(HIGH_BP) %>%
+      mutate(VAR = "HIGH BLOOD PRESSURE") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = HIGH_BP) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # HIGH_BP = 1 -> YES , HIGH_BP = 9 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position 
+    ,
+    
+    # STROKE
+    input_dataset%>%count(STROKE) %>%
+      mutate(VAR = "STROKE") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = STROKE) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # STROKE = 1 -> YES , STROKE = 9 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position 
+    ,
+    
+    # CIRCULATION
+    input_dataset%>%count(CIRCULATION) %>%
+      mutate(VAR = "CIRCULATION") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = CIRCULATION) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # CIRCULATION = 1 -> YES , CIRCULATION = 9 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position 
+    ,
+    
+    # LUNG_DISEASE
+    input_dataset%>%count(LUNG_DISEASE) %>%
+      mutate(VAR = "LUNG DISEASE") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = LUNG_DISEASE) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # LUNG_DISEASE = 1 -> YES , LUNG_DISEASE = 9 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position 
+    ,
+    
+    # DIABETES
+    input_dataset%>%count(DIABETES) %>%
+      mutate(VAR = "DIABETES") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = DIABETES) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # DIABETES = 1 -> YES , DIABETES = 9 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position
+    ,
+    
+    # KIDNEY DISEASE
+    input_dataset%>%count(KIDNEY_DISEASE) %>%
+      mutate(VAR = "KIDNEY DISEASE") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = KIDNEY_DISEASE) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # KIDNEY_DISEASE = 1 -> YES , KIDNEY_DISEASE = 9 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position 
+    ,
+    
+    # NERVOUS SYSTEM
+    input_dataset%>%count(NERVOUS_SYSTEM) %>%
+      mutate(VAR = "NERVOUS SYSTEM") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = NERVOUS_SYSTEM) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # NERVOUS_SYSTEM = 1 -> YES , NERVOUS_SYSTEM = 9 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position  
+    
+    ,
+    
+    # LIVER DISEASE
+    input_dataset%>%count(LIVER_DISEASE) %>%
+      mutate(VAR = "LIVER DISEASE") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = LIVER_DISEASE) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # LIVER_DISEASE = 1 -> YES , LIVER_DISEASE = 9 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position  
+    
+    ,
+    
+    # CANCER
+    input_dataset%>%count(CANCER) %>%
+      mutate(VAR = "CANCER") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = CANCER) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # CANCER = 1 -> YES , CANCER = 9 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position  
+    ,
+    
+    # DEPRESSION
+    input_dataset%>%count(DEPRESSION) %>%
+      mutate(VAR = "DEPRESSION") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = DEPRESSION) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # DEPRESSION = 1 -> YES , DEPRESSION = 9 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position  
+    ,
+    
+    # ARTHRITIS
+    input_dataset%>%count(ARTHRITIS) %>%
+      mutate(VAR = "ARTHRITIS") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = ARTHRITIS) %>% 
+      mutate(VALUE_COL=ifelse(VALUE_COL==1, "YES","NO")) %>%  # ARTHRITIS = 1 -> YES , ARTHRITIS = 9 -> NO
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position  
+    ,
+    
+    # EQ5D PREOP MOBILITY
+    input_dataset%>%count(EQ5D_PREOP_MOBILITY) %>%
+      mutate(VAR = "EQ5D PREOP MOBILITY") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = EQ5D_PREOP_MOBILITY) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position  
+    ,
+    
+    # EQ5D PREOP SELFCARE
+    input_dataset%>%count(EQ5D_PREOP_SELFCARE) %>%
+      mutate(VAR = "EQ5D PREOP SELFCARE") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = EQ5D_PREOP_SELFCARE) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position  
+    ,
+    
+    # EQ5D PREOP ACTIVITY
+    input_dataset%>%count(EQ5D_PREOP_ACTIVITY) %>%
+      mutate(VAR = "EQ5D PREOP ACTIVITY") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = EQ5D_PREOP_ACTIVITY) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position  
+    ,
+    
+    # EQ5D PREOP DISCOMFORT
+    input_dataset%>%count(EQ5D_PREOP_DISCOMFORT) %>%
+      mutate(VAR = "EQ5D PREOP DISCOMFORT") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = EQ5D_PREOP_DISCOMFORT) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position   
+    ,
+    
+    # EQ5D PREOP ANXIETY
+    input_dataset%>%count(EQ5D_PREOP_ANXIETY) %>%
+      mutate(VAR = "EQ5D PREOP ANXIETY") %>% 
+      mutate(PERCENT = round(100*(n / sum(n)),2)) %>%
+      dplyr::rename(VALUE_COL = EQ5D_PREOP_ANXIETY) %>% 
+      select(c(VAR,VALUE_COL), everything()) #to change columns' position    
+    
+  )
+  
+  # assign the output_df name given as a function argument (GlobalEnv so it is accessible outside of the function) 
+  assign(deparse(substitute(output_table)), DescriptiveCatExtraTable, envir=.GlobalEnv)
+}
+#.........................................................................................
+#.........................................................................................
+
 
 # DescriptiveCont2 fun ----------------------------------------------------
 #### Extract Descriptive stats for continuous main predictors (OHS only), median and IQR 
