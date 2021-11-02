@@ -344,9 +344,9 @@ DescriptiveCatExtra(input_dataset = English.training.1618,
 ### for continous variables
 DescriptiveCont2(input_dataset = English.training.1618, 
                  output_table = Descr3.English.training.1618)
-write.csv(Descr1.English.training.1618,"Descr1.English.training.1618.csv", row.names = FALSE)
-write.csv(Descr2.English.training.1618,"Descr2.English.training.1618.csv", row.names = FALSE)
-write.csv(Descr3.English.training.1618,"Descr3.English.training.1618.csv", row.names = FALSE)
+write.csv(Descr1.English.training.1618,"output/thesis_files/Descr1.English.training.1618_hips.csv", row.names = FALSE)
+write.csv(Descr2.English.training.1618,"output/thesis_files/Descr2.English.training.1618_hips.csv", row.names = FALSE)
+write.csv(Descr3.English.training.1618,"output/thesis_files/Descr3.English.training.1618_hips.csv", row.names = FALSE)
 #.........................................................................................
 #.........................................................................................
 
@@ -436,9 +436,9 @@ DescriptiveCatExtra(input_dataset = English.test.1819,
                     output_table = Descr2.English.test.1819)
 DescriptiveCont2(input_dataset = English.test.1819, 
                  output_table = Descr3.English.test.1819)
-write.csv(Descr1.English.test.1819,"Descr1.English.test.1819.csv", row.names = FALSE)
-write.csv(Descr2.English.test.1819,"Descr2.English.test.1819.csv", row.names = FALSE)
-write.csv(NEW_Descr3.English.test.1819,"Descr3.English.test.1819.csv", row.names = FALSE) 
+write.csv(Descr1.English.test.1819,"Descr1.English.test.1819_hips.csv", row.names = FALSE)
+write.csv(Descr2.English.test.1819,"Descr2.English.test.1819_hips.csv", row.names = FALSE)
+write.csv(Descr3.English.test.1819,"Descr3.English.test.1819_hips.csv", row.names = FALSE) 
 #.........................................................................................
 #.........................................................................................
 
@@ -482,9 +482,6 @@ Hist_VAS_English.test.1819<-ggplot(English.test.1819, aes(x = VAS_TOTSCORE.diff)
   scale_x_continuous(limits=c(-100,100),breaks = seq(-100,100,10))+
   geom_vline(xintercept=11, colour="red", linetype = "longdash", size = 1)  + #check the threshold line is plotted at std dev*0.5
   annotate(x=30,y=+Inf,label="MCID\nthreshold",vjust=2,geom="text", colour="red", size = 4)
-
-
-
 ## Histogram of preOp OHS
 Hist_preopOHS_English.test.1819<-ggplot(English.test.1819, aes(x = OHS_PREOP_TOTSCORE)) + 
   geom_histogram(binwidth=1,
@@ -501,7 +498,6 @@ Hist_preopOHS_English.test.1819<-ggplot(English.test.1819, aes(x = OHS_PREOP_TOT
   ylab("N of subjects") +
   xlab("PreOperative OHS total score ")+
   scale_x_continuous(limits=c(0,48),breaks = seq(0,48,4))
-
 ## Histogram of preOp EQ-VAS
 Hist_preopVAS_English.test.1819<-ggplot(English.test.1819, aes(x = EQ5D_PREOP_VAS)) + 
   geom_histogram(binwidth=1,
@@ -518,8 +514,6 @@ Hist_preopVAS_English.test.1819<-ggplot(English.test.1819, aes(x = EQ5D_PREOP_VA
   ylab("N of subjects") +
   xlab("PreOperative EQ-VAS score")+
   scale_x_continuous(limits=c(0,100),breaks = seq(0,100,10))
-
-
 
 # create combined plots for relevant continuous variables -----------------
 ##(OHS tot score and EQ-VAS)

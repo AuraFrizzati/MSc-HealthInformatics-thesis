@@ -316,14 +316,233 @@ DescriptiveCont2.OKS(input_dataset = English.training.1618,
 write.csv(Descr1.English.training.1618,"output/thesis_files/Descr1.English.training.1618_knees.csv", row.names = FALSE)
 write.csv(Descr2.English.training.1618,"output/thesis_files/Descr2.English.training.1618_knees.csv", row.names = FALSE)
 write.csv(Descr3.English.training.1618,"output/thesis_files/Descr3.English.training.1618_knees.csv", row.names = FALSE)
+#.........................................................................................
+#.........................................................................................
+
+# Plotting distributions for relevant continuous in OKS and EQ-VAS --------
+#### including MCID thresholding for English.training.1618 dataset
+## Histogram of difference [OKS PostOp - PreOp]
+Hist_OKS_training.1618<-ggplot(English.training.1618, aes(x = OKS_TOTSCORE.diff)) + 
+  geom_histogram(binwidth=1,
+                 #bins=20,
+                 fill = "grey", colour="black")+
+  ggtitle("PostOperative OKS change\n(English Knee Training Set 2016/17+2017/18)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("Difference OKS PostOp - PreOp")+
+  scale_x_continuous(limits=c(-48,48),breaks = seq(-48,48,4))+
+  geom_vline(xintercept=7, colour="red", linetype = "longdash", size = 1)  +
+  annotate(x=0,y=+Inf,label="MCID\nthreshold",vjust=2,geom="text", colour="red", size = 4)
+## Histogram of difference [EQ-VAS PostOp - PreOp]
+Hist_VAS_training.1618<-ggplot(English.training.1618, aes(x = VAS_TOTSCORE.diff)) + 
+  geom_histogram(binwidth=1,
+                 bins=20, 
+                 fill = "grey", colour="black")+
+  ggtitle("PostOperative EQ-VAS change\n(English Knee Training Set 2016/17+2017/18)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5,face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("Difference EQ-VAS PostOp - PreOp")+
+  scale_x_continuous(limits=c(-100,100),breaks = seq(-100,100,10))+
+  geom_vline(xintercept=10, colour="red", linetype = "longdash", size = 1)  + #check the threshold line is plotted at std dev*0.5
+  annotate(x=30,y=+Inf,label="MCID\nthreshold",vjust=2,geom="text", colour="red", size = 4)
+## Histogram of preOp OKS
+Hist_preopOKS_training.1618<-ggplot(English.training.1618, aes(x = OKS_PREOP_TOTSCORE)) + 
+  geom_histogram(binwidth=1,
+                 fill = "grey", colour="black")+
+  ggtitle("PreOperative OKS tot score\n(English Knee Training Set 2016/17+2017/18)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("PreOperative OKS total score ")+
+  scale_x_continuous(limits=c(0,48),breaks = seq(0,48,4))
+## Histogram of preOp EQ-VAS
+Hist_preopVAS_training.1618<-ggplot(English.training.1618, aes(x = EQ5D_PREOP_VAS)) + 
+  geom_histogram(binwidth=1,
+                 fill = "grey", colour="black")+
+  ggtitle("PreOperative EQ-VAS score\n(English Training Knee Set 2016/17+2017/18)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("PreOperative EQ-VAS score")+
+  scale_x_continuous(limits=c(0,100),breaks = seq(0,100,10))
+
+# Extracting English Test set (Year = 2018/19) + Demographics -------------
+English.test.1819<-English.dataset.knee_extended_cln4[
+  English.dataset.knee_extended_cln4$YEAR=='2018/19',]
+### for categorical variables
+DescriptiveCatBasic.OKS(input_dataset = English.test.1819, 
+                        output_table = Descr1.English.test.1819)
+DescriptiveCatExtra(input_dataset = English.test.1819, 
+                    output_table = Descr2.English.test.1819)
+### for continous variables
+DescriptiveCont2.OKS(input_dataset = English.test.1819, 
+                     output_table = Descr3.English.test.1819)
+write.csv(Descr1.English.test.1819,"output/thesis_files/Descr1.English.test.1819_knees.csv", row.names = FALSE)
+write.csv(Descr2.English.test.1819,"output/thesis_files/Descr2.English.test.1819_knees.csv", row.names = FALSE)
+write.csv(Descr3.English.test.1819,"output/thesis_files/Descr3.English.test.1819_knees.csv", row.names = FALSE)
+#.........................................................................................
+#.........................................................................................
+
+# histograms for hips (pre and difference post-pre) -----------------------
+#### including MCID thresholding for English.training.1618 dataset
+## Histogram of difference [OKS PostOp - PreOp]
+Hist_OKS_English.test.1819<-ggplot(English.test.1819, aes(x = OKS_TOTSCORE.diff)) + 
+  geom_histogram(binwidth=1,
+                 #bins=20,
+                 fill = "grey", colour="black")+
+  ggtitle("PostOperative OKS change\n(English Knee Test Set 2018/19)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("Difference OKS PostOp - PreOp")+
+  scale_x_continuous(limits=c(-48,48),breaks = seq(-48,48,4))+
+  geom_vline(xintercept=7, colour="red", linetype = "longdash", size = 1)  +
+  annotate(x=0,y=+Inf,label="MCID\nthreshold",vjust=2,geom="text", colour="red", size = 4)
+## Histogram of difference [EQ-VAS PostOp - PreOp]
+Hist_VAS_English.test.1819<-ggplot(English.test.1819, aes(x = VAS_TOTSCORE.diff)) + 
+  geom_histogram(binwidth=1,
+                 bins=20, 
+                 fill = "grey", colour="black")+
+  ggtitle("PostOperative EQ-VAS change\n(English Knee Test Set 2018/19)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5,face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("Difference EQ-VAS PostOp - PreOp")+
+  scale_x_continuous(limits=c(-100,100),breaks = seq(-100,100,10))+
+  geom_vline(xintercept=10, colour="red", linetype = "longdash", size = 1)  + #check the threshold line is plotted at std dev*0.5
+  annotate(x=30,y=+Inf,label="MCID\nthreshold",vjust=2,geom="text", colour="red", size = 4)
+## Histogram of preOp OKS
+Hist_preopOKS_English.test.1819<-ggplot(English.test.1819, aes(x = OKS_PREOP_TOTSCORE)) + 
+  geom_histogram(binwidth=1,
+                 fill = "grey", colour="black")+
+  ggtitle("PreOperative OKS tot score\n(English Knee Test Set 2018/19)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("PreOperative OKS total score ")+
+  scale_x_continuous(limits=c(0,48),breaks = seq(0,48,4))
+## Histogram of preOp EQ-VAS
+Hist_preopVAS_English.test.1819<-ggplot(English.test.1819, aes(x = EQ5D_PREOP_VAS)) + 
+  geom_histogram(binwidth=1,
+                 fill = "grey", colour="black")+
+  ggtitle("PreOperative EQ-VAS score\n(English Knee Test Set 2018/19)")+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+        axis.text.y=element_text(size=10),
+        axis.text.x=element_text(size=10),
+        axis.title=element_text(size=14))+
+  ylab("N of subjects") +
+  xlab("PreOperative EQ-VAS score")+
+  scale_x_continuous(limits=c(0,100),breaks = seq(0,100,10))
+
+# create combined plots for relevant continuous variables -----------------
+##(OKS tot score and EQ-VAS)
+# import relevant plots from Amplitude Knees
+attach("code/01_Preprocess_WelshKnees.RData")
+#ls(2)
+Hist_OKS_test.AMPLITUDE <-Hist_OKS_test.AMPLITUDE
+Hist_VAS_test.AMPLITUDE <- Hist_VAS_test.AMPLITUDE
+Hist_preopOKS_AMP_KNEES_CLEANED3<-Hist_preopOKS_AMP_KNEES_CLEANED3
+Hist_preopVAS_AMP_KNEES_CLEANED3 <- Hist_preopVAS_AMP_KNEES_CLEANED3
+AMP_KNEES_CLEANED3<-AMP_KNEES_CLEANED3
+ggpubr::ggarrange(Hist_preopOKS_training.1618,
+          Hist_OKS_training.1618,
+          Hist_preopOKS_English.test.1819,
+          Hist_OKS_English.test.1819,
+          Hist_preopOKS_AMP_KNEES_CLEANED3,
+          Hist_OKS_test.AMPLITUDE,
+          ncol = 2, 
+          nrow = 3)
+## 1000X700
+ggpubr::ggarrange(Hist_preopVAS_training.1618,
+          Hist_VAS_training.1618,
+          Hist_preopVAS_English.test.1819,
+          Hist_VAS_English.test.1819,
+          Hist_preopVAS_AMP_KNEES_CLEANED3,
+          Hist_VAS_test.AMPLITUDE,
+          ncol = 2, 
+          nrow = 3)
+## 1000X700
+#.........................................................................................
+#.........................................................................................
 
 
-
-
-
-
-
-
+# Transforming relevant variables into factors  ---------------------------
+## (cannot do this directly with outcomes!) 
+factorVars<-c("REVISION",
+              "AGEBAND",
+              "SEX",
+              "PREOP_ASSISTED",
+              "PREOP_PREVIOUS_SURGERY",
+              "PREOP_LIVING_ARRANGEMENTS",
+              "PREOP_DISABILITY",
+              "HEART_DISEASE",
+              "HIGH_BP",
+              "STROKE",
+              "CIRCULATION",
+              "LUNG_DISEASE",
+              "DIABETES",
+              "KIDNEY_DISEASE",
+              "NERVOUS_SYSTEM",
+              "LIVER_DISEASE",
+              "CANCER",
+              "DEPRESSION",
+              "ARTHRITIS")
+## In the training set English.training.1618
+English.training.1618[,factorVars] <- 
+  lapply(English.training.1618[,factorVars], as.factor) 
+## In the testing set English.test.1819
+English.test.1819[,factorVars] <- 
+  lapply(English.test.1819[,factorVars], as.factor) 
+#.........................................................................................
+#.........................................................................................
 
 
 
