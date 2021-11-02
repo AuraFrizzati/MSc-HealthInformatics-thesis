@@ -68,7 +68,6 @@ predictors.simple<-c("REVISION",
 )
 ## data to use for training for main model
 English.training.1618.OHS.simple<-English.training.1618[predictors.simple] ##18 predictors
-
 ##### English Test set
 ### Setting the factor order for outcome variable OHS_MCID
 English.test.1819[English.test.1819$OHS_MCID==1,]$OHS_MCID<-"YES"
@@ -79,7 +78,6 @@ English.test.1819$OHS_MCID <- factor(English.test.1819$OHS_MCID, levels = c("YES
 #prop.table(table(English.test.1819$OHS_MCID))
 ## data to use for test for simple model
 English.test.1819.OHS.simple<-English.test.1819[predictors.simple] ##18 predictors
-
 ##### Welsh Test set
 AMP_HIPS_CLEANED3.test<-AMP_HIPS_CLEANED_3.small[predictors.simple]
 ### Setting the factor order for outcome variable OHS_MCID for dataset AMP_HIPS_CLEANED3.test
@@ -90,7 +88,6 @@ AMP_HIPS_CLEANED3.test$OHS_MCID <- factor(AMP_HIPS_CLEANED3.test$OHS_MCID, level
 #table(AMP_HIPS_CLEANED3.test$OHS_MCID)
 #prop.table(table(AMP_HIPS_CLEANED3.test$OHS_MCID))
 #nrow(AMP_HIPS_CLEANED3.test) ## 440
-
 rm(English.test.1819,English.training.1618,AMP_HIPS_CLEANED_3.small, predictors.simple)
 #.........................................................................................
 #.........................................................................................
@@ -165,7 +162,6 @@ cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome_logic <- ifelse(cal.Mod_XGB
 cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome_num <- ifelse(cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome == "YES", 1, 0)
 #table(cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome,
 #      cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome_num)
-## Hosmer-Lemeshow calibration
 ResourceSelection::hoslem.test(cal.Mod_XGBTREE.1618.OHS.simple.EngTest$Prob_YES, ## expected/predicted
             cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome_num) ## observed
 #Hosmer and Lemeshow goodness of fit (GOF) test
@@ -228,7 +224,6 @@ cal.Mod_XGBTREE.1618.OHS.simple.WelshTest$True_outcome_logic <- ifelse(cal.Mod_X
 cal.Mod_XGBTREE.1618.OHS.simple.WelshTest$True_outcome_num <- ifelse(cal.Mod_XGBTREE.1618.OHS.simple.WelshTest$True_outcome == "YES", 1, 0)
 # table(cal.Mod_XGBTREE.1618.OHS.simple.WelshTest$True_outcome,
 #       cal.Mod_XGBTREE.1618.OHS.simple.WelshTest$True_outcome_num)
-## Hosmer-Lemeshow calibration
 ResourceSelection::hoslem.test(cal.Mod_XGBTREE.1618.OHS.simple.WelshTest$Prob_YES, ## expected/predicted
             cal.Mod_XGBTREE.1618.OHS.simple.WelshTest$True_outcome_num) ## observed
 #Hosmer and Lemeshow goodness of fit (GOF) test
@@ -402,7 +397,7 @@ set.seed(1)
 Mod_NNET.1618.OHS.simple = train(
   form = OHS_MCID ~ .,
   data = English.training.1618.OHS.simple,
-  trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3, ## are these the best values to use for repeated cv?
+  trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3,
                            sampling = "up", ## outcome class is unbalanced (possibly specify better this), so up-sampling is required!
                            classProbs = TRUE, 
                            summaryFunction = twoClassSummary, ## this is required for selecting by AUROC metric https://cran.r-project.org/web/packages/caret/vignettes/caret.html
@@ -507,14 +502,14 @@ set.seed(1)
 Mod_RF.1618.OHS.simple = train(
   form = OHS_MCID ~ .,
   data = English.training.1618.OHS.simple,
-  trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3, ## are these the best values to use for repeated cv?
+  trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3, 
                            sampling = "up", ## outcome class is unbalanced (possibly specify better this), so up-sampling is required!
                            classProbs = TRUE, 
                            summaryFunction = twoClassSummary, ## this is required for selecting by AUROC metric https://cran.r-project.org/web/packages/caret/vignettes/caret.html
                            savePredictions = T,
                            verboseIter = TRUE), 
   method = "rf",
-  metric = 'ROC' # I am not sure this actually gets used for glm
+  metric = 'ROC' 
 )
 #Mod_RF.1618.OHS.simple
 source("code/models/OHS_simple/HIPS_ML_training_1618_RF_simple_EngTest.RData")
@@ -602,7 +597,7 @@ METRICS_Mod_RF.1618.OHS.simple_WelshTest<-ExtractMetrics(
   algorithm ="RF_OHS_WelshTest"
 )
 write.csv(METRICS_Mod_RF.1618.OHS.simple_WelshTest,
-          "output/thesis_files//METRICS_Mod_RF.1618.OHS.simple_WelshTest.csv", row.names = FALSE)
+          "output/thesis_files/METRICS_Mod_RF.1618.OHS.simple_WelshTest.csv", row.names = FALSE)
 #.........................................................................................
 #.........................................................................................
 
@@ -617,14 +612,14 @@ set.seed(1)
 Mod_GLMNET.1618.OHS.simple = train(
   form = OHS_MCID ~ .,
   data = English.training.1618.OHS.simple,
-  trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3, ## are these the best values to use for repeated cv?
+  trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3, 
                            sampling = "up", ## outcome class is unbalanced (possibly specify better this), so up-sampling is required!
                            classProbs = TRUE, 
                            summaryFunction = twoClassSummary, ## this is required for selecting by AUROC metric https://cran.r-project.org/web/packages/caret/vignettes/caret.html
                            savePredictions = T,
                            verboseIter = TRUE), 
   method = "glmnet",
-  metric = 'ROC' # I am not sure this actually gets used for glm
+  metric = 'ROC' 
 )
 #Mod_GLMNET.1618.OHS.simple
 #summary(Mod_GLMNET.1618.OHS.simple)
