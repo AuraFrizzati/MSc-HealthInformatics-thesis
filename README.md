@@ -8,7 +8,7 @@ Online material for thesis "**Using machine learning models developed on English
 This folder contains the scripts that have been used for producing the outputs of the thesis ##to complete##
 - `00_ProjectFunctions.R` --> it contains custom-made functions
 - `01_Preprocess_EnglishHips.R` --> pre-processing of data from the hip replacement dataset
-- `01_Preprocess_WelshHips.R` --> 
+- `01_Preprocess_WelshHips.R` -->  pre-processing of data from the knee replacement dataset
 - `02_ML_main_EQVAS_hips.R` --> Development/validation of models for predicting post-surgical achievement of EQ-VAS MCID in the hip replacement dataset
 - `02_ML_main_OHS.R` --> Development/validation of models for predicting post-surgical achievement of OHS MCID in the hip replacement dataset
 - `03_Summary_Plots.R` --> Creation of plots for evaluation of models during development and test phases
