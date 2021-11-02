@@ -1,6 +1,6 @@
 # MSc-HealthInformatics-thesis
  
-Online material for thesis "**Exploring the feasibility of predicting post-surgical improvement in Welsh joint replacement PROMs using machine learning models developed on English patient data**":
+Online material for thesis "**Using machine learning models developed on English joint replacement PROM data to predict post-surgical improvement in Welsh patients**":
 
 - `.gitignore` --> list of files created that have not been uploaded on Github
 
