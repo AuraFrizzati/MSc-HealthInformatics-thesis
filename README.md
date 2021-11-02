@@ -11,6 +11,7 @@ This folder contains the scripts that have been used for producing the outputs o
 - `01_Preprocess_WelshHips.R` -->  pre-processing of data from the knee replacement dataset
 - `02_ML_main_EQVAS_hips.R` --> Development/validation of models for predicting post-surgical achievement of EQ-VAS MCID in the hip replacement dataset
 - `02_ML_main_OHS.R` --> Development/validation of models for predicting post-surgical achievement of OHS MCID in the hip replacement dataset
+- `02_ML_main_OKS.R` --> Development/validation of models for predicting post-surgical achievement of OKS MCID in the knee replacement dataset
 - `03_Summary_Plots.R` --> Creation of plots for evaluation of models during development and test phases
 
 ## supplementary_online_material
