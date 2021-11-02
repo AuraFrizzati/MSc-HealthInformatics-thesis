@@ -145,8 +145,7 @@ plot(caret::varImp(Mod_XGBTREE.1618.OHS.simple), top = 10,
 ### Predicting probability scores on English test set
 probsTest.Mod_XGBTREE.1618.OHS.simple <- predict(Mod_XGBTREE.1618.OHS.simple, 
                                                  newdata = English.test.1819.OHS.simple, type = "prob")
-
-### [4.4.2] calibration curves (caret package)
+### calibration curves (caret package)
 cal.Mod_XGBTREE.1618.OHS.simple.EngTest<-cbind(English.test.1819.OHS.simple$OHS_MCID,probsTest.Mod_XGBTREE.1618.OHS.simple)
 names(cal.Mod_XGBTREE.1618.OHS.simple.EngTest)<-c("OHS_MCID","YES","NO")
 cal.obj.Mod_XGBTREE.1618.OHS.simple.EngTest<-calibration(OHS_MCID ~ YES, data = cal.Mod_XGBTREE.1618.OHS.simple.EngTest)
@@ -162,24 +161,19 @@ names(cal.Mod_XGBTREE.1618.OHS.simple.EngTest)<-c("True_outcome", "Prob_YES")
 #head(cal.Mod_XGBTREE.1618.OHS.simple.EngTest)
 cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome_logic <- ifelse(cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome == "YES", TRUE, FALSE)
 #head(cal.Mod_XGBTREE.1618.OHS.simple.EngTest)
-table(cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome,cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome_logic)
+#table(cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome,cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome_logic)
 cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome_num <- ifelse(cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome == "YES", 1, 0)
-table(cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome,
-      cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome_num)
-library(PredictABEL)
-plotCalibration(data=cal.Mod_XGBTREE.1618.OHS.simple.EngTest, 
-                cOutcome=4, 
-                predRisk=cal.Mod_XGBTREE.1618.OHS.simple.EngTest$Prob_YES)
-#head(cal.Mod_XGBTREE.1618.OHS.simple.EngTest)
-library(ResourceSelection)
-hoslem.test(cal.Mod_XGBTREE.1618.OHS.simple.EngTest$Prob_YES, ## expected/predicted
+#table(cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome,
+#      cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome_num)
+## Hosmer-Lemeshow calibration
+ResourceSelection::hoslem.test(cal.Mod_XGBTREE.1618.OHS.simple.EngTest$Prob_YES, ## expected/predicted
             cal.Mod_XGBTREE.1618.OHS.simple.EngTest$True_outcome_num) ## observed
 #Hosmer and Lemeshow goodness of fit (GOF) test
 # X-squared = 39189, df = 8, p-value < 2.2e-16
 ### Predict classes on test set
 pred.Mod_XGBTREE.1618.OHS.simple <- factor(ifelse(probsTest.Mod_XGBTREE.1618.OHS.simple[, "YES"] > 
                                                     best_p_threshold.Mod_XGBTREE.1618.OHS.simple,
-                                                  "YES", "NO")) ##should it be > or >= best_p_threshold?
+                                                  "YES", "NO")) 
 pred.Mod_XGBTREE.1618.OHS.simple<-relevel(pred.Mod_XGBTREE.1618.OHS.simple, "YES")
 #table(pred.Mod_XGBTREE.1618.OHS.simple)
 #head(probsTest.Mod_XGBTREE.1618.OHS.simple)
@@ -200,10 +194,9 @@ METRICS_Mod_XGBTREE.1618.OHS.simple_EngTest<-ExtractMetrics(
   test_set.confusion_matrix = conf.Matrix.Mod_XGBTREE.1618.OHS.simple,
   algorithm ="XGBTREE_OHS_EngTest"
 )
-
 #METRICS_Mod_XGBTREE.1618.OHS.simple_EngTest
 write.csv(METRICS_Mod_XGBTREE.1618.OHS.simple_EngTest,
-          "MODELS_METRICS/METRICS_Mod_XGBTREE.1618.OHS.simple_EngTest.csv", row.names = FALSE)
+          "output/thesis_files/METRICS_Mod_XGBTREE.1618.OHS.simple_EngTest.csv", row.names = FALSE)
 #.........................................................................................
 #.........................................................................................
 
@@ -243,7 +236,7 @@ ResourceSelection::hoslem.test(cal.Mod_XGBTREE.1618.OHS.simple.WelshTest$Prob_YE
 ### Predict classes on test set
 pred.Mod_XGBTREE.1618.OHS.simple <- factor(ifelse(probsTest.Mod_XGBTREE.1618.OHS.simple[, "YES"] > 
                                                     best_p_threshold.Mod_XGBTREE.1618.OHS.simple,
-                                                  "YES", "NO")) ##should it be > or >= best_p_threshold?
+                                                  "YES", "NO")) 
 pred.Mod_XGBTREE.1618.OHS.simple<-relevel(pred.Mod_XGBTREE.1618.OHS.simple, "YES")
 #table(pred.Mod_XGBTREE.1618.OHS.simple)
 #head(probsTest.Mod_XGBTREE.1618.OHS.simple)
@@ -272,7 +265,6 @@ write.csv(METRICS_Mod_XGBTREE.1618.OHS.simple_WelshTest,
 #.........................................................................................
 
 
-
 # Train Logistic Regression on OHS ----------------------------------------
 attach("code/02_ML_main_OHS.RData")
 English.training.1618.OHS.simple<-English.training.1618.OHS.simple
@@ -295,24 +287,19 @@ Mod_LR.1618.OHS.simple = train(
 )
 #Mod_LR.1618.OHS.simple
 #summary(Mod_LR.1618.OHS.simple)
-
 #### saved in 
 #load("code/models/OHS_simple/HIPS_ML_training_1618_LR_simple_EngTest.RData")
 #load("code/models/OHS_simple/HIPS_ML_training_1618_LR_simple_WelshTest.RData")
-
-
 ###Define p threshold
 ths.Mod_LR.1618.OHS.simple <- thresholder(Mod_LR.1618.OHS.simple,
                                           threshold = seq(0,1,0.05),
                                           final = TRUE,
                                           statistics = "all")
-
 #extracting the p threshold associated to the highest J metric:
 best_p_threshold.Mod_LR.1618.OHS.simple<-ths.Mod_LR.1618.OHS.simple[ths.Mod_LR.1618.OHS.simple$J == 
                                                                       max(ths.Mod_LR.1618.OHS.simple$J),
                                                                     "prob_threshold"]
 best_p_threshold.Mod_LR.1618.OHS.simple ## p = 0.5
-
 ### Variable importance
 plot(varImp(Mod_LR.1618.OHS.simple), top = 10, 
      main="Variable importance (OHS MCID)\nLog Reg (Simple model)") 
@@ -358,7 +345,7 @@ METRICS_Mod_LR.1618.OHS.simple_EngTest<-ExtractMetrics(
 )
 #METRICS_Mod_LR.1618.OHS.simple_EngTest
 write.csv(METRICS_Mod_LR.1618.OHS.simple_EngTest,
-          "MODELS_METRICS/METRICS_Mod_LR.1618.OHS.simple_EngTest.csv", row.names = FALSE) 
+          "output/thesis_files/METRICS_Mod_LR.1618.OHS.simple_EngTest.csv", row.names = FALSE) 
 #.........................................................................................
 #.........................................................................................
 
@@ -389,8 +376,6 @@ conf.Matrix.Mod_LR.1618.OHS.simple<-confusionMatrix(
   reference = AMP_HIPS_CLEANED3.test$OHS_MCID,
   positive = "YES")
 #conf.Matrix.Mod_LR.1618.OHS.simple$table
-
-
 ### Extract relevant training and testing (Welsh test set) metrics using custom-made function
 METRICS_Mod_LR.1618.OHS.simple_WelshTest<-ExtractMetrics(
   thresholder.output = ths.Mod_LR.1618.OHS.simple,
@@ -457,29 +442,15 @@ pred.Mod_NNET.1618.OHS.simple <- factor(ifelse(probsTest.Mod_NNET.1618.OHS.simpl
                                                  best_p_threshold.Mod_NNET.1618.OHS.simple,
                                                "YES", "NO")) 
 pred.Mod_NNET.1618.OHS.simple<-relevel(pred.Mod_NNET.1618.OHS.simple, "YES")
-table(pred.Mod_NNET.1618.OHS.simple)
-# YES    NO 
-# 22301  7358  
-head(probsTest.Mod_NNET.1618.OHS.simple)
-#        YES        NO
-# 300492 0.4847598 0.5152402
-# 300493 0.7827850 0.2172150
-# 300495 0.6939932 0.3060068
-# 300496 0.5603096 0.4396904
-# 300497 0.6650111 0.3349889
-# 300498 0.6421050 0.3578950
-head(pred.Mod_NNET.1618.OHS.simple) 
-# [1] NO YES YES YES YES YES
+#table(pred.Mod_NNET.1618.OHS.simple)
+#head(probsTest.Mod_NNET.1618.OHS.simple)
+#head(pred.Mod_NNET.1618.OHS.simple) 
 ### Create confusion matrix for predictions on test set
 conf.Matrix.Mod_NNET.1618.OHS.simple<-confusionMatrix(
   data = pred.Mod_NNET.1618.OHS.simple,
   reference = English.test.1819.OHS.simple$OHS_MCID,
   positive = "YES")
-conf.Matrix.Mod_NNET.1618.OHS.simple$table
-#              Reference
-# Prediction   YES    NO
-# YES        21336   965
-# NO          5892  1466
+#conf.Matrix.Mod_NNET.1618.OHS.simple$table
 ### Extract relevant training and testing (English test set) metrics using custom-made function
 METRICS_Mod_NNET.1618.OHS.simple_EngTest<-ExtractMetrics(
   thresholder.output = ths.Mod_NNET.1618.OHS.simple,
@@ -492,16 +463,15 @@ METRICS_Mod_NNET.1618.OHS.simple_EngTest<-ExtractMetrics(
 )
 #METRICS_Mod_NNET.1618.OHS.simple_EngTest
 write.csv(METRICS_Mod_NNET.1618.OHS.simple_EngTest,
-          "MODELS_METRICS/METRICS_Mod_NNET.1618.OHS.simple_EngTest.csv", row.names = FALSE)
+          "output/thesis_files/METRICS_Mod_NNET.1618.OHS.simple_EngTest.csv", row.names = FALSE)
 #.........................................................................................
 #.........................................................................................
 
 # Test Neural Net on OHS (Welsh Test set)----------------------------------------
-
 ### Predicting probability scores on Welsh test set
 probsTest.Mod_NNET.1618.OHS.simple <- predict(Mod_NNET.1618.OHS.simple, 
                                               newdata = AMP_HIPS_CLEANED3.test, type = "prob")
-### [5.5.3] Predict classes on test set
+### Predict classes on test set
 pred.Mod_NNET.1618.OHS.simple <- factor(ifelse(probsTest.Mod_NNET.1618.OHS.simple[, "YES"] > 
                                                  best_p_threshold.Mod_NNET.1618.OHS.simple,
                                                "YES", "NO")) 
@@ -532,7 +502,7 @@ English.training.1618.OHS.simple<-English.training.1618.OHS.simple
 English.test.1819.OHS.simple<-English.test.1819.OHS.simple
 AMP_HIPS_CLEANED3.test<-AMP_HIPS_CLEANED3.test
 ##Train the model with caret
-#### [6.1] Model OHS SIMPLE: RANDOM FOREST (ordinal vars as continuous))
+#### Model OHS SIMPLE: RANDOM FOREST (ordinal vars as continuous))
 set.seed(1)
 Mod_RF.1618.OHS.simple = train(
   form = OHS_MCID ~ .,
@@ -557,7 +527,6 @@ ths.Mod_RF.1618.OHS.simple <- thresholder(Mod_RF.1618.OHS.simple,
                                           threshold = seq(0,1,0.05),
                                           final = TRUE,
                                           statistics = "all")
-
 values_ths<-c("prob_threshold", "Sensitivity", "Specificity", "J","Balanced Accuracy", 
               "Pos Pred Value", "Neg Pred Value", "Precision", "Recall", "F1", 
               "Prevalence", "Detection Rate", "Detection Prevalence", "Accuracy", 
@@ -582,29 +551,15 @@ pred.Mod_RF.1618.OHS.simple <- factor(ifelse(probsTest.Mod_RF.1618.OHS.simple[, 
                                                best_p_threshold.Mod_RF.1618.OHS.simple,
                                              "YES", "NO")) 
 pred.Mod_RF.1618.OHS.simple<-relevel(pred.Mod_RF.1618.OHS.simple, "YES")
-table(pred.Mod_RF.1618.OHS.simple)
-# YES    NO 
-# 21501  8158   
-head(probsTest.Mod_RF.1618.OHS.simple)
-#        YES    NO
-# 300492 0.904 0.096
-# 300493 0.944 0.056
-# 300495 0.950 0.050
-# 300496 0.752 0.248
-# 300497 0.788 0.212
-# 300498 0.826 0.174
-head(pred.Mod_RF.1618.OHS.simple) 
-# [1] YES YES YES YES YES YES
+#table(pred.Mod_RF.1618.OHS.simple)
+#head(probsTest.Mod_RF.1618.OHS.simple)
+#head(pred.Mod_RF.1618.OHS.simple) 
 ### Create confusion matrix for predictions on test set
 conf.Matrix.Mod_RF.1618.OHS.simple<-confusionMatrix(
   data = pred.Mod_RF.1618.OHS.simple,
   reference = English.test.1819.OHS.simple$OHS_MCID,
   positive = "YES")
-conf.Matrix.Mod_RF.1618.OHS.simple$table
-#              Reference
-# Prediction   YES    NO
-# YES        20606   895
-# NO          6622  1536
+#conf.Matrix.Mod_RF.1618.OHS.simple$table
 ### Extract relevant training and testing (English test set) metrics using custom-made function
 source("S:/ClinEng_Users/CEDAR/Training & KSF info and forms/STP/STP - AURA/MSc Uni Manchester/Dissertation/code/R/ProjectFUN.R") # custom-made functions
 METRICS_Mod_RF.1618.OHS.simple_EngTest<-ExtractMetrics(
@@ -618,7 +573,7 @@ METRICS_Mod_RF.1618.OHS.simple_EngTest<-ExtractMetrics(
 )
 #METRICS_Mod_RF.1618.OHS.simple_EngTest
 write.csv(METRICS_Mod_RF.1618.OHS.simple_EngTest,
-          "MODELS_METRICS/METRICS_Mod_RF.1618.OHS.simple_EngTest.csv", row.names = FALSE)  
+          "output/thesis_files/METRICS_Mod_RF.1618.OHS.simple_EngTest.csv", row.names = FALSE)  
 #.........................................................................................
 #.........................................................................................
 
@@ -703,29 +658,15 @@ pred.Mod_GLMNET.1618.OHS.simple <- factor(ifelse(probsTest.Mod_GLMNET.1618.OHS.s
                                                    best_p_threshold.Mod_GLMNET.1618.OHS.simple,
                                                  "YES", "NO")) 
 pred.Mod_GLMNET.1618.OHS.simple<-relevel(pred.Mod_GLMNET.1618.OHS.simple, "YES")
-table(pred.Mod_GLMNET.1618.OHS.simple)
-# YES    NO 
-# 21966  7693  
-head(probsTest.Mod_GLMNET.1618.OHS.simple)
-#   YES        NO
-# 1 0.5146583 0.4853417
-# 2 0.6227482 0.3772518
-# 3 0.6779307 0.3220693
-# 4 0.5204576 0.4795424
-# 5 0.6240544 0.3759456
-# 6 0.6906888 0.3093112
-head(pred.Mod_GLMNET.1618.OHS.simple) 
-# [1] YES YES YES YES YES YES
+#table(pred.Mod_GLMNET.1618.OHS.simple)
+#head(probsTest.Mod_GLMNET.1618.OHS.simple)
+#head(pred.Mod_GLMNET.1618.OHS.simple) 
 ### Create confusion matrix for predictions on test set
 conf.Matrix.Mod_GLMNET.1618.OHS.simple<-confusionMatrix(
   data = pred.Mod_GLMNET.1618.OHS.simple,
   reference = English.test.1819.OHS.simple$OHS_MCID,
   positive = "YES")
-conf.Matrix.Mod_GLMNET.1618.OHS.simple$table
-#              Reference
-# Prediction   YES    NO
-# YES        21027   939
-# NO          6201  1492
+#conf.Matrix.Mod_GLMNET.1618.OHS.simple$table
 ### Extract relevant training and testing (English test set) metrics using custom-made function
 METRICS_Mod_GLMNET.1618.OHS.simple_EngTest<-ExtractMetrics(
   thresholder.output = ths.Mod_GLMNET.1618.OHS.simple,
@@ -738,7 +679,7 @@ METRICS_Mod_GLMNET.1618.OHS.simple_EngTest<-ExtractMetrics(
 )
 #METRICS_Mod_GLMNET.1618.OHS.simple_EngTest
 write.csv(METRICS_Mod_GLMNET.1618.OHS.simple_EngTest,
-          "MODELS_METRICS/METRICS_Mod_GLMNET.1618.OHS.simple_EngTest.csv", row.names = FALSE)  
+          "output/thesis_files/METRICS_Mod_GLMNET.1618.OHS.simple_EngTest.csv", row.names = FALSE)  
 #.........................................................................................
 #.........................................................................................
 
