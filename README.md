@@ -1,6 +1,6 @@
 # MSc-HealthInformatics-thesis
  
-Online material for thesis ###insert title###:
+Online material for thesis "**Exploring the feasibility of predicting post-surgical improvement in Welsh joint replacement PROMs using machine learning models developed on English patient data**":
 
 - `.gitignore` --> list of files created that have not been uploaded on Github
 
@@ -16,8 +16,4 @@ This folder contains the scripts that have been used for producing the outputs o
 ## supplementary_online_material
 - `Data Dictionary - Additional English Predictors.pdf` --> Data dictionary for extra 21 predictors used in supplementary analysis
 - `Data Dictionary.pdf` --> Data dictionary for all the variables used in the main analysis
-- `EQ-5D-Questionnaire.pdf`--> Dimensions and possible answers for the questionnaire
-- `EQ-VAS.pdf`--> Most recent version of the tool
-- `OHS-Questionnaire.pdf` -->  Questions and possible answers for the questionnaire
-- `OKS-Questionnaire.pdf` --> Questions and possible answers for the questionnaire
 - `Tripod Checklist.pdf` --> Checklist for assessing study's transparency
