@@ -1,3 +1,5 @@
+##### Analysis of OHS MCID - SIMPLE MODEL 18 predictors
+
 ### Import libraries ---------------------------------------------------------------
 library(caret) # Machine learning library
 library(dplyr)
@@ -258,7 +260,6 @@ write.csv(METRICS_Mod_XGBTREE.1618.OHS.simple_WelshTest,
           "output/thesis_files/METRICS_Mod_XGBTREE.1618.OHS.simple_WelshTest.csv", row.names = FALSE)
 #.........................................................................................
 #.........................................................................................
-
 
 # Train Logistic Regression on OHS ----------------------------------------
 attach("code/02_ML_main_OHS.RData")
