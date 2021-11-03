@@ -241,7 +241,7 @@ legend(x=0.5,y=0.7,
 #.........................................................................................
 #.........................................................................................
 
-# Main model: Calibration curves -----------------------------------------------------
+# Main model: Calibration curves OHS MCID-----------------------------------------------------
 ## calibration object for simple model - English test
 library(caret)
 attach("code/models/OHS_simple/HIPS_ML_training_1618_XGBTREE_simple_EngTest.RData")
@@ -253,7 +253,6 @@ cal.Mod_XGBTREE.1618.OHS.simple.EngTest<-cbind(English.test.1819.OHS.simple$OHS_
 names(cal.Mod_XGBTREE.1618.OHS.simple.EngTest)<-c("OHS_MCID","YES","NO")
 cal.obj.Mod_XGBTREE.1618.OHS.simple.EngTest<-caret::calibration(OHS_MCID ~ YES, data = cal.Mod_XGBTREE.1618.OHS.simple.EngTest)
 plot(cal.obj.Mod_XGBTREE.1618.OHS.simple.EngTest)
-
 ## calibration object for simple model - Welsh test
 attach("code/models/OHS_simple/HIPS_ML_training_1618_XGBTREE_simple_WelshTest.RData")
 library(caret)
@@ -265,29 +264,6 @@ names(cal.Mod_XGBTREE.1618.OHS.simple.WelshTest)<-c("OHS_MCID","YES","NO")
 cal.obj.Mod_XGBTREE.1618.OHS.simple.WelshTest<-calibration(OHS_MCID ~ YES, 
                                                            data = cal.Mod_XGBTREE.1618.OHS.simple.WelshTest)
 plot(cal.obj.Mod_XGBTREE.1618.OHS.simple.WelshTest)
-
-## calibration object for complex model
-attach("H:/MSc_thesis_models/NEW/complex_hips_models_5fold_3rep/HIPS_ML_training_1618_XGBTREE_complex_5fold_3rep.RData")
-library(caret)
-cal.Mod_XGBTREE.1618.OHS.complex.EngTest<-cbind(English.test.1819$OHS_MCID,
-                                                probsTest.Mod_XGBTREE.1618.OHS.complex)
-names(cal.Mod_XGBTREE.1618.OHS.complex.EngTest)<-c("OHS_MCID","YES","NO")
-cal.obj.Mod_XGBTREE.1618.OHS.complex.EngTest<-calibration(OHS_MCID ~ YES, data = cal.Mod_XGBTREE.1618.OHS.complex.EngTest)
-plot(cal.obj.Mod_XGBTREE.1618.OHS.complex.EngTest)
-
-### the x points are always the same...
-cal.obj.Mod_XGBTREE.1618.OHS.simple.EngTest$data$midpoint
-# [1]  4.545455 13.636364 22.727273 31.818182 40.909091 50.000000 59.090909 68.181818 77.272727 86.363636
-# [11] 95.454545
-cal.obj.Mod_XGBTREE.1618.OHS.simple.WelshTest$data$midpoint
-# [1]  4.545455 13.636364 22.727273 31.818182 40.909091 50.000000 59.090909 68.181818 77.272727 86.363636
-# [11] 95.454545
-cal.obj.Mod_XGBTREE.1618.OHS.complex.EngTest$data$midpoint
-# [1]  4.545455 13.636364 22.727273 31.818182 40.909091 50.000000 59.090909 68.181818 77.272727 86.363636
-# [11] 95.454545
-
-###*** create a function for this
-
 ## create dataframe to plot overlapping lines (I cannot use directly the function plot for this...)
 calibration.df.OHS.simple.Eng<-as.data.frame(cal.obj.Mod_XGBTREE.1618.OHS.simple.EngTest$data$midpoint)
 names(calibration.df.OHS.simple.Eng)<-c("Pred.Score")
@@ -295,89 +271,21 @@ calibration.df.OHS.simple.Eng$obs.perc<-cal.obj.Mod_XGBTREE.1618.OHS.simple.EngT
 calibration.df.OHS.simple.Eng$obs.perc.lower<-cal.obj.Mod_XGBTREE.1618.OHS.simple.EngTest$data$Lower
 calibration.df.OHS.simple.Eng$obs.perc.upper<-cal.obj.Mod_XGBTREE.1618.OHS.simple.EngTest$data$Upper
 calibration.df.OHS.simple.Eng$Model<-"English Test (18 predictors)"
-
 calibration.df.OHS.simple.Welsh<-as.data.frame(cal.obj.Mod_XGBTREE.1618.OHS.simple.WelshTest$data$midpoint)
 names(calibration.df.OHS.simple.Welsh)<-c("Pred.Score")
 calibration.df.OHS.simple.Welsh$obs.perc<-cal.obj.Mod_XGBTREE.1618.OHS.simple.WelshTest$data$Percent
 calibration.df.OHS.simple.Welsh$obs.perc.lower<-cal.obj.Mod_XGBTREE.1618.OHS.simple.WelshTest$data$Lower
 calibration.df.OHS.simple.Welsh$obs.perc.upper<-cal.obj.Mod_XGBTREE.1618.OHS.simple.WelshTest$data$Upper
 calibration.df.OHS.simple.Welsh$Model<-"Welsh Test (18 predictors)"
-
-calibration.df.OHS.complex.Eng<-as.data.frame(cal.obj.Mod_XGBTREE.1618.OHS.complex.EngTest$data$midpoint)
-names(calibration.df.OHS.complex.Eng)<-c("Pred.Score")
-calibration.df.OHS.complex.Eng$obs.perc<-cal.obj.Mod_XGBTREE.1618.OHS.complex.EngTest$data$Percent
-calibration.df.OHS.complex.Eng$obs.perc.lower<-cal.obj.Mod_XGBTREE.1618.OHS.complex.EngTest$data$Lower
-calibration.df.OHS.complex.Eng$obs.perc.upper<-cal.obj.Mod_XGBTREE.1618.OHS.complex.EngTest$data$Upper
-calibration.df.OHS.complex.Eng$Model<-"English Test (39 predictors)"
-
 calibration.df.OHS<-rbind(calibration.df.OHS.simple.Eng,
-                          calibration.df.OHS.simple.Welsh,
-                          calibration.df.OHS.complex.Eng)
-
-#rm(calibration.df.OHS.simple.Eng,calibration.df.OHS.simple.Welsh,calibration.df.OHS.complex.Eng)
-
-library(ggplot2)
-ggplot(calibration.df.OHS, aes(x=Pred.Score, y = obs.perc, group = Model)) + 
-  geom_line(aes(color=Model))+
-  geom_point(aes(color=Model))+
-  scale_color_manual(values=c("green", "red", "blue"))+
-  geom_abline(intercept = 0, slope = 1, linetype = "dashed")+
-  ylim(0,100) +
-  xlim(0,100) +
-  theme_bw()+
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        plot.title = element_text(hjust = 0.5),
-        legend.position = c(0.75, 0.3),
-        legend.title = element_blank(),
-        legend.text = element_text(size = 7))+
-  ggtitle("Calibration plots of best models\npredicting OHS MCID")+
-  ylab("Observed Event Percentages")+
-  xlab("Model predicted scores")
-
-### Calibration curves: input data *****to restructure
-
-library(ggplot2)
-library(ggsci)
-## OHS MCID CALIBRATION CURVES (Hips)
-attach("H:/MSc_thesis_models/NEW/OHS/HIPS_ML_training_1618_ALL_OHS_curves.RData")
-calibration.df.OHS<-calibration.df.OHS
-calibration.df.OHS$Model <- factor(calibration.df.OHS$Model, 
-                                   levels = c("English Test (39 predictors)", 
-                                              "English Test (18 predictors)",
-                                              "Welsh Test (18 predictors)"))
-
-## OKS MCID CALIBRATION CURVES (Knees)
-attach("H:/MSc_thesis_models/NEW/OKS/KNEES_ML_training_1618_ALL_OKS_curves.RData")
-calibration.df.OKS<-calibration.df.OKS
-
-calibration.df.OKS$Model <- factor(calibration.df.VAS.knees$Model, 
-                                   levels = c("English Test (39 predictors)", 
-                                              "English Test (18 predictors)",
-                                              "Welsh Test (18 predictors)"))
-
-## EQ-VAS MCID CALIBRATION CURVES (Hips)
-rm(calibration.df.VAS.hips)
-attach("H:/MSc_thesis_models/NEW/OHS_VAS/HIPS_ML_training_1618_ALL_VAS_curves.RData")
-calibration.df.VAS.hips<-calibration.df.VAS
-calibration.df.VAS.hips$Model <- factor(calibration.df.VAS.hips$Model, 
-                                        levels = c("English Test (39 predictors)", 
-                                                   "English Test (18 predictors)",
-                                                   "Welsh Test (18 predictors)"))
-## EQ-VAS MCID CALIBRATION CURVES (Knees)
-rm(calibration.df.VAS.knees)
-attach("H:/MSc_thesis_models/NEW/OKS_VAS/KNEES_ML_training_1618_ALL_OKSVAS_curves.RData")
-calibration.df.VAS.knees<-calibration.df.VAS
-calibration.df.VAS.knees$Model <- factor(calibration.df.VAS.knees$Model, 
-                                         levels = c("English Test (39 predictors)", 
-                                                    "English Test (18 predictors)",
-                                                    "Welsh Test (18 predictors)"))
-### Calibration curves: Welsh vs English Test sets
+                          calibration.df.OHS.simple.Welsh)
+rm(calibration.df.OHS.simple.Eng,calibration.df.OHS.simple.Welsh)
+## plotting calibration curves and 95% confidence intervals
 scale_colour<- c("#ED0000FF","#42B540FF")
-plot.calibration.df.OHS<-ggplot2::ggplot(calibration.df.OHS[calibration.df.OHS$Model !="English Test (39 predictors)",], 
-                                aes(x=Pred.Score, y = obs.perc, 
-                                    ymin = obs.perc.lower, ymax = obs.perc.upper,
-                                    group = Model)) + 
+plot.calibration.df.OHS<-ggplot2::ggplot(calibration.df.OHS, 
+                                         aes(x=Pred.Score, y = obs.perc, 
+                                             ymin = obs.perc.lower, ymax = obs.perc.upper,
+                                             group = Model)) + 
   geom_line(aes(color=Model), size = 0.7, alpha = 1)+
   geom_point(aes(color=Model, shape = Model, alpha = 1))+
   scale_colour_manual(values = scale_colour)+
@@ -394,6 +302,66 @@ plot.calibration.df.OHS<-ggplot2::ggplot(calibration.df.OHS[calibration.df.OHS$M
   ggtitle("Prediction of OHS MCID\n(Hip dataset)")+
   ylab("Observed Event Percentages")+
   xlab("Model predicted scores")
+#.........................................................................................
+#.........................................................................................
+
+
+# Main model: Calibration curves -----------------------------------------------------
+library(ggplot2)
+library(ggsci)
+## OHS MCID CALIBRATION CURVES (Hips)
+attach("code/models/OHS_simple/HIPS_ML_training_1618_ALL_OHS_curves.RData")
+calibration.df.OHS<-calibration.df.OHS
+calibration.df.OHS$Model <- factor(calibration.df.OHS$Model, 
+                                   levels = c("English Test (39 predictors)", 
+                                              "English Test (18 predictors)",
+                                              "Welsh Test (18 predictors)"))
+## OKS MCID CALIBRATION CURVES (Knees)
+attach("code/models/OKS_simple/KNEES_ML_training_1618_ALL_OKS_curves.RData")
+calibration.df.OKS<-calibration.df.OKS
+calibration.df.OKS$Model <- factor(calibration.df.OKS$Model, 
+                                   levels = c("English Test (39 predictors)", 
+                                              "English Test (18 predictors)",
+                                              "Welsh Test (18 predictors)"))
+## EQ-VAS MCID CALIBRATION CURVES (Hips)
+attach("code/models/EQVAS_hips_simple/HIPS_ML_training_1618_ALL_VAS_curves.RData")
+calibration.df.VAS.hips<-calibration.df.VAS
+calibration.df.VAS.hips$Model <- factor(calibration.df.VAS.hips$Model, 
+                                        levels = c("English Test (39 predictors)", 
+                                                   "English Test (18 predictors)",
+                                                   "Welsh Test (18 predictors)"))
+## EQ-VAS MCID CALIBRATION CURVES (Knees)
+attach("H:/MSc_thesis_models/NEW/OKS_VAS/KNEES_ML_training_1618_ALL_OKSVAS_curves.RData")
+attach("code/models/EQVAS_knees_simple/KNEES_ML_training_1618_ALL_OKSVAS_curves.RData")
+calibration.df.VAS.knees<-calibration.df.VAS
+calibration.df.VAS.knees$Model <- factor(calibration.df.VAS.knees$Model, 
+                                         levels = c("English Test (39 predictors)", 
+                                                    "English Test (18 predictors)",
+                                                    "Welsh Test (18 predictors)"))
+### Calibration curves: Welsh vs English Test sets
+scale_colour<- c("#ED0000FF","#42B540FF")
+plot.calibration.df.OHS<-ggplot2::ggplot(calibration.df.OHS[calibration.df.OHS$Model !="English Test (39 predictors)",], 
+                                         aes(x=Pred.Score, y = obs.perc,
+                                             ymin = obs.perc.lower, 
+                                             ymax = obs.perc.upper,
+                                             group = Model))+
+  geom_line(aes(color=Model), size = 0.7, alpha = 1)+
+  geom_point(aes(color=Model, shape = Model, alpha = 1))+
+  scale_colour_manual(values = scale_colour)+
+  scale_fill_manual(values = scale_colour)+
+  geom_ribbon(aes(fill=Model),alpha=0.3) + 
+  geom_abline(intercept = 0, slope = 1, linetype = "dotted", colour = "black", size = 0.5)+
+  ylim(0,100) +
+  xlim(0,100) +
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        legend.position = "none")+
+  ggtitle("Prediction of OHS MCID\n(Knee dataset)")+
+  ylab("Observed Event Percentages")+
+  xlab("Model predicted scores")
+
 plot.calibration.df.VAS.hips<-ggplot2::ggplot(calibration.df.VAS.hips[calibration.df.VAS.hips$Model !="English Test (39 predictors)",], 
                                      aes(x=Pred.Score, y = obs.perc, 
                                          ymin = obs.perc.lower, ymax = obs.perc.upper,
@@ -414,6 +382,7 @@ plot.calibration.df.VAS.hips<-ggplot2::ggplot(calibration.df.VAS.hips[calibratio
   ggtitle("Prediction of EQ-VAS MCID\n(Hip dataset)")+
   ylab("Observed Event Percentages")+
   xlab("Model predicted scores")
+
 plot.calibration.df.OKS<-ggplot2::ggplot(calibration.df.OKS[calibration.df.OKS$Model !="English Test (39 predictors)",], 
                                 aes(x=Pred.Score, y = obs.perc,
                                     ymin = obs.perc.lower, 
@@ -435,6 +404,7 @@ plot.calibration.df.OKS<-ggplot2::ggplot(calibration.df.OKS[calibration.df.OKS$M
   ggtitle("Prediction of OKS MCID\n(Knee dataset)")+
   ylab("Observed Event Percentages")+
   xlab("Model predicted scores")
+
 plot.calibration.df.VAS.knees<-ggplot2::ggplot(calibration.df.VAS.knees[calibration.df.VAS.knees$Model !="English Test (39 predictors)",], 
                                       aes(x=Pred.Score, y = obs.perc, 
                                           ymin = obs.perc.lower, ymax = obs.perc.upper,
@@ -467,120 +437,4 @@ ggpubr::ggarrange(plot.calibration.df.OHS,
 ## width = 800, height = 800   
 #.........................................................................................
 #.........................................................................................
-
-# Secondary model: Calibration curves -----------------------------------------------------
-#############
-### Calibration curves: English 18 vs 39 predictors *****to restructure
-scale_colour2<- c("#00468BFF","#ED0000FF")
-
-plot.calibration.df.OHS<-ggplot(calibration.df.OHS[calibration.df.OHS$Model !="Welsh Test (18 predictors)",], 
-                                aes(x=Pred.Score, y = obs.perc, 
-                                    ymin = obs.perc.lower, ymax = obs.perc.upper,
-                                    group = Model)) + 
-  geom_line(aes(color=Model), size = 0.7, alpha = 1)+
-  geom_point(aes(color=Model, shape = Model, alpha = 1))+
-  scale_colour_manual(values = scale_colour2)+
-  scale_fill_manual(values = scale_colour2)+
-  geom_ribbon(aes(fill=Model),alpha=0.3) + 
-  geom_abline(intercept = 0, slope = 1, linetype = "dotted", colour = "black", size = 0.5)+
-  ylim(0,100) +
-  xlim(0,100) +
-  theme_bw()+
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        plot.title = element_text(hjust = 0.5),
-        legend.position = "none")+
-  ggtitle("Prediction of OHS MCID\n(Hip dataset)")+
-  ylab("Observed Event Percentages")+
-  xlab("Model predicted scores")
-
-
-library(ggplot2)
-plot.calibration.df.VAS.hips<-ggplot(calibration.df.VAS.hips[calibration.df.VAS.hips$Model !="Welsh Test (18 predictors)",], 
-                                     aes(x=Pred.Score, y = obs.perc, 
-                                         ymin = obs.perc.lower, ymax = obs.perc.upper,
-                                         group = Model)) +
-  geom_line(aes(color=Model), size = 0.7, alpha = 1)+
-  geom_point(aes(color=Model,shape = Model, alpha = 1))+
-  scale_colour_manual(values = scale_colour2)+
-  scale_fill_manual(values = scale_colour2)+
-  geom_ribbon(aes(fill=Model),alpha=0.3) + 
-  geom_abline(intercept = 0, slope = 1, linetype = "dotted", colour = "black", size = 0.5)+
-  ylim(0,100) +
-  xlim(0,100) +
-  theme_bw()+
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        plot.title = element_text(hjust = 0.5),
-        legend.position = "none")+
-  ggtitle("Prediction of EQ-VAS MCID\n(Hip dataset)")+
-  ylab("Observed Event Percentages")+
-  xlab("Model predicted scores")
-
-
-
-library(ggplot2)
-plot.calibration.df.OKS<-ggplot(calibration.df.OKS[calibration.df.OKS$Model !="Welsh Test (18 predictors)",], 
-                                aes(x=Pred.Score, y = obs.perc,
-                                    ymin = obs.perc.lower, 
-                                    ymax = obs.perc.upper,
-                                    group = Model))+
-  geom_line(aes(color=Model), size = 0.7, alpha = 1)+
-  geom_point(aes(color=Model, shape = Model, alpha = 1))+
-  scale_colour_manual(values = scale_colour2)+
-  scale_fill_manual(values = scale_colour2)+
-  geom_ribbon(aes(fill=Model),alpha=0.3) + 
-  geom_abline(intercept = 0, slope = 1, linetype = "dotted", colour = "black", size = 0.5)+
-  ylim(0,100) +
-  xlim(0,100) +
-  theme_bw()+
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        plot.title = element_text(hjust = 0.5),
-        legend.position = "none")+
-  ggtitle("Prediction of OKS MCID\n(Knee dataset)")+
-  ylab("Observed Event Percentages")+
-  xlab("Model predicted scores")
-
-
-
-
-library(ggplot2)
-plot.calibration.df.VAS.knees<-ggplot(calibration.df.VAS.knees[calibration.df.VAS.knees$Model !="Welsh Test (18 predictors)",], 
-                                      aes(x=Pred.Score, y = obs.perc, 
-                                          ymin = obs.perc.lower, ymax = obs.perc.upper,
-                                          group = Model)) + 
-  geom_line(aes(color=Model), size = 0.7, alpha = 1)+
-  geom_point(aes(color=Model, shape = Model, alpha = 1))+
-  scale_colour_manual(values = scale_colour2)+
-  scale_fill_manual(values = scale_colour2)+
-  geom_ribbon(aes(fill=Model),alpha=0.3) +
-  geom_abline(intercept = 0, slope = 1, linetype = "dotted", colour = "black", size = 0.5)+
-  xlim(0,100) +
-  theme_bw()+
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        plot.title = element_text(hjust = 0.5),
-        legend.position = "none"
-        # legend.position = c(0.75, 0.2),
-        # legend.title = element_blank(),
-        # legend.text = element_text(size = 7)
-  )+
-  ggtitle("Prediction of EQ-VAS MCID\n(Knee dataset)")+
-  ylab("Observed Event Percentages")+
-  xlab("Model predicted scores")
-
-
-library(ggpubr)
-ggarrange(plot.calibration.df.OHS,
-          plot.calibration.df.VAS.hips,
-          plot.calibration.df.OKS,
-          plot.calibration.df.VAS.knees,
-          ncol = 2, 
-          nrow = 2)
-## width = 800, height = 800
-
-
-
-
 
