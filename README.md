@@ -19,3 +19,6 @@ This folder contains the scripts that have been used for producing the outputs o
 - `Data Dictionary - Additional English Predictors.pdf` --> Data dictionary for extra 21 predictors used in supplementary analysis
 - `Data Dictionary.pdf` --> Data dictionary for all the variables used in the main analysis
 - `Tripod Checklist.pdf` --> Checklist for assessing study's transparency
+
+## supervised-ML-certificates
+Certificates of accomplishment of online courses in supervised machine learning. These were followed in order to undertake the training to carry out the MSc thesis project.
