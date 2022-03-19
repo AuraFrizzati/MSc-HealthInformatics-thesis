@@ -1,6 +1,6 @@
 # MSc-HealthInformatics-thesis
  
-Online material for thesis "**Using machine learning models developed with English data to predict joint-replacement patient-reported outcomes in a cohort of Welsh patients**":
+Online material for thesis "**Using machine learning models developed with English data to predict improvement in patient-reported outcome measures (PROMs) in a cohort of Welsh patients undergoing joint-replacement surgery**":
 
 - `.gitignore` --> list of files created that have not been uploaded on Github
 
